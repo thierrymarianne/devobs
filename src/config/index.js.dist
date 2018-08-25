@@ -1,0 +1,7 @@
+const raven = {
+  dsn: ''
+};
+
+export default {
+  raven
+}

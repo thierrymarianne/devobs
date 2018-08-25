@@ -1,0 +1,6 @@
+coverage/
+dist/*css
+dist/*js
+dist/*map
+node_modules/
+webpack-assets.json

@@ -1,10 +1,10 @@
 {
-  "name": "compilers-principles-techniques-and-tools",
+  "name": "press-revue",
   "private": true,
   "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "git://github.com/thierrymarianne/project-learning-compilers.git"
+    "url": "git://github.com/thierrymarianne/press-revue.git"
   },
   "license": "MIT",
   "scripts": {
@@ -88,23 +88,16 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.1",
     "@fortawesome/free-solid-svg-icons": "^5.1.1",
     "@fortawesome/vue-fontawesome": "^0.1.1",
-    "antlr4": "^4.7.1",
-    "automata.js": "^0.2.1",
     "lodash": "^4.17.10",
     "mime": "^2.3.1",
     "node-uuid": "^1.4.8",
     "raven-js": "^3.26.4",
     "sanitize-html": "^1.18.2",
-    "simple-xpath-position": "^2.0.2",
     "uuid": "^3.3.2",
-    "viz.js": "^2.0.0",
     "vue": "^2.5.16",
-    "vue-click-outside": "^1.0.7",
     "vue-clipboards": "^1.2.4",
     "vue-notification": "^1.3.12",
     "vue-router": "^3.0.1",
-    "vue-shortkey": "^3.1.6",
-    "vuex": "^3.0.1",
-    "webworkify-webpack": "^2.1.3"
+    "vuex": "^3.0.1"
   }
 }

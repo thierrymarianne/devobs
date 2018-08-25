@@ -1,0 +1,19 @@
+@import 'animate.css';
+
+body {
+  display: flex;
+  background-color: #252526;
+  justify-content: center;
+  margin: 0;
+  scroll-behavior: smooth;
+}
+
+#app {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.hide {
+  display: none !important;
+}
