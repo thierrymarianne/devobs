@@ -1,0 +1,47 @@
+.status-list {
+  width: calc(100% - 32px);
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    margin-top: 16px;
+    padding: 0;
+  }
+
+  &__item {
+    align-items: center;
+    background-color: white;
+    display: flex;
+    justify-content: flex-start;
+    list-style-type: none;
+    margin-bottom: 15px;
+    min-height: 50px;
+    padding: 8px;
+  }
+
+  &__status {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    font-family: roboto;
+  }
+
+  &__url-list {
+    display: flex;
+    margin-top:16px;
+  }
+
+  &__url {
+    display: flex;
+    margin-left: 8px;
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+
+  &__text {
+    display: flex;
+  }
+}

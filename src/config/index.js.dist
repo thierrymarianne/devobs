@@ -1,7 +1,19 @@
 const raven = {
-  dsn: ''
+  dsn: '',
+};
+
+const api = {
+  scheme: '',
+  host: '',
+  routes: {},
+};
+
+const authentication = {
+  apiKey: '',
 };
 
 export default {
-  raven
-}
+  api,
+  authentication,
+  raven,
+};
