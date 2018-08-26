@@ -14,7 +14,11 @@ export default {
       const python = `${api.scheme}${api.host}${api.routes.python}`;
       const rust = `${api.scheme}${api.host}${api.routes.rust}`;
       const scala = `${api.scheme}${api.host}${api.routes.scala}`;
-      const defaultAggregate = `${api.scheme}${api.host}${api.routes['latest-statuses']}`;
+
+      let defaultAggregate = `${api.scheme}${api.host}${api.routes['press-review']}`;
+      if ('peek' in this.$route.query) {
+        defaultAggregate = `${api.scheme}${api.host}${api.routes['latest-statuses']}`
+      }
 
       return {
         all,

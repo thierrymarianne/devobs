@@ -1,6 +1,6 @@
 import Raven from 'raven-js';
 
-const developmentMode = true;
+const developmentMode = false;
 
 const productionMode = !developmentMode;
 const state = {
