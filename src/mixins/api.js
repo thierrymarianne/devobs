@@ -17,7 +17,7 @@ export default {
 
       let defaultAggregate = `${api.scheme}${api.host}${api.routes['press-review']}`;
       if ('peek' in this.$route.query) {
-        defaultAggregate = `${api.scheme}${api.host}${api.routes['latest-statuses']}`
+        defaultAggregate = `${api.scheme}${api.host}${api.routes['latest-statuses']}`;
       }
 
       return {
