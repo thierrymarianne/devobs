@@ -208,7 +208,7 @@ const webpackConfig = {
   output: {
     path: path.resolve(__dirname, outputDirectory),
     filename: '[name].[hash].js',
-    chunkFilename: '[name].[chunkHash].bundle.js',
+    chunkFilename: '[name].[chunkHash].bundle.js'
   },
   plugins,
   devtool: sourceMap,

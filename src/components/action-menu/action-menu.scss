@@ -1,0 +1,24 @@
+.action-menu {
+  align-items: center; 
+  border-bottom: 1px solid $color-black-light;
+  display: flex;
+  position: fixed;
+  width: 100%;
+  background-color: #f1f1f1;
+  height: 54px;
+  left: 0;
+  justify-items: center;
+  top: 0;
+
+  &__get-statuses {
+    background-color: transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    cursor: pointer;
+    line-height: 8px;
+    margin-left: 16px;
+    padding: 8px;
+    text-transform: uppercase;
+    white-space: 'pre';
+  }
+}

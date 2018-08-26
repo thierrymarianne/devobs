@@ -5,6 +5,10 @@ const developmentMode = true;
 const productionMode = !developmentMode;
 const state = {
   productionMode: productionMode,
+  useFetch: false,
+  actions: {
+    fetchedLatestStatusesOfAggregate: null,
+  },
   log(message, file, extra) {
     if (productionMode) {
       Raven.captureMessage(

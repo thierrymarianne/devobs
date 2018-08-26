@@ -1,12 +1,22 @@
+@import 'animate.css';
+
 body {
+  background-color: $color-greenish;
   display: flex;
-  background-color: #252526;
   justify-content: center;
   margin: 0;
   scroll-behavior: smooth;
 }
 
+button {
+  border: 1px solid $color-greener;
+  color: $color-greener;
+  outline-color: transparent;
+  font-family: 'Libre Baskerville', serif;
+}
+
 #app {
+  background-color: $color-greenish;
   display: flex;
   width: 100%;
   justify-content: center;
