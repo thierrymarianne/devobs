@@ -37,7 +37,7 @@
     padding: 8px;
 
     &:first-child {
-      margin-top: 70px;
+      margin-top: calc(6 * 16px);
     }
   }
 }

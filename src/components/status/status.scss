@@ -11,6 +11,7 @@
   &__row {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     margin-top: 8px;
 
     &:first-child {
@@ -38,7 +39,7 @@
   &__url {
     color: $color-greener;
     display: flex;
-    margin-left: 8px;
+    margin-right: 8px;
 
     &:active,
     &:hover,
@@ -65,6 +66,7 @@
 
   &__text {
     display: flex;
+    margin-top: 16px;
   }
 
   &__web-intent {

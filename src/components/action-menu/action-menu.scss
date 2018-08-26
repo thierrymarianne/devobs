@@ -2,10 +2,12 @@
   align-items: center; 
   border-bottom: 1px solid $color-black-light;
   display: flex;
+  flex-wrap: wrap;
   position: fixed;
   width: 100%;
   background-color: #f1f1f1;
-  height: 54px;
+  min-height: calc(3 * 16px + 8px);
+  line-height: calc(3 * 16px + 8px);
   left: 0;
   justify-items: center;
   top: 0;
@@ -14,6 +16,7 @@
     background-color: transparent;
     border-left-color: transparent;
     border-right-color: transparent;
+    border-top-color: transparent;
     cursor: pointer;
     line-height: 8px;
     margin-left: 16px;
