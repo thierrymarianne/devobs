@@ -9,7 +9,7 @@ A client of [daily press review](https://github.com/thierrymarianne/daily-press-
 Install [git](https://git-scm.org) and clone the project repository
 
 ```
-git clone https://github.com/thierrymarianne/press-revue.git
+git clone https://github.com/thierrymarianne/daily-press-revue.git
 ```
 
 Install [node.js](https://nodejs.org), 
