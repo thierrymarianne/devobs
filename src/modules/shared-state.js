@@ -1,7 +1,7 @@
 import Raven from 'raven-js';
 
 const developmentMode = false;
-const mobileMode = true;
+const mobileMode = false;
 const productionMode = !developmentMode;
 
 let defaultAggregate = 'defaultAggregate';
