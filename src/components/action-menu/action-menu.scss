@@ -1,3 +1,6 @@
+// @see https://robots.thoughtbot.com/controlling-color-with-sass-color-functions#darken-amp-lighten
+$color-double-greener: darken($color-greener, 10%);
+
 .action-menu {
   align-items: center; 
   border-bottom: 1px solid $color-black-light;
@@ -12,16 +15,55 @@
   justify-items: center;
   top: 0;
 
+  &__container {
+    display: none;
+    flex-wrap: wrap;
+    padding: 0 16px;
+
+    &--is-visible {
+      display: flex;
+    }
+  }
+
   &__get-statuses {
     background-color: transparent;
-    border-left-color: transparent;
-    border-right-color: transparent;
-    border-top-color: transparent;
+    border: none;
     cursor: pointer;
-    line-height: 8px;
-    margin-left: 16px;
+    line-height: 18px;
+    margin-right: 8px;
+    margin-bottom: 5px;
     padding: 8px;
-    text-transform: uppercase;
-    white-space: 'pre';
+
+    &--active {
+      border-color: $color-double-greener;
+      border-left-color: transparent;
+      border-right-color: transparent;
+      border-top-color: transparent;
+      border-bottom-width: 5px;
+      border-bottom-style: solid;
+      margin-bottom: 0px;
+      opacity: 1;
+    }
+  }
+
+  &__button {
+    cursor: pointer;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    padding: 16px;    
+    border-top: 1px solid $color-black-light; 
+
+    &--with-top-border {
+      border-top-width: 0; 
+    }
+  }
+
+  &__toggle-menu-icon {
+    color: $color-greener;
+    display: flex;
+    font-size: 1.5em;
+    align-self: center;
+    justify-self: center;    
   }
 }

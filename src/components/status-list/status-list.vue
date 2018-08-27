@@ -39,7 +39,7 @@ export default {
   mixins: [ApiMixin],
   name: 'status-list',
   created: function () {
-    this.getStatuses({ aggregateType: 'defaultAggregate' });
+    this.getStatuses({ aggregateType: SharedState.state.defaultAggregate });
   },
   methods: {
     listClasses: function (aggregateType) {
@@ -47,7 +47,7 @@ export default {
          'status-list__list': true
       }; 
 
-      if (aggregateType === this.visibleStatuses.name) {
+      if (this.isAggregateVisible(aggregateType)) {
         classNames['status-list__list--full-width'] = true;
       }
       
@@ -60,6 +60,10 @@ export default {
       }
 
       let formattedStatuses = [];
+
+      if (typeof statuses.forEach !== 'function') {
+        throw Error('Empty aggregate');
+      }
 
       statuses.forEach((status) => {
         let links = status.text.match(/http(?:s)?:\/\/\S+/g);
@@ -188,13 +192,8 @@ export default {
       aggregateTypes: {
         defaultAggregate: {
           statuses: [],
-          isVisible: true,          
-          name: 'defaultAggregate',
-        },
-        all: {
-          statuses: [],
           isVisible: false,
-          name: 'all',
+          name: 'defaultAggregate',
         },
         pressReview: {
           statuses: [],
@@ -243,10 +242,7 @@ export default {
         },
       },
       state: SharedState.state,
-      visibleStatuses: {
-        statuses: [],
-        name: 'defaultAggregate'
-      },
+      visibleStatuses: SharedState.state.visibleStatuses,
       errors: [],
     };
   },
