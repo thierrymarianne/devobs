@@ -2,7 +2,6 @@
   display: flex;
   justify-content: center;
   margin: auto;
-  width: calc(100% - 32px);
 
   &__list {
     display: none;
@@ -11,10 +10,6 @@
 
     &--full-width {
       display: flex;
-
-      > .status-list__item {
-        max-width: 500px;
-      }
     }
   }
 
@@ -27,17 +22,16 @@
   &__item {
     align-items: center;
     background-color: $color-beige-light;
-    border-radius: 4px;
-    border: 1px solid black;
+    border-bottom: 1px solid $color-greener;
     display: flex;
     justify-content: flex-start;
     list-style-type: none;
-    margin-bottom: 16px;
+    margin-bottom: 2px;
     min-height: 50px;
     padding: 8px;
 
     &:first-child {
-      margin-top: 72px;
+      margin-top: calc(72px - 16px);
     }
   }
 }

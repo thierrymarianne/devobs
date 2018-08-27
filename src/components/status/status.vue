@@ -27,9 +27,18 @@
       >{{ link }}</a>
     </div>
     <div class='status__row'>
-      <a class='status__web-intent' :href='urls.reply'>Reply</a>
-      <a class='status__web-intent' :href='urls.retweet'>Retweet</a>
-      <a class='status__web-intent' :href='urls.like'>Like</a>
+      <a class='status__web-intent' :href='urls.reply'>
+        <font-awesome-icon icon='reply' />
+        Reply
+      </a>
+      <a class='status__web-intent' :href='urls.retweet'>
+        <font-awesome-icon icon='retweet' />
+        Retweet
+      </a>
+      <a class='status__web-intent' :href='urls.like'>
+        <font-awesome-icon icon='heart' />
+        Like
+      </a>
     </div>
   </div>
 </template>

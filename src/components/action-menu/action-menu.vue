@@ -57,7 +57,8 @@
     >
         <font-awesome-icon 
           class='action-menu__toggle-menu-icon' 
-          :icon='getToggleMenuIcon' />
+          :icon='getToggleMenuIcon' 
+        />
       </div>
   </div>
 </template>
