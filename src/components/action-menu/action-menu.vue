@@ -2,14 +2,14 @@
   <div class='action-menu'>
     <div :class='getActionMenuContainerClasses'>
       <button 
+        @click='intendToGet("pressReview")'
+        :class='getButtonClass("pressReview")'
+      >Press Review</button>
+      <button 
         @click='intendToGet("defaultAggregate")'
         :class='getButtonClass("defaultAggregate")'
         v-if='isVisible.defaultAggregate'
       >All</button>
-      <button 
-        @click='intendToGet("pressReview")'
-        :class='getButtonClass("pressReview")'
-      >Press Review</button>
       <button 
         @click='intendToGet("clojure")'
         :class='getButtonClass("clojure")'
