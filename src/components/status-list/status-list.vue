@@ -169,11 +169,11 @@ export default {
         return 0;
       }
 
-      if (statusA.publishedAt > statusB.publishedAt) {
-        return -1;
+      if (statusA.publishedAt < statusB.publishedAt) {
+        return 1;
       }
 
-      return 1;
+      return -1;
     },
     // @see https://developer.mozilla.org/en-US/docs/Web/API/DOMParser
     parseFromString: function (subject) {
