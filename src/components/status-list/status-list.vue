@@ -240,6 +240,11 @@ export default {
           isVisible: false,
           name: 'vueJs',
         },
+        webPerformance: {
+          statuses: [],
+          isVisible: false,
+          name: 'webPerformance',
+        },
       },
       state: SharedState.state,
       visibleStatuses: SharedState.state.visibleStatuses,

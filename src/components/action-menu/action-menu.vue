@@ -50,16 +50,21 @@
         :class='getButtonClass("vueJs")'
         v-if='isVisible.vueJs'
       >Vue.js</button>
+      <button 
+        @click='intendToGet("webPerformance")'
+        :class='getButtonClass("webPerformance")'
+        v-if='isVisible.webPerformance'
+      >Web performance</button>
     </div>
     <div 
       :class='getActionMenuButtonClasses'
       @click='showMenu = !showMenu'
     >
-        <font-awesome-icon 
-          class='action-menu__toggle-menu-icon' 
-          :icon='getToggleMenuIcon' 
-        />
-      </div>
+      <font-awesome-icon 
+        class='action-menu__toggle-menu-icon' 
+        :icon='getToggleMenuIcon' 
+      />
+    </div>
   </div>
 </template>
 
@@ -107,8 +112,9 @@ export default {
         python: hasFullMenu,
         rust: hasFullMenu, 
         scala: hasFullMenu,
-        vueJs: hasFullMenu
-      }
+        vueJs: hasFullMenu,
+        webPerformance: hasFullMenu,
+      };
     },
   },
   data: function () {
