@@ -62,7 +62,7 @@ export default {
       let formattedStatuses = [];
 
       if (typeof statuses.forEach !== 'function') {
-        throw Error('Empty aggregate');
+        throw Error(this.errorMessages.REQUIRED_COLLECTION);
       }
 
       statuses.forEach((status) => {
@@ -97,7 +97,7 @@ export default {
       const timestamp = (new Date()).getTime();
       let timestampSuffix = '';
 
-      if (!this.state.productionMode) {
+      if (!this.environment.productionMode) {
         let timestampSuffix = `?${timestamp}`;
         console.log(`${this.routes[aggregateType]}${timestampSuffix}`);
       }
@@ -143,11 +143,24 @@ export default {
       }
 
       this.$http.get(
-        route, { headers: { 'x-auth-token': authenticationToken } }
+        route, {
+          headers: { 'x-auth-token': authenticationToken },
+          onDownloadProgress: function (progressEvent) {
+            // TODO Implement a loadin animation
+            // console.log(progressEvent);
+            // console.log(progressEvent.total);
+            // console.log(progressEvent.loaded);
+          },
+        }
       )
       .then(response => {
         this.statuses = null;
-        this.aggregateTypes[aggregateType].statuses = this.formatStatuses(response.data);
+        try {
+          this.aggregateTypes[aggregateType].statuses = this.formatStatuses(response.data);
+        } catch (error) {
+          SharedState.logger.error(error.message, 'status-list');
+          return;
+        }
 
         Object.keys(this.aggregateTypes).map((aggregateType) => {
           this.aggregateTypes[aggregateType].isVisible = false
@@ -249,6 +262,9 @@ export default {
       state: SharedState.state,
       visibleStatuses: SharedState.state.visibleStatuses,
       errors: [],
+      errorMessages: SharedState.errors,
+      logLevel: SharedState.logLevel,
+      environment: SharedState.getEnvironmentParameters(),
     };
   },
 }

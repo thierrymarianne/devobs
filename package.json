@@ -33,6 +33,7 @@
     "@vue/test-utils": "^1.0.0-beta.21",
     "animate.css": "^3.6.1",
     "assets-webpack-plugin": "^3.8.4",
+    "axios-mock-adapter": "^1.15.0",
     "babel-eslint": "^8.2.6",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",
     "babel-loader": "^8.0.0-beta.0",

@@ -1,11 +1,10 @@
 import axios from 'axios';
-import Vue from 'vue';
 
 import Config from '../config';
 
-const useAxios = () => {
+const useAxios = (Vue) => {
   const createAxios = () => (axios.create({
-    baseURL: `${Config.api.scheme}${Config.api.host}`,
+    baseURL: Config.getSchemeAndHost(),
     headers: {
       'x-auth-token': localStorage.getItem('x-auth-token'),
     },

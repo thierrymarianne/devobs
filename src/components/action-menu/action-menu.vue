@@ -101,7 +101,7 @@ export default {
     },
     isVisible: function () {
       const hasFullMenu = 'peek' in this.$route.query
-      || !SharedState.state.productionMode;
+      || !SharedState.getEnvironmentParameters().productionMode;
 
       return {
         defaultAggregate: hasFullMenu,
