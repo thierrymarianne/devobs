@@ -105,18 +105,12 @@ export default {
       const hasFullMenu = 'peek' in this.$route.query
       || !SharedState.getEnvironmentParameters().productionMode;
 
-      return {
-        defaultAggregate: hasFullMenu,
-        clojure: hasFullMenu,
-        javascript: hasFullMenu,
-        golang: hasFullMenu,
-        php: hasFullMenu,
-        python: hasFullMenu,
-        rust: hasFullMenu, 
-        scala: hasFullMenu,
-        vueJs: hasFullMenu,
-        webPerformance: hasFullMenu,
-      };
+      const visibilities = {};
+      Object.keys(this.routes).forEach((aggregateType) => {
+        visibilities[aggregateType] = hasFullMenu
+      });
+
+      return visibilities;
     },
   },
   data: function () {
