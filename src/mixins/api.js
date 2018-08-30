@@ -1,32 +1,32 @@
 import Config from '../config';
+import SharedState from '../modules/shared-state';
+import AggregateMixin from './aggregate';
 
-export default {
-  computed: {
-    routes: function () {
-      const api = Config.api;
-      const defaultAggregate = `${api.scheme}${api.host}${api.routes['latest-statuses']}`;
-      const pressReview = `${api.scheme}${api.host}${api.routes['press-review']}`;
-      const vueJs = `${api.scheme}${api.host}${api.routes['vue-js']}`;
-      const clojure = `${api.scheme}${api.host}${api.routes.clojure}`;
-      const php = `${api.scheme}${api.host}${api.routes.php}`;
-      const golang = `${api.scheme}${api.host}${api.routes.golang}`;
-      const javascript = `${api.scheme}${api.host}${api.routes.javascript}`;
-      const python = `${api.scheme}${api.host}${api.routes.python}`;
-      const rust = `${api.scheme}${api.host}${api.routes.rust}`;
-      const scala = `${api.scheme}${api.host}${api.routes.scala}`;
+const getApiMixin = () => {
+  if (SharedState.isTestModeActive()) {
+    SharedState.getEnvironmentParameters().test.apiMixin.mixins = [AggregateMixin];
+    return SharedState.getEnvironmentParameters().test.apiMixin;
+  }
 
-      return {
-        defaultAggregate,
-        pressReview,
-        clojure,
-        golang,
-        php,
-        javascript,
-        python,
-        rust,
-        scala,
-        vueJs,
-      };
+  return {
+    mixins: [AggregateMixin],
+    computed: {
+      routes: function () {
+        const routePaths = Config.getRoutes();
+        const schemeAndHost = Config.getSchemeAndHost();
+
+        const routes = {};
+        Object.keys(routePaths).forEach((routeName) => {
+          const path = routePaths[routeName];
+          routes[routeName] = `${schemeAndHost}${path}`;
+        });
+
+        return routes;
+      },
     },
-  },
+  };
 };
+
+const apiMixin = getApiMixin();
+
+export default apiMixin;

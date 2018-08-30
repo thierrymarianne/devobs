@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import ApiMixin from '../../mixins/api';
+import ApiMixin  from '../../mixins/api';
 import EventHub from '../../modules/event-hub';
 import Status from '../status/status.vue';
 import SharedState from '../../modules/shared-state';
@@ -39,7 +39,8 @@ export default {
   mixins: [ApiMixin],
   name: 'status-list',
   created: function () {
-    this.getStatuses({ aggregateType: SharedState.state.defaultAggregate });
+    this.aggregateTypes = this.declareAggregateTypesFromRoutes(this.routes)
+    this.getStatuses({ aggregateType: 'pressReview' });
   },
   methods: {
     listClasses: function (aggregateType) {
@@ -62,10 +63,15 @@ export default {
       let formattedStatuses = [];
 
       if (typeof statuses.forEach !== 'function') {
-        throw Error('Empty aggregate');
+        throw Error(this.errorMessages.REQUIRED_COLLECTION);
       }
 
       statuses.forEach((status) => {
+        if ((typeof status.text === 'undefined')
+          || (typeof status.text.match !== 'function')) {
+          return;
+        }
+
         let links = status.text.match(/http(?:s)?:\/\/\S+/g);
 
         if (links === null || links === undefined || links.length <= 1) {
@@ -97,9 +103,8 @@ export default {
       const timestamp = (new Date()).getTime();
       let timestampSuffix = '';
 
-      if (!this.state.productionMode) {
+      if (!this.environment.productionMode) {
         let timestampSuffix = `?${timestamp}`;
-        console.log(`${this.routes[aggregateType]}${timestampSuffix}`);
       }
 
       if (typeof this.routes === 'undefined') {
@@ -139,15 +144,28 @@ export default {
 
         fetch(request).then((response) => {
           console.log(response);
-        }).catch(error => console.error(error));
+        }).catch(error => this.logger.error(error));
       }
 
       this.$http.get(
-        route, { headers: { 'x-auth-token': authenticationToken } }
+        route, {
+          headers: { 'x-auth-token': authenticationToken },
+          onDownloadProgress: function (progressEvent) {
+            // TODO Implement a loadin animation
+            // console.log(progressEvent);
+            // console.log(progressEvent.total);
+            // console.log(progressEvent.loaded);
+          },
+        }
       )
       .then(response => {
         this.statuses = null;
-        this.aggregateTypes[aggregateType].statuses = this.formatStatuses(response.data);
+        try {
+          this.aggregateTypes[aggregateType].statuses = this.formatStatuses(response.data);
+        } catch (error) {
+          SharedState.logger.error(error.message, 'status-list');
+          return;
+        }
 
         Object.keys(this.aggregateTypes).map((aggregateType) => {
           this.aggregateTypes[aggregateType].isVisible = false
@@ -155,11 +173,10 @@ export default {
         this.aggregateTypes[aggregateType].isVisible = true
         this.visibleStatuses.statuses = Object.assign({}, this.aggregateTypes[aggregateType].statuses);
         this.visibleStatuses.name = aggregateType;
+
+        EventHub.$emit('status_list.after_fetch');
       })
-      .catch(e => {
-        console.error(e);
-        this.errors.push(e)
-      })
+      .catch(e => this.logger.error.push(e))
     },
     isAggregateVisible: function (aggregateType) {
       return aggregateType === this.visibleStatuses.name;
@@ -169,11 +186,11 @@ export default {
         return 0;
       }
 
-      if (statusA.publishedAt > statusB.publishedAt) {
-        return -1;
+      if (statusA.publishedAt < statusB.publishedAt) {
+        return 1;
       }
 
-      return 1;
+      return -1;
     },
     // @see https://developer.mozilla.org/en-US/docs/Web/API/DOMParser
     parseFromString: function (subject) {
@@ -189,61 +206,13 @@ export default {
   },
   data: function () {
     return {
-      aggregateTypes: {
-        defaultAggregate: {
-          statuses: [],
-          isVisible: false,
-          name: 'defaultAggregate',
-        },
-        pressReview: {
-          statuses: [],
-          isVisible: false,
-          name: 'pressReview',
-        },
-        clojure: {
-          statuses: [],
-          isVisible: false,
-          name: 'clojure',
-        },
-        golang: {
-          statuses: [],
-          isVisible: false,
-          name: 'golang',
-        },
-        php: {
-          statuses: [],
-          isVisible: false,
-          name: 'php',
-        },
-        javascript: {
-          statuses: [],
-          isVisible: false,
-          name: 'javascript',
-        },
-        python: {
-          statuses: [],
-          isVisible: false,
-          name: 'python',
-        },
-        rust: {
-          statuses: [],
-          isVisible: false,
-          name: 'rust',
-        },
-        scala: {
-          statuses: [],
-          isVisible: false,
-          name: 'scala',
-        },
-        vueJs: {
-          statuses: [],
-          isVisible: false,
-          name: 'vueJs',
-        },
-      },
+      aggregateTypes: {},
       state: SharedState.state,
       visibleStatuses: SharedState.state.visibleStatuses,
       errors: [],
+      errorMessages: SharedState.errors,
+      logLevel: SharedState.logLevel,
+      environment: SharedState.getEnvironmentParameters(),
     };
   },
 }

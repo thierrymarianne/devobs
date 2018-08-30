@@ -2,12 +2,14 @@ const raven = {
   dsn: '',
 };
 
-const testMode = true;
+const testMode = false;
 
 const getApi = () => ({
-  scheme: '',
-  host: '',
-  routes: {},
+  host: 'press.review',
+  scheme: 'https://',
+  routes: {
+    pressReview: '/press-review',
+  },
 });
 
 const authentication = {
@@ -19,5 +21,5 @@ export default {
   getApi,
   authentication,
   raven,
-  testMode
+  testMode,
 };

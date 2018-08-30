@@ -2,80 +2,36 @@
   <div class='action-menu'>
     <div :class='getActionMenuContainerClasses'>
       <button 
-        @click='intendToGet("defaultAggregate")'
-        :class='getButtonClass("defaultAggregate")'
-        v-if='isVisible.defaultAggregate'
-      >All</button>
-      <button 
         @click='intendToGet("pressReview")'
         :class='getButtonClass("pressReview")'
       >Press Review</button>
-      <button 
-        @click='intendToGet("clojure")'
-        :class='getButtonClass("clojure")'
-        v-if='isVisible.clojure'
-      >Clojure</button>
-      <button 
-        @click='intendToGet("golang")'
-        :class='getButtonClass("golang")'
-        v-if='isVisible.golang'
-      >Golang</button>
-      <button 
-        @click='intendToGet("javascript")'
-        :class='getButtonClass("javascript")'
-        v-if='isVisible.javascript'
-      >JavaScript</button>
       <button
-        @click='intendToGet("php")'
-        :class='getButtonClass("php")'
-        v-if='isVisible.php'
-      >PHP</button>
-      <button
-        @click='intendToGet("python")'
-        :class='getButtonClass("python")'
-        v-if='isVisible.python'
-      >Python</button>
-      <button 
-        @click='intendToGet("rust")'
-        :class='getButtonClass("rust")'
-        v-if='isVisible.rust'
-      >Rust</button>
-      <button 
-        @click='intendToGet("scala")'
-        :class='getButtonClass("scala")'
-        v-if='isVisible.scala'
-      >Scala</button>
-      <button 
-        @click='intendToGet("vueJs")'
-        :class='getButtonClass("vueJs")'
-        v-if='isVisible.vueJs'
-      >Vue.js</button>
+        @click='intendToGet(menuItem)'
+        :class='getButtonClass(menuItem)'
+        v-if='isVisible[menuItem]'
+        v-for='menuItem in menuItemsButPressReview'
+      >{{ getMenuLabel(menuItem) }}</button>
     </div>
     <div 
       :class='getActionMenuButtonClasses'
       @click='showMenu = !showMenu'
     >
-        <font-awesome-icon 
-          class='action-menu__toggle-menu-icon' 
-          :icon='getToggleMenuIcon' 
-        />
-      </div>
+      <font-awesome-icon 
+        class='action-menu__toggle-menu-icon' 
+        :icon='getToggleMenuIcon' 
+      />
+    </div>
   </div>
 </template>
 
 <script>
+import ApiMixin from '../../mixins/api'
 import EventHub from '../../modules/event-hub';
 import SharedState from '../../modules/shared-state';
 
 export default {
+  mixins: [ApiMixin],
   computed: {
-    getToggleMenuIcon: function () {
-      if (this.showMenu) {
-        return 'arrow-alt-circle-up';      
-      }
-
-      return 'arrow-alt-circle-down';
-    },
     getActionMenuButtonClasses: function () {
       const classes = { 'action-menu__button': true };
 
@@ -94,21 +50,31 @@ export default {
 
       return classes;
     },
+    getToggleMenuIcon: function () {
+      if (this.showMenu) {
+        return 'arrow-alt-circle-up';      
+      }
+
+      return 'arrow-alt-circle-down';
+    },
     isVisible: function () {
       const hasFullMenu = 'peek' in this.$route.query
-      || !SharedState.state.productionMode;
+      || !SharedState.getEnvironmentParameters().productionMode;
 
-      return {
-        defaultAggregate: hasFullMenu,
-        clojure: hasFullMenu,
-        javascript: hasFullMenu,
-        golang: hasFullMenu,
-        php: hasFullMenu,
-        python: hasFullMenu,
-        rust: hasFullMenu, 
-        scala: hasFullMenu,
-        vueJs: hasFullMenu
-      }
+      const visibilities = {};
+      Object.keys(this.routes).forEach((aggregateType) => {
+        if (aggregateType == 'pressReview') {
+          return;
+        }
+
+        visibilities[aggregateType] = hasFullMenu
+      });
+
+      return visibilities;
+    },
+    menuItemsButPressReview: function () {
+      const routeNames = Object.keys(this.routes);
+      return routeNames.sort();
     },
   },
   data: function () {
@@ -127,6 +93,9 @@ export default {
       }
 
       return classes;
+    },
+    getMenuLabel: function (aggregateType) {
+      return aggregateType;
     },
     intendToGet: function (aggregateType) {
       EventHub.$emit(

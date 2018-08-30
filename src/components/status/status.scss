@@ -67,6 +67,7 @@
   &__text {
     display: flex;
     margin-top: 16px;
+    white-space: pre-wrap;
   }
 
   &__web-intent {
