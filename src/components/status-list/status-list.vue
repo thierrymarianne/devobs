@@ -39,72 +39,21 @@ export default {
   mixins: [ApiMixin],
   name: 'status-list',
   created: function () {
-    this.aggregateTypes = {
-      defaultAggregate: {
-        statuses: [],
-        isVisible: false,
-        name: 'defaultAggregate',
-      },
-      latestStatuses: {
-        statuses: [],
-        isVisible: false,
-        name: 'latestStatuses',
-      },
-      pressReview: {
-        statuses: [],
-        isVisible: false,
-        name: 'pressReview',
-      },
-      clojure: {
-        statuses: [],
-        isVisible: false,
-        name: 'clojure',
-      },
-      golang: {
-        statuses: [],
-        isVisible: false,
-        name: 'golang',
-      },
-      php: {
-        statuses: [],
-        isVisible: false,
-        name: 'php',
-      },
-      javascript: {
-        statuses: [],
-        isVisible: false,
-        name: 'javascript',
-      },
-      python: {
-        statuses: [],
-        isVisible: false,
-        name: 'python',
-      },
-      rust: {
-        statuses: [],
-        isVisible: false,
-        name: 'rust',
-      },
-      scala: {
-        statuses: [],
-        isVisible: false,
-        name: 'scala',
-      },
-      vueJs: {
-        statuses: [],
-        isVisible: false,
-        name: 'vueJs',
-      },
-      webPerformance: {
-        statuses: [],
-        isVisible: false,
-        name: 'webPerformance',
-      },
-    };
-
+    this.declareAggregateTypesFromRoutes()
     this.getStatuses({ aggregateType: SharedState.state.defaultAggregate });
   },
   methods: {
+    declareAggregateTypesFromRoutes: function () {
+      let aggregateTypes = {};
+      Object.keys(this.routes).forEach(function (aggregateType) {
+        aggregateTypes[aggregateType] = {
+          statuses: [],
+          isVisible: false,
+          name: aggregateType
+        };
+      });
+      this.aggregateTypes = aggregateTypes;
+    },
     listClasses: function (aggregateType) {
       const classNames = {
          'status-list__list': true
