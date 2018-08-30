@@ -3,7 +3,7 @@ import SharedState from '../modules/shared-state';
 
 const getApiMixin = () => {
   if (SharedState.isTestModeActive()) {
-    return SharedState.getEnvironmentParameters().test.testApi;
+    return SharedState.getEnvironmentParameters().test.apiMixin;
   }
 
   return {

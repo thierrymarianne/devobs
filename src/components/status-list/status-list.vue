@@ -66,6 +66,11 @@ export default {
       }
 
       statuses.forEach((status) => {
+        if ((typeof status.text === 'undefined')
+          || (typeof status.text.match !== 'function')) {
+          return;
+        }
+
         let links = status.text.match(/http(?:s)?:\/\/\S+/g);
 
         if (links === null || links === undefined || links.length <= 1) {
@@ -139,7 +144,7 @@ export default {
 
         fetch(request).then((response) => {
           console.log(response);
-        }).catch(error => console.error(error));
+        }).catch(error => this.logger.error(error));
       }
 
       this.$http.get(
@@ -168,11 +173,10 @@ export default {
         this.aggregateTypes[aggregateType].isVisible = true
         this.visibleStatuses.statuses = Object.assign({}, this.aggregateTypes[aggregateType].statuses);
         this.visibleStatuses.name = aggregateType;
+
+        EventHub.$emit('status_list.after_fetch');
       })
-      .catch(e => {
-        console.error(e);
-        this.errors.push(e)
-      })
+      .catch(e => this.logger.error.push(e))
     },
     isAggregateVisible: function (aggregateType) {
       return aggregateType === this.visibleStatuses.name;

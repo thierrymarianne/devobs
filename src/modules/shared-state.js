@@ -1,6 +1,7 @@
 import Raven from 'raven-js';
 
 import Config from '../config';
+import testApi from '../config/index.test';
 
 const developmentMode = false;
 const productionMode = !developmentMode;
@@ -9,22 +10,33 @@ const environmentParameters = {
   developmentMode: developmentMode,
   mobileMode: true,
   productionMode: !developmentMode,
-  testMode: false,
+  testMode: Config.testMode,
 };
 
 const getEnvironmentParameters = () => environmentParameters;
 
 const environmentProvider = { getEnvironmentParameters };
-const api = Config.getApi(environmentProvider);
-const apiMixin = {
+
+let apiMixin = {
   computed: {
     routes: function () {
-      return {
-        defaultAggregate: `${api.scheme}${api.host}${api.routes['press-review']}`,
-      };
+      return testApi.getApi(environmentProvider).routes;
     },
   },
 };
+
+if (!Config.testMode) {
+  const api = Config.getApi(environmentProvider);
+  apiMixin = {
+    computed: {
+      routes: function () {
+        return {
+          defaultAggregate: `${api.scheme}${api.host}${api.routes['press-review']}`,
+        };
+      },
+    },
+  };
+}
 
 environmentParameters.test = {
   apiMixin,
@@ -46,6 +58,11 @@ const enableTestMode = () => {
   getEnvironmentParameters().productionMode = true;
   getEnvironmentParameters().mobileMode = false;
   getEnvironmentParameters().testMode = true;
+
+  // Allow conditional import
+  // @see https:// https://stackoverflow.com/a/46543835
+  // and https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import/
+  return true;
 };
 
 const toggleTestMode = () => {
@@ -78,7 +95,7 @@ const state = {
   },
   defaultAggregate: defaultAggregate,
   visibleStatuses: {
-    statuses: [],
+    statuses: {},
     name: defaultAggregate,
   },
 };

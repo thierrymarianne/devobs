@@ -6,7 +6,7 @@ const getApi = () => ({
   host: 'press.review',
   scheme: 'https://',
   routes: {
-    'press-review': '/press-review',
+    pressReview: '/press-review',
   },
 });
 
@@ -15,8 +15,11 @@ const authentication = {
 };
 localStorage.setItem('x-auth-token', authentication.apiKey);
 
+const testMode = true;
+
 export default {
   getApi,
   authentication,
   raven,
+  testMode,
 };
