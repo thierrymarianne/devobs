@@ -8,7 +8,7 @@ const productionMode = !developmentMode;
 
 const environmentParameters = {
   developmentMode: developmentMode,
-  mobileMode: true,
+  mobileMode: developmentMode,
   productionMode: !developmentMode,
   testMode: Config.testMode,
 };
