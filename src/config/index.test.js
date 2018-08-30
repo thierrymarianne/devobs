@@ -2,7 +2,7 @@ const raven = {
   dsn: '',
 };
 
-const testMode = true;
+const testMode = false;
 
 const getApi = () => ({
   host: 'press.review',
