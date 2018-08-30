@@ -31,7 +31,7 @@ if (!Config.testMode) {
     computed: {
       routes: function () {
         return {
-          defaultAggregate: `${api.scheme}${api.host}${api.routes['press-review']}`,
+          pressReview: `${api.scheme}${api.host}${api.routes['press-review']}`,
         };
       },
     },
@@ -77,11 +77,6 @@ const toggleTestMode = () => {
 
 getEnvironmentParameters().toggleTestMode = toggleTestMode;
 
-let defaultAggregate = 'defaultAggregate';
-if (isProductionModeActive() || isTestModeActive()) {
-  defaultAggregate = 'pressReview';
-}
-
 const REQUIRED_COLLECTION = 'Empty aggregate';
 
 const errors = {
@@ -93,10 +88,9 @@ const state = {
   actions: {
     fetchedLatestStatusesOfAggregate: null,
   },
-  defaultAggregate: defaultAggregate,
   visibleStatuses: {
     statuses: {},
-    name: defaultAggregate,
+    name: 'pressReview',
   },
 };
 

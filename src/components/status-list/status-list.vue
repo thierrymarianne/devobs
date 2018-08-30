@@ -40,7 +40,7 @@ export default {
   name: 'status-list',
   created: function () {
     this.aggregateTypes = this.declareAggregateTypesFromRoutes(this.routes)
-    this.getStatuses({ aggregateType: SharedState.state.defaultAggregate });
+    this.getStatuses({ aggregateType: 'pressReview' });
   },
   methods: {
     listClasses: function (aggregateType) {
