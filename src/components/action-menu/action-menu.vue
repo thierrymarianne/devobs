@@ -5,7 +5,7 @@
         @click='intendToGet("pressReview")'
         :class='getButtonClass("pressReview")'
       >Press Review</button>
-      <button 
+      <button
         @click='intendToGet("defaultAggregate")'
         :class='getButtonClass("defaultAggregate")'
         v-if='isVisible.defaultAggregate'
@@ -69,10 +69,12 @@
 </template>
 
 <script>
+import ApiMixin from '../../mixins/api'
 import EventHub from '../../modules/event-hub';
 import SharedState from '../../modules/shared-state';
 
 export default {
+  mixins: [ApiMixin],
   computed: {
     getToggleMenuIcon: function () {
       if (this.showMenu) {

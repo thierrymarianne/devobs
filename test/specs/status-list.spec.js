@@ -48,10 +48,13 @@ describe('Status list', () => {
       done();
     };
 
-    mount(
+    const statusListWrapper = mount(
       StatusList,
       { localVue },
     );
+
+    statusListWrapper.vm.$destroy();
+    statusListWrapper.vm.$el.remove();
   });
 
   it('should handle the default aggregate.', () => {
@@ -91,5 +94,8 @@ describe('Status list', () => {
         localVue,
       },
     );
+
+    statusListWrapper.vm.$destroy();
+    statusListWrapper.vm.$el.remove();    
   });
 });

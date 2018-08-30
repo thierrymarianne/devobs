@@ -1,12 +1,15 @@
 import Config from '../config';
 import SharedState from '../modules/shared-state';
+import AggregateMixin from './aggregate';
 
 const getApiMixin = () => {
   if (SharedState.isTestModeActive()) {
+    SharedState.getEnvironmentParameters().test.apiMixin.mixins = [AggregateMixin];
     return SharedState.getEnvironmentParameters().test.apiMixin;
   }
 
   return {
+    mixins: [AggregateMixin],
     computed: {
       routes: function () {
         const routePaths = Config.getRoutes();

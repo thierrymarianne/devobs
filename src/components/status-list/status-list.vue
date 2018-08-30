@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import ApiMixin from '../../mixins/api';
+import ApiMixin  from '../../mixins/api';
 import EventHub from '../../modules/event-hub';
 import Status from '../status/status.vue';
 import SharedState from '../../modules/shared-state';
@@ -39,21 +39,10 @@ export default {
   mixins: [ApiMixin],
   name: 'status-list',
   created: function () {
-    this.declareAggregateTypesFromRoutes()
+    this.aggregateTypes = this.declareAggregateTypesFromRoutes(this.routes)
     this.getStatuses({ aggregateType: SharedState.state.defaultAggregate });
   },
   methods: {
-    declareAggregateTypesFromRoutes: function () {
-      let aggregateTypes = {};
-      Object.keys(this.routes).forEach(function (aggregateType) {
-        aggregateTypes[aggregateType] = {
-          statuses: [],
-          isVisible: false,
-          name: aggregateType
-        };
-      });
-      this.aggregateTypes = aggregateTypes;
-    },
     listClasses: function (aggregateType) {
       const classNames = {
          'status-list__list': true
@@ -116,7 +105,6 @@ export default {
 
       if (!this.environment.productionMode) {
         let timestampSuffix = `?${timestamp}`;
-        console.log(`${this.routes[aggregateType]}${timestampSuffix}`);
       }
 
       if (typeof this.routes === 'undefined') {
