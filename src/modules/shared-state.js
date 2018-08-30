@@ -3,7 +3,7 @@ import Raven from 'raven-js';
 import Config from '../config';
 import testApi from '../config/index.test';
 
-const developmentMode = false;
+const developmentMode = true;
 const productionMode = !developmentMode;
 
 const environmentParameters = {

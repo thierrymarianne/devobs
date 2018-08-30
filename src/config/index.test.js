@@ -2,6 +2,8 @@ const raven = {
   dsn: '',
 };
 
+const testMode = false;
+
 const getApi = () => ({
   host: 'press.review',
   scheme: 'https://',
@@ -14,8 +16,6 @@ const authentication = {
   apiKey: '',
 };
 localStorage.setItem('x-auth-token', authentication.apiKey);
-
-const testMode = true;
 
 export default {
   getApi,
