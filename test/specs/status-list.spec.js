@@ -96,6 +96,6 @@ describe('Status list', () => {
     );
 
     statusListWrapper.vm.$destroy();
-    statusListWrapper.vm.$el.remove();    
+    statusListWrapper.vm.$el.remove();
   });
 });
