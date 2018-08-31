@@ -157,21 +157,7 @@ export default {
 
       this.$http.get(
         route, {
-          headers: { 'x-auth-token': authenticationToken },
-          onDownloadProgress: function (progressEvent) {
-            let contentLength;
-
-            if (progressEvent.lengthComputable) {
-              contentLength = progressEvent.total;
-            } else if (progressEvent.target
-            .getResponseHeader('X-decompressed-content-length')) {
-              contentLength = parseInt(progressEvent.target
-              .getResponseHeader('X-decompressed-content-length'), 10);
-            }
-
-            this.loadedContentPercentage = 100 * Math.min(progressEvent.loaded / contentLength, 1);
-            console.log(this.loadedContentPercentage);
-          },
+          headers: { 'x-auth-token': authenticationToken }
         }
       )
       .then(response => {
