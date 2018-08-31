@@ -11,8 +11,17 @@
         v-if='isVisible[menuItem]'
         v-for='menuItem in menuItemsButPressReview'
       >{{ getMenuLabel(menuItem) }}</button>
+      <button 
+        class='action-menu__refresh-button'
+        @click='refreshStatuses'
+      >
+        <font-awesome-icon 
+          class='action-menu__refresh-icon'
+          icon='redo-alt' 
+        />
+      </button>
     </div>
-    <div 
+    <div
       :class='getActionMenuButtonClasses'
       @click='showMenu = !showMenu'
     >
@@ -20,6 +29,10 @@
         class='action-menu__toggle-menu-icon' 
         :icon='getToggleMenuIcon' 
       />
+    </div>
+    <div
+      class='action-menu__progress-bar' 
+      :style='"width: " + loadedContentPercentage + "%"'>
     </div>
   </div>
 </template>
@@ -81,6 +94,7 @@ export default {
     return {
       showMenu: false,
       visibleStatuses: SharedState.state.visibleStatuses,
+      loadedContentPercentage: SharedState.state.loadedContentPercentage,
     };
   },
   name: 'action-menu',
@@ -102,6 +116,15 @@ export default {
         'status_list.reload_intended',
         {
           aggregateType
+        }
+      );
+    },
+    refreshStatuses: function () {
+      EventHub.$emit(
+        'status_list.reload_intended',
+        {
+          aggregateType: this.visibleStatuses.name,
+          bustCache: true
         }
       );
     }

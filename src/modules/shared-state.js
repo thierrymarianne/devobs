@@ -84,6 +84,7 @@ const errors = {
 };
 
 const state = {
+  loadedContentPercentage: 0,
   useFetch: false,
   actions: {
     fetchedLatestStatusesOfAggregate: null,
