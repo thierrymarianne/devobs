@@ -20,6 +20,7 @@ $color-double-greener: darken($color-greener, 10%);
     display: none;
     flex-wrap: wrap;
     padding: 0 16px;
+    width: 100%;
 
     &--is-visible {
       display: flex;

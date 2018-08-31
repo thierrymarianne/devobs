@@ -25,3 +25,16 @@ button {
 .hide {
   display: none !important;
 }
+
+#nprogress .bar {
+  background-color: $color-greener !important;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px $color-greener, 0 0 5px $color-greener !important;
+}
+
+#nprogress .spinner-icon {
+  border-top-color: $color-greener !important;
+  border-left-color: $color-greener !important;
+}

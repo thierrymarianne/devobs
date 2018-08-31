@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { loadProgressBar } from 'axios-progress-bar';
+import 'axios-progress-bar/dist/nprogress.css';
 
 import Config from '../config';
 
@@ -14,6 +16,7 @@ const useAxios = (Vue) => {
   axiosInstance.defaults.headers
   .common['x-auth-token'] = localStorage.getItem('x-auth-token');
 
+  loadProgressBar(undefined, axiosInstance);
   Vue.prototype.$http = axiosInstance;
 };
 

@@ -192,7 +192,7 @@ export default {
 
         EventHub.$emit('status_list.after_fetch');
       })
-      .catch(e => this.logger.error.push(e))
+      .catch(e => this.logger.error(e.message, 'status-list', error))
     },
     isAggregateVisible: function (aggregateType) {
       return aggregateType === this.visibleStatuses.name;
@@ -228,6 +228,7 @@ export default {
       errors: [],
       errorMessages: SharedState.errors,
       loadedContentPercentage: SharedState.state.loadedContentPercentage,
+      logger: SharedState.logger,
       logLevel: SharedState.logLevel,
       environment: SharedState.getEnvironmentParameters(),
     };
