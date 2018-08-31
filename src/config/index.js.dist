@@ -15,9 +15,20 @@ const authentication = {
 };
 localStorage.setItem('x-auth-token', authentication.apiKey);
 
+const api = {
+  routes: {
+    pressReview: '/',
+  },
+};
+
+const getRoutes = () => (api.routes);
+const getSchemeAndHost = () => (`${api.scheme}${api.host}`);
+
 export default {
   getApi,
   authentication,
+  getRoutes,
+  getSchemeAndHost,
   raven,
-  testMode
+  testMode,
 };
