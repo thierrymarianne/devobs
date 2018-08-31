@@ -20,4 +20,6 @@ stats: ## Statistics about dependencies
 	@/bin/bash -c 'export NODE_ENV="production" && npx webpack --profile --json > stats.json'
 
 unit-tests: ## Test components with karma
-	@/bin/bash -c 'export NODE_ENV="test" && npx cross-env BABEL_ENV=test karma start ./karma.conf.js --auto-watch'
+	@/bin/bash -c 'export NODE_ENV="test" && \
+	cp src/config/index.js{.dist,} && \
+	npx cross-env BABEL_ENV=test karma start ./karma.conf.js --auto-watch'
