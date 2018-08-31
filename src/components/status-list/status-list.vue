@@ -99,9 +99,14 @@ export default {
 
       return formattedStatuses;
     },
-    getStatuses: function ({ aggregateType }) {
+    getStatuses: function ({ aggregateType, bustCache }) {
       const timestamp = (new Date()).getTime();
       let timestampSuffix = '';
+
+      let shouldBustCache = false;
+      if (typeof bustCache !== 'undefined') {
+        shouldBustCache = bustCache;
+      }
 
       if (!this.environment.productionMode) {
         let timestampSuffix = `?${timestamp}`;
@@ -113,7 +118,8 @@ export default {
 
       this.state.fetchedLatestStatusesOfAggregate = aggregateType;
 
-      if (this.aggregateTypes[aggregateType].statuses.length > 0) {
+      if (!shouldBustCache && 
+      this.aggregateTypes[aggregateType].statuses.length > 0) {
         Object.keys(this.aggregateTypes).map((aggregateType) => {
           this.aggregateTypes[aggregateType].isVisible = false
         });
@@ -147,14 +153,24 @@ export default {
         }).catch(error => this.logger.error(error));
       }
 
+      this.loadedContentPercentage = 0;
+
       this.$http.get(
         route, {
           headers: { 'x-auth-token': authenticationToken },
           onDownloadProgress: function (progressEvent) {
-            // TODO Implement a loadin animation
-            // console.log(progressEvent);
-            // console.log(progressEvent.total);
-            // console.log(progressEvent.loaded);
+            let contentLength;
+
+            if (progressEvent.lengthComputable) {
+              contentLength = progressEvent.total;
+            } else if (progressEvent.target
+            .getResponseHeader('X-decompressed-content-length')) {
+              contentLength = parseInt(progressEvent.target
+              .getResponseHeader('X-decompressed-content-length'), 10);
+            }
+
+            this.loadedContentPercentage = 100 * Math.min(progressEvent.loaded / contentLength, 1);
+            console.log(this.loadedContentPercentage);
           },
         }
       )
@@ -211,6 +227,7 @@ export default {
       visibleStatuses: SharedState.state.visibleStatuses,
       errors: [],
       errorMessages: SharedState.errors,
+      loadedContentPercentage: SharedState.state.loadedContentPercentage,
       logLevel: SharedState.logLevel,
       environment: SharedState.getEnvironmentParameters(),
     };

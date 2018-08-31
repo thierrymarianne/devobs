@@ -15,7 +15,7 @@ const getApi = () => ({
 const authentication = {
   apiKey: '',
 };
-localStorage.setItem('x-auth-token', authentication.apiKey);
+localStorage.setItem('x-auth-token', localStorage.getItem('x-auth-token'));
 
 export default {
   getApi,

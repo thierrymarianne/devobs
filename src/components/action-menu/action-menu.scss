@@ -3,16 +3,17 @@ $color-double-greener: darken($color-greener, 10%);
 
 .action-menu {
   align-items: center; 
-  border-bottom: 4px solid $color-greener;
+  border-bottom: none;
+  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-wrap: wrap;
+  justify-items: center;
   position: fixed;
   width: 100%;
   background-color: #f1f1f1;
   min-height: calc(3 * 16px + 8px);
   line-height: calc(3 * 16px + 8px);
   left: 0;
-  justify-items: center;
   top: 0;
 
   &__container {
@@ -33,6 +34,8 @@ $color-double-greener: darken($color-greener, 10%);
     margin-right: 8px;
     margin-bottom: 5px;
     padding: 8px;
+    padding-left: 0;
+    padding-right: 0;
 
     &--active {
       border-color: $color-double-greener;
@@ -65,5 +68,30 @@ $color-double-greener: darken($color-greener, 10%);
     font-size: 1.5em;
     align-self: center;
     justify-self: center;    
+  }
+
+  &__progress-bar {
+    background-color: $color-greener;
+    display: flex;
+    height: 4px;
+    width: 100%;  
+  }
+
+  &__refresh-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-shrink: 1;
+    justify-content: center; 
+    margin-bottom: 5px;
+    width: calc(100%);
+    padding: 0;
+  }
+
+  &__refresh-icon {
+    display: flex;
+    font-size: 1.5em;
+    height: 25px; 
   }
 }
