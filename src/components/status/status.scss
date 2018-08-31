@@ -37,7 +37,8 @@
   }
 
   &__url {
-    color: $color-greener;
+    @extend .clickable;
+
     display: flex;
     margin-right: 8px;
 
@@ -45,7 +46,7 @@
     &:hover,
     &:link,
     &:visited {
-      color: $color-greener;
+      @extend .clickable;
     }
 
     &:first-child {
@@ -54,13 +55,13 @@
   }
 
   &__username {
-    color: $color-greener;
-    
+    @extend .clickable;
+
     &:active,
     &:hover,
     &:link,
     &:visited {
-      color: $color-greener;
+      @extend .clickable;
     }
   }
 
@@ -71,7 +72,8 @@
   }
 
   &__web-intent {
-    color: $color-greener;
+    @extend .clickable;
+
     margin-right: 8px;
     text-decoration: none;
   }

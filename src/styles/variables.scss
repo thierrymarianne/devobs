@@ -14,5 +14,14 @@ $color-red: #CF4647;
 $color-green: #b4cea8;
 $color-greenish: #8BAF98;
 $color-greener: #2aa19b;
+$color-even-greener: darken($color-greener, 10%);
 $color-yellow: #dab988;
 $color-blue: #569CD3;
+
+.clickable {
+  color: $color-greener;
+
+  &:hover {
+    color: $color-even-greener;
+  }
+}

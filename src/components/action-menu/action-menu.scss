@@ -28,6 +28,8 @@ $color-double-greener: darken($color-greener, 10%);
   }
 
   &__get-statuses {
+    @extend .clickable;
+
     background-color: transparent;
     border: none;
     cursor: pointer;
@@ -38,6 +40,10 @@ $color-double-greener: darken($color-greener, 10%);
     padding-left: 0;
     padding-right: 0;
 
+    &:hover {
+      font-weight: 600;
+    }
+
     &--active {
       border-color: $color-double-greener;
       border-left-color: transparent;
@@ -45,12 +51,15 @@ $color-double-greener: darken($color-greener, 10%);
       border-top-color: transparent;
       border-bottom-width: 5px;
       border-bottom-style: solid;
+      font-weight: 600;
       margin-bottom: 0px;
       opacity: 1;
     }
   }
 
   &__button {
+    @extend .clickable;
+
     border-top: 2px solid $color-greener; 
     cursor: pointer;
     display: flex;
@@ -64,11 +73,10 @@ $color-double-greener: darken($color-greener, 10%);
   }
 
   &__toggle-menu-icon {
-    color: $color-greener;
     display: flex;
     font-size: 1.5em;
     align-self: center;
-    justify-self: center;    
+    justify-self: center;
   }
 
   &__progress-bar {
@@ -88,6 +96,10 @@ $color-double-greener: darken($color-greener, 10%);
     margin-bottom: 5px;
     width: calc(100%);
     padding: 0;
+
+    &:hover {
+      color: $color-even-greener;
+    }
   }
 
   &__refresh-icon {
