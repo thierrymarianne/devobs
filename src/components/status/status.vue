@@ -3,7 +3,17 @@
     <div class='status__row'>
       <div class='status__publication-date'>{{ publicationDate }}</div>
     </div>
-    <div class='status__row'>
+    <div v-if='isRetweet' class='status__row'>
+      <a 
+        class='status__username'
+        :href='memberTimelineUrl'
+      >@{{ status.usernameOfRetweetingMember }}</a>&nbsp;retweeted&nbsp;<a 
+        class='status__username'
+        :href='retweetingMemberTimelineUrl'
+      >@{{ status.username }}</a>
+
+    </div>
+    <div v-else class='status__row'>
       <a 
         class='status__username'
         :href='memberTimelineUrl'
@@ -13,7 +23,7 @@
       <div class='status__avatar-container'>
         <div
           class='status__avatar' 
-          :style='"background: center / 24px no-repeat url(" +  status.avatarUrl + ")"'
+          :style='"background: center / 24px no-repeat url(" +  avatarUrl + ")"'
         ></div>
       </div>
       <span class='status__text'>{{ status.text }}</span>
@@ -53,6 +63,15 @@ export default {
     },
   },
   computed: {
+    avatarUrl: function () {
+      return this.status.avatarUrl;
+    },
+    isRetweet: function () {
+      if (typeof this.status === 'undefined') {
+        return false;
+      }
+      return this.status.retweet;
+    },
     urls: function () {
       if (typeof this.status === 'undefined') {
         return '';
@@ -78,7 +97,15 @@ export default {
       }
 
       return `https://twitter.com/${this.status.username}`;
-    }
+    },
+    retweetingMemberTimelineUrl: function () {
+      if (typeof this.status === 'undefined' &&
+      this.status.retweet === false) {
+        return '';
+      }
+
+      return `https://twitter.com/${this.status.usernameOfRetweetingMember}`;
+    }    
   },
 };
 </script>

@@ -78,7 +78,7 @@ export default {
           links = [];
         }
 
-        formattedStatuses.push({
+        const formattedStatus = {
           username: status.username,
           avatarUrl: status.avatar_url,
           publishedAt: new Date(status.published_at),
@@ -87,7 +87,14 @@ export default {
           url: status.url,
           isVisible: false,
           links
-        });
+        }
+
+        formattedStatus.retweet = status.retweet;
+        if (status.retweet) {
+          formattedStatus.usernameOfRetweetingMember = status.username_of_retweeting_member;
+        }
+
+        formattedStatuses.push(formattedStatus);
       });
 
       formattedStatuses = formattedStatuses.sort(this.sortByPublicationDate);
