@@ -39,21 +39,40 @@
     <div class='status__row'>
       <a class='status__web-intent' :href='urls.reply'>
         <font-awesome-icon icon='reply' />
-        Reply
+        <span>Reply</span>
       </a>
       <a class='status__web-intent' :href='urls.retweet'>
         <font-awesome-icon icon='retweet' />
-        Retweet
+        <span>Retweet</span>
       </a>
       <a class='status__web-intent' :href='urls.like'>
         <font-awesome-icon icon='heart' />
-        Like
+        <span>Like</span>
       </a>
+      <button 
+        v-if='!isBucketVisible'
+        class='status__web-intent'
+        @click='toggleBucketAddition'
+      >
+        <font-awesome-icon :icon='addedToBucketIcon' />
+        <span>{{ bucketAdditionLabel }}</span>
+      </button>
+      <button 
+        v-else
+        class='status__web-intent'
+        @click='removeFromBucket'
+      >
+        <font-awesome-icon icon='minus' />
+        <span>Remove from bucket</span>
+      </button>
     </div>
   </div>
 </template>
 
 <script>
+import EventHub from '../../modules/event-hub';
+import SharedState from '../../modules/shared-state';
+
 export default {
   name: 'status',
   props: {
@@ -63,8 +82,25 @@ export default {
     },
   },
   computed: {
+    addedToBucketIcon: function () {
+      if (!this.addedToBucket) {
+        return 'plus';
+      }
+
+      return 'minus';
+    },
+    bucketAdditionLabel: function () {
+      if (!this.addedToBucket) {
+        return 'Add to bucket';
+      }
+
+      return 'Remove from bucket';
+    },
     avatarUrl: function () {
       return this.status.avatarUrl;
+    },
+    isBucketVisible: function () {
+      return SharedState.state.visibleStatuses.name === "bucket";
     },
     isRetweet: function () {
       if (typeof this.status === 'undefined') {
@@ -107,6 +143,30 @@ export default {
       return `https://twitter.com/${this.status.usernameOfRetweetingMember}`;
     }    
   },
+  data: function () {
+    return {
+      addedToBucket: this.status.isInBucket,
+    };
+  },
+  methods: {
+    removeFromBucket: function () {
+      this.removeStatusFromBucket();
+      EventHub.$emit('status_list.intent_to_refresh_bucket');
+    },
+    removeStatusFromBucket: function () {
+      EventHub.$emit('status.removed_from_bucket', { status: this.status });
+      this.addedToBucket = !this.addedToBucket;      
+    },
+    toggleBucketAddition: function () {
+      if (this.addedToBucket === false) {
+        EventHub.$emit('status.added_to_bucket', { status: this.status });
+        this.addedToBucket = !this.addedToBucket;
+        return;
+      }
+
+      this.removeStatusFromBucket()
+    }
+  }
 };
 </script>
 

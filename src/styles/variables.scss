@@ -19,6 +19,7 @@ $color-yellow: #dab988;
 $color-blue: #569CD3;
 
 .clickable {
+  cursor: pointer;
   color: $color-greener;
 
   &:hover {

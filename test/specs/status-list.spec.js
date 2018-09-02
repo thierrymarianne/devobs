@@ -9,6 +9,7 @@ import Styles from '../../src/styles';
 
 import EventHub from '../../src/modules/event-hub';
 import SharedState from '../../src/modules/shared-state';
+import store from '../../src/store';
 import StatusList from '../../src/components/status-list/status-list.vue';
 
 const calls = {};
@@ -50,7 +51,10 @@ describe('Status list', () => {
 
     const statusListWrapper = mount(
       StatusList,
-      { localVue },
+      {
+         localVue,
+         store,
+      },
     );
 
     statusListWrapper.vm.$destroy();
@@ -92,6 +96,7 @@ describe('Status list', () => {
       {
         attachToDocument: true,
         localVue,
+        store,
       },
     );
 

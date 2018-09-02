@@ -3,7 +3,7 @@ import Raven from 'raven-js';
 import Config from '../config';
 import testApi from '../config/index.test';
 
-const developmentMode = false;
+const developmentMode = process.env.NODE_ENV !== 'production';
 const productionMode = !developmentMode;
 
 const environmentParameters = {
@@ -84,8 +84,6 @@ const errors = {
 };
 
 const state = {
-  loadedContentPercentage: 0,
-  useFetch: false,
   actions: {
     fetchedLatestStatusesOfAggregate: null,
   },

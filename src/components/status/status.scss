@@ -74,7 +74,19 @@
   &__web-intent {
     @extend .clickable;
 
+    background-color: transparent;
+    border: none;
+    font-family: roboto;
+    font-size: 14px;
+    display: flex;
+    flex: space-between;
+    line-height: 14px;
     margin-right: 8px;
+    padding: 0;
     text-decoration: none;
+
+    span {
+      margin-left: 4px;
+    }
   }
 }

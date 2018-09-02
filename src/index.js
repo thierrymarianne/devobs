@@ -10,9 +10,9 @@ import App from './components/app.vue';
 import routes from './modules/routes';
 import SharedState from './modules/shared-state';
 import Api from './modules/axios';
-
-import Styles from './styles';
 import Config from './config';
+import Styles from './styles';
+import store from './store';
 
 Vue.config.productionTip = false;
 
@@ -55,6 +55,7 @@ const app = new Vue({
   components: {
     App,
   },
+  store,
 });
 
 window.app = app;
