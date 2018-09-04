@@ -3,6 +3,10 @@ export default {
     declareAggregateTypesFromRoutes: (routes) => {
       const aggregateTypes = {};
       Object.keys(routes).forEach((aggregateType) => {
+        if (aggregateType === 'actions') {
+          return;
+        }
+
         aggregateTypes[aggregateType] = {
           statuses: [],
           isVisible: false,

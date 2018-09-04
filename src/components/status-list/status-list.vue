@@ -21,7 +21,12 @@
             v-show='isAggregateVisible(aggregateType.name)'
             v-for='status in visibleStatuses.statuses'
           >
-            <status :status='status' />
+            <status v-if='!status.conversation' :status-at-first='status' />
+            <conversation 
+              v-else-if='isAggregateVisible("bucket")'
+              :originates-from='status'
+              :statuses='status.conversation' 
+            />
           </div>
         </template>
         <div
@@ -38,16 +43,19 @@ import { createNamespacedHelpers } from 'vuex';
 const { mapActions, mapGetters, mapMutations } = createNamespacedHelpers('bucket');
 
 import ApiMixin  from '../../mixins/api';
+import StatusFormat  from '../../mixins/status-format';
 import EventHub from '../../modules/event-hub';
 import Status from '../status/status.vue';
+import Conversation from '../conversation/conversation.vue';
 import SharedState from '../../modules/shared-state';
 import ActionTypes from '../../store/bucket-action-types';
 
 export default {
   components: {
+    Conversation,
     Status
   },
-  mixins: [ApiMixin],
+  mixins: [ApiMixin, StatusFormat],
   name: 'status-list',
   created: function () {
     this.aggregateTypes = this.declareAggregateTypesFromRoutes(this.routes);
@@ -70,7 +78,6 @@ export default {
     ...mapGetters([
       'getStatusesInBucket',
       'isInBucket',
-      'isStatusInBucket',
     ]),
     emptyAggregateText: function (aggregateType) {
       if (this.isAggregateVisible('bucket')) {
@@ -81,14 +88,20 @@ export default {
     },
     refreshBucket: function () {
       const statusesInBucket = this.getStatusesInBucket();
-      const statusCollection = this.getCollectionOfStatusesInBucket(statusesInBucket);
+      let statusCollection = this.getCollectionOfStatusesInBucket(statusesInBucket);
+
+      const visitingBucket = this.visibleStatuses.name === 'bucket';
+      if (visitingBucket) {
+        statusCollection = this.expandConversations(statusCollection);
+      }
+
       this.aggregateTypes.bucket = {
         statuses: statusCollection,
         isVisible: false,
         name: 'bucket',
       };
 
-      if (this.visibleStatuses.name === 'bucket') {
+      if (visitingBucket) {
         this.visibleStatuses.statuses = statusCollection;
       }
     },
@@ -119,63 +132,6 @@ export default {
       }
 
       return classNames;
-    },
-    formatStatuses: function (statuses) {
-
-      if (typeof statuses === 'undefined' || statuses === null) {
-        return [];
-      }
-
-      let formattedStatuses = [];
-
-      if (typeof statuses.forEach !== 'function') {
-        throw Error(this.errorMessages.REQUIRED_COLLECTION);
-      }
-
-      statuses.forEach((status) => {
-        if ((typeof status.text === 'undefined')
-          || (typeof status.text.match !== 'function')) {
-          return;
-        }
-
-        let links = status.text.match(/http(?:s)?:\/\/\S+/g);
-
-        if (links === null || links === undefined || links.length <= 1) {
-          links = [];
-        }
-
-        const formattedStatus = {
-          username: status.username,
-          avatarUrl: status.avatar_url,
-          publishedAt: new Date(status.published_at),
-          statusId: status.status_id,
-          text: this.parseFromString(status.text),
-          url: status.url,
-          isVisible: false,
-          isInBucket: false,
-          links
-        }
-
-        if (this.isStatusInBucket()(formattedStatus.statusId)) {
-          formattedStatus.isInBucket = true;
-        }
-
-        formattedStatus.retweet = status.retweet;
-        if (status.retweet) {
-          formattedStatus.usernameOfRetweetingMember = status.username_of_retweeting_member;
-        }
-
-        formattedStatuses.push(formattedStatus);
-      });
-
-      formattedStatuses = formattedStatuses.sort(this.sortByPublicationDate);
-      formattedStatuses = formattedStatuses.reduce((statuses, status) => {
-        statuses.indexOf(status)
-        statuses[statuses.indexOf(status)].key = statuses.indexOf(status);
-        return statuses;
-      },  formattedStatuses);
-
-      return formattedStatuses;
     },
     switchBetweenVisibleStatuses: function (aggregateType, statuses) {
       Object.keys(this.aggregateTypes).map((aggregateType) => {
@@ -222,7 +178,7 @@ export default {
         try {
           this.aggregateTypes[aggregateType].statuses = this.formatStatuses(response.data);
         } catch (error) {
-          SharedState.logger.error(error.message, 'status-list');
+          this.logger.error(error.message, 'status-list');
           return;
         }
 
@@ -245,25 +201,6 @@ export default {
     },
     shouldGuardAgainstUndefinedRoute: function () {
       typeof this.routes === 'undefined';
-    },
-    sortByPublicationDate: function (statusA, statusB) {
-      if (statusA.publishedAt === statusB.publishedAt) {
-        return 0;
-      }
-
-      if (statusA.publishedAt < statusB.publishedAt) {
-        return 1;
-      }
-
-      return -1;
-    },
-    // @see https://developer.mozilla.org/en-US/docs/Web/API/DOMParser
-    parseFromString: function (subject) {
-      const parser = new DOMParser();
-      const dom = parser.parseFromString(
-          '<!doctype html><body>' + subject,
-          'text/html');
-      return dom.body.textContent;
     },
     addToBucket: function ({ status }) {
       this.persistAdditionToBucket(status);

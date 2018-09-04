@@ -17,9 +17,16 @@ const getApiMixin = () => {
 
         const routes = {};
         Object.keys(routePaths).forEach((routeName) => {
+          if (routeName === 'actions') {
+            return;
+          }
+
           const path = routePaths[routeName];
           routes[routeName] = `${schemeAndHost}${path}`;
         });
+
+        // Handle actions separately for more clarity
+        routes.actions = routePaths.actions;
 
         return routes;
       },

@@ -8,7 +8,7 @@
       <button
         @click='intendToGet(menuItem)'
         :class='getButtonClass(menuItem)'
-        v-if='isVisible[menuItem]'
+        v-if='menuItem !== "actions" && isVisible[menuItem]'
         v-for='menuItem in menuItemsButPressReview'
       >{{ getMenuLabel(menuItem) }}</button>
       <button 
@@ -80,6 +80,10 @@ export default {
 
       const visibilities = {};
       Object.keys(this.routes).forEach((aggregateType) => {
+        if (typeof aggregateType === 'actions') {
+          return;
+        }
+
         if (aggregateType == 'pressReview') {
           return;
         }
@@ -115,6 +119,9 @@ export default {
     },
     getMenuLabel: function (aggregateType) {
       return aggregateType;
+    },
+    isVisibleAggregate: function (name) {
+      return this.visibleStatuses.name === name;
     },
     intendToGet: function (aggregateType) {
       if (aggregateType === 'bucket') {
