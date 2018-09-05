@@ -3,8 +3,10 @@ import MutationTypes from './bucket-mutation-types';
 import EventHub from '../modules/event-hub';
 
 const ensurePersistentBucketExists = () => {
-  if ((typeof localStorage.getItem('bucket') === 'undefined')
-  || localStorage.getItem('bucket') === null) {
+  if (
+    typeof localStorage.getItem('bucket') === 'undefined' ||
+    localStorage.getItem('bucket') === null
+  ) {
     const bucket = { statuses: {}, conversations: {} };
     localStorage.setItem('bucket', JSON.stringify(bucket));
     return;
@@ -24,13 +26,16 @@ const Bucket = {
   namespaced: true,
   state: {
     statuses: {},
-    conversations: {},
+    conversations: {}
   },
   mutations: {
     [MutationTypes.ADD_TO_BUCKET](state, status) {
       state.statuses[status.statusId] = status;
     },
-    [MutationTypes.ADD_CONVERSATION_TO_BUCKET](state, { conversation, statusId }) {
+    [MutationTypes.ADD_CONVERSATION_TO_BUCKET](
+      state,
+      { conversation, statusId }
+    ) {
       state.conversations[statusId] = conversation;
     },
     [MutationTypes.REMOVE_FROM_BUCKET](state, status) {
@@ -60,7 +65,7 @@ const Bucket = {
       }
 
       state.conversations = conversations;
-    },
+    }
   },
   actions: {
     [ActionTypes.PERSIST_ADDITION_TO_BUCKET]({ commit }, status) {
@@ -80,7 +85,10 @@ const Bucket = {
       ensurePersistentBucketExists();
       const bucket = JSON.parse(localStorage.getItem('bucket'));
       commit(MutationTypes.REPLACE_BUCKET, bucket.statuses);
-      commit(MutationTypes.REPLACE_CONVERSATIONS_IN_BUCKET, bucket.conversations);
+      commit(
+        MutationTypes.REPLACE_CONVERSATIONS_IN_BUCKET,
+        bucket.conversations
+      );
     },
     [ActionTypes.PERSIST_REMOVAL_FROM_BUCKET]({ commit }, status) {
       const bucket = JSON.parse(localStorage.getItem('bucket'));
@@ -90,22 +98,34 @@ const Bucket = {
       localStorage.setItem('bucket', JSON.stringify(bucket));
 
       commit(MutationTypes.REMOVE_FROM_BUCKET, status);
+      EventHub.$emit('status.removal_from_bucket_intended', {
+        statusId: status.statusId
+      });
     },
-    [ActionTypes.PERSIST_CONVERSATION_ADDITION_TO_BUCKET]({ commit }, { conversation, statusId }) {
+    [ActionTypes.PERSIST_CONVERSATION_ADDITION_TO_BUCKET](
+      { commit },
+      { conversation, statusId }
+    ) {
       ensurePersistentBucketExists();
       const bucket = JSON.parse(localStorage.getItem('bucket'));
       if (typeof bucket.conversations[statusId] !== 'undefined') {
-        EventHub.$emit('status_list.intent_to_refresh_bucket');
+        EventHub.$emit('status_list.intent_to_refresh_bucket', { statusId });
         return;
       }
 
       bucket.conversations[statusId] = conversation;
       localStorage.setItem('bucket', JSON.stringify(bucket));
 
-      commit(MutationTypes.ADD_CONVERSATION_TO_BUCKET, { conversation, statusId });
-      EventHub.$emit('status_list.intent_to_refresh_bucket');
+      commit(MutationTypes.ADD_CONVERSATION_TO_BUCKET, {
+        conversation,
+        statusId
+      });
+      EventHub.$emit('status_list.intent_to_refresh_bucket', { statusId });
     },
-    [ActionTypes.PERSIST_CONVERSATION_REMOVAL_FROM_BUCKET]({ commit }, statusId) {
+    [ActionTypes.PERSIST_CONVERSATION_REMOVAL_FROM_BUCKET](
+      { commit },
+      statusId
+    ) {
       const bucket = JSON.parse(localStorage.getItem('bucket'));
       if (typeof bucket.conversations[statusId] !== 'undefined') {
         delete bucket.conversations[statusId];
@@ -113,34 +133,34 @@ const Bucket = {
       localStorage.setItem('bucket', JSON.stringify(bucket));
 
       commit(MutationTypes.REMOVE_CONVERSATION_FROM_BUCKET, statusId);
-    },
+    }
   },
   getters: {
-    getStatusesInBucket: function (state) {
+    getStatusesInBucket: function(state) {
       return state.statuses;
     },
-    getConversationsInBucket: function (state) {
+    getConversationsInBucket: function(state) {
       return state.conversations;
     },
-    isStatusInBucket: (state) => {
+    isStatusInBucket: state => {
       let statusInBucket;
       let isStatusInBucket;
-      return (statusId) => {
+      return statusId => {
         statusInBucket = state.statuses[statusId];
         isStatusInBucket = typeof statusInBucket !== 'undefined';
         return isStatusInBucket;
       };
     },
-    isConversationInBucket: (state) => {
+    isConversationInBucket: state => {
       let conversationInBucket;
       let isConversationInBucket;
-      return (statusId) => {
+      return statusId => {
         conversationInBucket = state.conversations[statusId];
         isConversationInBucket = typeof conversationInBucket !== 'undefined';
         return isConversationInBucket;
       };
-    },
-  },
+    }
+  }
 };
 
 export default Bucket;

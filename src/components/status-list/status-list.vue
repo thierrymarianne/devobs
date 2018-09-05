@@ -1,38 +1,40 @@
 <template>
-  <div class='status-list'>
+  <div class="status-list">
     <transition-group
-      name='custom-classes-transition'
-      enter-active-class='animated slideInLeft'
-      leave-active-class='animated slideInLeft'
-      tag='div'
+      name="custom-classes-transition"
+      enter-active-class="animated slideInLeft"
+      leave-active-class="animated slideInLeft"
+      tag="div"
     >
-      <div 
-        :class='listClasses(aggregateType.name)'
-        :key='aggregateType.name'
-        :data-key='aggregateType.name'
-        v-for='aggregateType in aggregateTypes'
+      <div
+        v-for="aggregateType in aggregateTypes"
+        :class="listClasses(aggregateType.name)"
+        :key="aggregateType.name"
+        :data-key="aggregateType.name"
       >
-        <template v-if='visibleAggregateHasStatuses'>
+        <template v-if="visibleAggregateHasStatuses">
           <div
-            :data-index='status.key'
-            :data-status-id='status.statusId'
-            :key='status.statusId'
-            class='status-list__item'
-            v-show='isAggregateVisible(aggregateType.name)'
-            v-for='status in visibleStatuses.statuses'
+            v-for="status in visibleStatuses.statuses"
+            v-show="isAggregateVisible(aggregateType.name)"
+            :data-index="status.key"
+            :data-status-id="status.statusId"
+            :key="status.statusId"
+            class="status-list__item"
           >
-            <status v-if='!status.conversation' :status-at-first='status' />
-            <conversation 
-              v-else-if='isAggregateVisible("bucket")'
-              :originates-from='status'
-              :statuses='status.conversation' 
+            <status
+              v-if="!status.conversation || !isAggregateVisible('bucket')"
+              :status-at-first="status" />
+            <conversation
+              v-else
+              :originates-from="status"
+              :statuses="status.conversation"
             />
           </div>
         </template>
         <div
           v-else
-          class='status-list__item-none'
-        >{{ emptyAggregateText(aggregateType) }}</div>
+          class="status-list__item-none"
+        >{{ emptyAggregateText() }}</div>
       </div>
     </transition-group>
   </div>
@@ -40,113 +42,121 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex';
-const { mapActions, mapGetters, mapMutations } = createNamespacedHelpers('bucket');
 
-import ApiMixin  from '../../mixins/api';
-import StatusFormat  from '../../mixins/status-format';
+import ApiMixin from '../../mixins/api';
+import StatusFormat from '../../mixins/status-format';
 import EventHub from '../../modules/event-hub';
 import Status from '../status/status.vue';
 import Conversation from '../conversation/conversation.vue';
 import SharedState from '../../modules/shared-state';
 import ActionTypes from '../../store/bucket-action-types';
 
+const { mapActions, mapGetters } = createNamespacedHelpers('bucket');
+
 export default {
+  name: 'StatusList',
   components: {
     Conversation,
     Status
   },
   mixins: [ApiMixin, StatusFormat],
-  name: 'status-list',
-  created: function () {
+  computed: {
+    visibleAggregateHasStatuses() {
+      return this.aggregateTypes[this.visibleStatuses.name].statuses.length > 0;
+    }
+  },
+  created() {
     this.aggregateTypes = this.declareAggregateTypesFromRoutes(this.routes);
     this.refreshBucket();
 
     this.getStatuses({ aggregateType: 'pressReview' });
   },
-  computed: {
-    visibleAggregateHasStatuses: function () {
-      return this.aggregateTypes[this.visibleStatuses.name]
-      .statuses.length > 0;
-    }
-  },
   methods: {
     ...mapActions([
       ActionTypes.PERSIST_ADDITION_TO_BUCKET,
+      ActionTypes.PERSIST_CONVERSATION_REMOVAL_FROM_BUCKET,
       ActionTypes.PERSIST_REMOVAL_FROM_BUCKET,
-      ActionTypes.RESTORE_BUCKET_FROM_PERSISTENCE_LAYER,
+      ActionTypes.RESTORE_BUCKET_FROM_PERSISTENCE_LAYER
     ]),
-    ...mapGetters([
-      'getStatusesInBucket',
-      'isInBucket',
-    ]),
-    emptyAggregateText: function (aggregateType) {
+    ...mapGetters(['getStatusesInBucket', 'isInBucket']),
+    emptyAggregateText() {
       if (this.isAggregateVisible('bucket')) {
         return 'Your private bucket is empty.';
       }
 
-        return 'Hum... Nothing has been collected yet for this list. Something SHALL be wrong - See RFC 2119).';
+      return 'Hum... Nothing has been collected yet for this list. Something SHALL be wrong - See RFC 2119).';
     },
-    refreshBucket: function () {
+    refreshBucket(event) {
       const statusesInBucket = this.getStatusesInBucket();
-      let statusCollection = this.getCollectionOfStatusesInBucket(statusesInBucket);
+      let statusCollection = this.getCollectionOfStatusesInBucket(
+        statusesInBucket
+      );
 
       const visitingBucket = this.visibleStatuses.name === 'bucket';
       if (visitingBucket) {
-        statusCollection = this.expandConversations(statusCollection);
+        statusCollection = this.expandConversations(statusCollection, event);
       }
 
       this.aggregateTypes.bucket = {
         statuses: statusCollection,
         isVisible: false,
-        name: 'bucket',
+        name: 'bucket'
       };
 
       if (visitingBucket) {
         this.visibleStatuses.statuses = statusCollection;
       }
     },
-    getCollectionOfStatusesInBucket: function (statuses) {
+    getCollectionOfStatusesInBucket(statuses) {
       if (statuses === undefined) {
         return [];
       }
 
       return Object.values(statuses);
     },
-    listClasses: function (aggregateType) {
+    listClasses(aggregateType) {
       const classNames = {
-         'status-list__list': true
-      }; 
+        'status-list__list': true
+      };
 
       if (this.isAggregateVisible(aggregateType)) {
         classNames['status-list__list--full-width'] = true;
       }
-      
-      if ((this.visibleStatuses.name === 'bucket')
-      && (Object.keys(this.visibleStatuses.statuses).length === 0)) {
+
+      if (
+        this.visibleStatuses.name === 'bucket' &&
+        Object.keys(this.visibleStatuses.statuses).length === 0
+      ) {
         classNames['status-list__empty-bucket'] = true;
       }
 
-      if ((this.visibleStatuses.name !== 'bucket')
-      && (Object.keys(this.visibleStatuses.statuses).length === 0)) {
+      if (
+        this.visibleStatuses.name !== 'bucket' &&
+        Object.keys(this.visibleStatuses.statuses).length === 0
+      ) {
         classNames['status-list__empty-list'] = true;
       }
 
       return classNames;
     },
-    switchBetweenVisibleStatuses: function (aggregateType, statuses) {
-      Object.keys(this.aggregateTypes).map((aggregateType) => {
-        this.aggregateTypes[aggregateType].isVisible = false
+    switchBetweenVisibleStatuses(aggregateType, statuses) {
+      const visibleStatuses = statuses;
+      Object.keys(this.aggregateTypes).forEach(aggregateName => {
+        this.aggregateTypes[aggregateName].isVisible = false;
       });
-      this.aggregateTypes[aggregateType].isVisible = true
+      this.aggregateTypes[aggregateType].isVisible = true;
 
-      statuses.statuses = Object.assign({}, this.aggregateTypes[aggregateType].statuses);
-      statuses.name = aggregateType;      
+      visibleStatuses.statuses = Object.assign(
+        {},
+        this.aggregateTypes[aggregateType].statuses
+      );
+      visibleStatuses.name = aggregateType;
 
-      return statuses;
+      return visibleStatuses;
     },
-    getStatuses: function ({ aggregateType, bustCache }) {
+    getStatuses({ aggregateType, bustCache }) {
       let shouldBustCache = false;
-      if ((typeof bustCache !== 'undefined') && (aggregateType !== 'bucket')) {
+      if (typeof bustCache !== 'undefined' && aggregateType !== 'bucket') {
         shouldBustCache = bustCache;
       }
 
@@ -156,9 +166,10 @@ export default {
 
       this.state.fetchedLatestStatusesOfAggregate = aggregateType;
 
-      if (!shouldBustCache
-      && (aggregateType === 'bucket')
-        || (this.aggregateTypes[aggregateType].statuses.length > 0)) {
+      if (
+        (!shouldBustCache && aggregateType === 'bucket') ||
+        this.aggregateTypes[aggregateType].statuses.length > 0
+      ) {
         this.switchBetweenVisibleStatuses(aggregateType, this.visibleStatuses);
         return;
       }
@@ -168,56 +179,68 @@ export default {
 
       this.replaceBucketFromPersistentLayer();
 
-      this.$http.get(
-        route, {
+      this.$http
+        .get(route, {
           headers: { 'x-auth-token': authenticationToken }
-        }
-      )
-      .then((response) => {
-        this.statuses = null;
-        try {
-          this.aggregateTypes[aggregateType].statuses = this.formatStatuses(response.data);
-        } catch (error) {
-          this.logger.error(error.message, 'status-list');
-          return;
-        }
+        })
+        .then(response => {
+          this.statuses = null;
+          try {
+            this.aggregateTypes[aggregateType].statuses = this.formatStatuses(
+              response.data
+            );
+          } catch (error) {
+            this.logger.error(error.message, 'status-list');
+            return;
+          }
 
-        this.switchBetweenVisibleStatuses(aggregateType, this.visibleStatuses);
-        EventHub.$emit('status_list.after_fetch');
-      })
-      .catch(e => this.logger.error(e.message, 'status-list', e))
+          this.switchBetweenVisibleStatuses(
+            aggregateType,
+            this.visibleStatuses
+          );
+          EventHub.$emit('status_list.after_fetch');
+        })
+        .catch(e => this.logger.error(e.message, 'status-list', e));
     },
-    getTimestampSuffix: function () {
-      const timestamp = (new Date()).getTime();
+    getTimestampSuffix() {
+      const timestamp = new Date().getTime();
       let timestampSuffix = '';
       if (!this.environment.productionMode) {
-        let timestampSuffix = `?${timestamp}`;
+        timestampSuffix = `?${timestamp}`;
       }
 
-      return timestampSuffix;      
+      return timestampSuffix;
     },
-    isAggregateVisible: function (aggregateType) {
+    isAggregateVisible(aggregateType) {
       return aggregateType === this.visibleStatuses.name;
     },
-    shouldGuardAgainstUndefinedRoute: function () {
-      typeof this.routes === 'undefined';
+    shouldGuardAgainstUndefinedRoute() {
+      return typeof this.routes === 'undefined';
     },
-    addToBucket: function ({ status }) {
+    addToBucket({ status }) {
       this.persistAdditionToBucket(status);
       this.refreshBucket();
     },
-    removeFromBucket: function ({ status }) {
+    removeFromBucket({ status }) {
       this.persistRemovalFromBucket(status);
+      if (status.statusRepliedTo) {
+        const isConversationInBucket = this.isConversationInBucket()(
+          status.statusId
+        );
+        if (isConversationInBucket) {
+          this.persistConversationRemovalFromBucket(status.statusId);
+        }
+      }
       this.refreshBucket();
     }
   },
-  mounted: function () {
+  mounted() {
     EventHub.$on('status_list.reload_intended', this.getStatuses);
     EventHub.$on('status_list.intent_to_refresh_bucket', this.refreshBucket);
     EventHub.$on('status.added_to_bucket', this.addToBucket);
     EventHub.$on('status.removed_from_bucket', this.removeFromBucket);
   },
-  data: function () {
+  data() {
     return {
       aggregateTypes: {},
       state: SharedState.state,
@@ -226,10 +249,10 @@ export default {
       errorMessages: SharedState.errors,
       logger: SharedState.logger,
       logLevel: SharedState.logLevel,
-      environment: SharedState.getEnvironmentParameters(),
+      environment: SharedState.getEnvironmentParameters()
     };
-  },
-}
+  }
+};
 </script>
 
 <style scoped>

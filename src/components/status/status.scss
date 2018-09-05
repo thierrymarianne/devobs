@@ -3,6 +3,7 @@
   flex-direction: column;
   font-size: 14px;
   font-family: roboto;
+  width: 100%;
 
   &__publication-date {
     font-size: 12;
@@ -13,6 +14,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     margin-top: 8px;
+    justify-content: space-between;
 
     &:first-child {
       margin-top: 0;
@@ -34,6 +36,18 @@
       display: flex;
       justify-items: center;
     }
+  }
+
+  &__content {
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+
+  &__media {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
   }
 
   &__url {
@@ -87,6 +101,10 @@
 
     span {
       margin-left: 4px;
+    }
+
+    &--open-conversation {
+      margin-top: 0;
     }
   }
 }

@@ -9,7 +9,7 @@ const debug = process.env.NODE_ENV !== 'production';
 
 export default new Vuex.Store({
   modules: {
-    bucket: BucketStore,
+    bucket: BucketStore
   },
-  strict: debug,
+  strict: debug
 });

@@ -4,19 +4,21 @@ import AggregateMixin from './aggregate';
 
 const getApiMixin = () => {
   if (SharedState.isTestModeActive()) {
-    SharedState.getEnvironmentParameters().test.apiMixin.mixins = [AggregateMixin];
+    SharedState.getEnvironmentParameters().test.apiMixin.mixins = [
+      AggregateMixin
+    ];
     return SharedState.getEnvironmentParameters().test.apiMixin;
   }
 
   return {
     mixins: [AggregateMixin],
     computed: {
-      routes: function () {
+      routes: function() {
         const routePaths = Config.getRoutes();
         const schemeAndHost = Config.getSchemeAndHost();
 
         const routes = {};
-        Object.keys(routePaths).forEach((routeName) => {
+        Object.keys(routePaths).forEach(routeName => {
           if (routeName === 'actions') {
             return;
           }
@@ -29,8 +31,8 @@ const getApiMixin = () => {
         routes.actions = routePaths.actions;
 
         return routes;
-      },
-    },
+      }
+    }
   };
 };
 

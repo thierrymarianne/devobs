@@ -25,20 +25,21 @@ Api.useAxios(Vue);
 if (SharedState.isProductionModeActive()) {
   const dsn = Config.raven.dsn;
   Raven.config(dsn)
-  .addPlugin(RavenVue, Vue)
-  .install();
+    .addPlugin(RavenVue, Vue)
+    .install();
 }
 
 const router = new VueRouter({
   routes,
   scrollBehavior() {
     return { x: 0, y: 0 };
-  },
+  }
 });
 
 router.beforeEach((to, from, next) => {
-  if (typeof from.query.peek !== 'undefined'
-  && typeof to.query.peek === 'undefined'
+  if (
+    typeof from.query.peek !== 'undefined' &&
+    typeof to.query.peek === 'undefined'
   ) {
     next({ name: to.name, query: from.query });
     return;
@@ -53,9 +54,9 @@ const app = new Vue({
   router,
   style: Styles.styles,
   components: {
-    App,
+    App
   },
-  store,
+  store
 });
 
 window.app = app;

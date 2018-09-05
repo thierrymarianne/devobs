@@ -1,14 +1,16 @@
 {
   "extends": [
-    "airbnb-base", 
-    "plugin:import/errors", 
+    "airbnb-base",
+    "plugin:import/errors",
     "plugin:import/warnings",
-    "plugin:vue/recommended"
+    "plugin:prettier/recommended",
+    "plugin:vue/recommended",
+    "prettier"
   ],
-  "plugins": ["import"],
+  "plugins": ["prettier", "vue", "import"],
   "parserOptions": {
     "parser": "babel-eslint",
-    "ecmaVersion": 6,
+    "ecmaVersion": 2017,
     "sourceType": "module"
   },
   "env": {
@@ -20,7 +22,7 @@
   },
   "overrides": [
     {
-      "files": [ "src/**/*.js" ],
+      "files": ["src/**/*.js"],
       "rules": {
         "func-names": 0,
         "object-shorthand": 0,
@@ -30,10 +32,12 @@
         "no-constant-condition": 0,
         "prefer-destructuring": 0,
         "no-param-reassign": 0,
-        "indent": [
-          ["error", 2]
-        ],
-        "semi": 2
+        "indent": [["error", 2]],
+        "semi": 2,
+        "prettier/prettier": "error",
+        "vue/name-property-casing": ["error", "kebab-case"],
+        "vue/require-valid-default-prop": 0,
+        "vue/html-quotes": "single"
       }
     }
   ]

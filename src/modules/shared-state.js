@@ -10,7 +10,7 @@ const environmentParameters = {
   developmentMode: developmentMode,
   mobileMode: developmentMode,
   productionMode: !developmentMode,
-  testMode: Config.testMode,
+  testMode: Config.testMode
 };
 
 const getEnvironmentParameters = () => environmentParameters;
@@ -19,32 +19,33 @@ const environmentProvider = { getEnvironmentParameters };
 
 let apiMixin = {
   computed: {
-    routes: function () {
+    routes: function() {
       return testApi.getApi(environmentProvider).routes;
-    },
-  },
+    }
+  }
 };
 
 if (!Config.testMode) {
   const api = Config.getApi(environmentProvider);
   apiMixin = {
     computed: {
-      routes: function () {
+      routes: function() {
         return {
-          pressReview: `${api.scheme}${api.host}${api.routes['press-review']}`,
+          pressReview: `${api.scheme}${api.host}${api.routes['press-review']}`
         };
-      },
-    },
+      }
+    }
   };
 }
 
 environmentParameters.test = {
-  apiMixin,
+  apiMixin
 };
 
-const isDevelopmentModeActive = () => (getEnvironmentParameters().developmentMode);
-const isProductionModeActive = () => (getEnvironmentParameters().productionMode);
-const isTestModeActive = () => (getEnvironmentParameters().testMode);
+const isDevelopmentModeActive = () =>
+  getEnvironmentParameters().developmentMode;
+const isProductionModeActive = () => getEnvironmentParameters().productionMode;
+const isTestModeActive = () => getEnvironmentParameters().testMode;
 
 const disableTestMode = () => {
   getEnvironmentParameters().developmentMode = true;
@@ -80,22 +81,22 @@ getEnvironmentParameters().toggleTestMode = toggleTestMode;
 const REQUIRED_COLLECTION = 'Empty aggregate';
 
 const errors = {
-  REQUIRED_COLLECTION,
+  REQUIRED_COLLECTION
 };
 
 const state = {
   actions: {
-    fetchedLatestStatusesOfAggregate: null,
+    fetchedLatestStatusesOfAggregate: null
   },
   visibleStatuses: {
     statuses: {},
-    name: 'pressReview',
-  },
+    name: 'pressReview'
+  }
 };
 
 const logLevel = {
   isSilent: false,
-  onError: function () {},
+  onError: function() {}
 };
 
 const logger = {
@@ -105,14 +106,11 @@ const logger = {
     }
 
     if (productionMode) {
-      Raven.captureMessage(
-        message,
-        {
-          level: 'info',
-          logger: file,
-          extra,
-        },
-      );
+      Raven.captureMessage(message, {
+        level: 'info',
+        logger: file,
+        extra
+      });
       return;
     }
 
@@ -126,19 +124,16 @@ const logger = {
     }
 
     if (productionMode) {
-      Raven.captureException(
-        error,
-        {
-          logger: file,
-          extra,
-        },
-      );
+      Raven.captureException(error, {
+        logger: file,
+        extra
+      });
       return;
     }
 
     console.error({ error, file, extra });
     throw error;
-  },
+  }
 };
 
 export default {
@@ -151,5 +146,5 @@ export default {
   isTestModeActive,
   logger,
   logLevel,
-  state,
+  state
 };

@@ -1,156 +1,144 @@
 <template>
-  <div class='action-menu'>
-    <div :class='getActionMenuContainerClasses'>
-      <button 
-        @click='intendToGet("pressReview")'
-        :class='getButtonClass("pressReview")'
+  <div class="action-menu">
+    <div :class="getActionMenuContainerClasses">
+      <button
+        :class="getButtonClass('pressReview')"
+        @click="intendToGet('pressReview')"
       >Press Review</button>
       <button
-        @click='intendToGet(menuItem)'
-        :class='getButtonClass(menuItem)'
-        v-if='menuItem !== "actions" && isVisible[menuItem]'
-        v-for='menuItem in menuItemsButPressReview'
+        v-for="menuItem in menuItemsButPressReview"
+        v-if="menuItem !== 'actions' && isVisible[menuItem]"
+        :class="getButtonClass(menuItem)"
+        @click="intendToGet(menuItem)"
       >{{ getMenuLabel(menuItem) }}</button>
-      <button 
-        @click='intendToGet("bucket")'
-        :class='getButtonClass("bucket")'
+      <button
+        :class="getButtonClass('bucket')"
+        @click="intendToGet('bucket')"
       >Bucket</button>
       <button
-        class='action-menu__refresh-button'
-        @click='refreshStatuses'
+        class="action-menu__refresh-button"
+        @click="refreshStatuses"
       >
-        <font-awesome-icon 
-          class='action-menu__refresh-icon'
-          icon='redo-alt' 
+        <font-awesome-icon
+          class="action-menu__refresh-icon"
+          icon="redo-alt"
         />
       </button>
     </div>
     <div
-      :class='getActionMenuButtonClasses'
-      @click='showMenu = !showMenu'
+      :class="getActionMenuButtonClasses"
+      @click="showMenu = !showMenu"
     >
-      <font-awesome-icon 
-        class='action-menu__toggle-menu-icon' 
-        :icon='getToggleMenuIcon' 
+      <font-awesome-icon
+        :icon="getToggleMenuIcon"
+        class="action-menu__toggle-menu-icon"
       />
     </div>
     <div
-      class='action-menu__progress-bar' 
-      :style='"width: " + loadedContentPercentage + "%"'>
-    </div>
+      :style="'width: ' + loadedContentPercentage + '%'"
+      class="action-menu__progress-bar"/>
   </div>
 </template>
 
 <script>
-import ApiMixin from '../../mixins/api'
+import ApiMixin from '../../mixins/api';
 import EventHub from '../../modules/event-hub';
 import SharedState from '../../modules/shared-state';
 
 export default {
+  name: 'ActionMenu',
   mixins: [ApiMixin],
+  data() {
+    return {
+      showMenu: false,
+      visibleStatuses: SharedState.state.visibleStatuses,
+      loadedContentPercentage: SharedState.state.loadedContentPercentage
+    };
+  },
   computed: {
-    getActionMenuButtonClasses: function () {
+    getActionMenuButtonClasses() {
       const classes = { 'action-menu__button': true };
 
       if (!this.showMenu) {
-        classes['action-menu__button--with-top-border'] = true
+        classes['action-menu__button--with-top-border'] = true;
       }
 
       return classes;
     },
-    getActionMenuContainerClasses: function () {
+    getActionMenuContainerClasses() {
       const classes = { 'action-menu__container': true };
 
       if (this.showMenu) {
-        classes['action-menu__container--is-visible'] = true
+        classes['action-menu__container--is-visible'] = true;
       }
 
       return classes;
     },
-    getToggleMenuIcon: function () {
+    getToggleMenuIcon() {
       if (this.showMenu) {
-        return 'arrow-alt-circle-up';      
+        return 'arrow-alt-circle-up';
       }
 
       return 'arrow-alt-circle-down';
     },
-    isVisible: function () {
-      const hasFullMenu = 'peek' in this.$route.query
-      || !SharedState.getEnvironmentParameters().productionMode;
+    isVisible() {
+      const hasFullMenu =
+        'peek' in this.$route.query ||
+        !SharedState.getEnvironmentParameters().productionMode;
 
       const visibilities = {};
-      Object.keys(this.routes).forEach((aggregateType) => {
-        if (typeof aggregateType === 'actions') {
+      Object.keys(this.routes).forEach(aggregateType => {
+        if (aggregateType === 'actions') {
           return;
         }
 
-        if (aggregateType == 'pressReview') {
+        if (aggregateType === 'pressReview') {
           return;
         }
 
-        visibilities[aggregateType] = hasFullMenu
+        visibilities[aggregateType] = hasFullMenu;
       });
       visibilities.bucket = hasFullMenu;
 
       return visibilities;
     },
-    menuItemsButPressReview: function () {
+    menuItemsButPressReview() {
       const routeNames = Object.keys(this.routes);
       return routeNames.sort();
-    },
+    }
   },
-  data: function () {
-    return {
-      showMenu: false,
-      visibleStatuses: SharedState.state.visibleStatuses,
-      loadedContentPercentage: SharedState.state.loadedContentPercentage,
-    };
-  },
-  name: 'action-menu',
   methods: {
     getButtonClass(aggregateType) {
       const classes = { 'action-menu__get-statuses': true };
 
-      if (this.visibleStatuses.name == aggregateType) {
+      if (this.visibleStatuses.name === aggregateType) {
         classes['action-menu__get-statuses--active'] = true;
       }
 
       return classes;
     },
-    getMenuLabel: function (aggregateType) {
+    getMenuLabel(aggregateType) {
       return aggregateType;
     },
-    isVisibleAggregate: function (name) {
-      return this.visibleStatuses.name === name;
-    },
-    intendToGet: function (aggregateType) {
+    intendToGet(aggregateType) {
       if (aggregateType === 'bucket') {
-        EventHub.$emit(
-          'status_list.intent_to_refresh_bucket',
-          {
-            aggregateType
-          }
-        );
+        EventHub.$emit('status_list.intent_to_refresh_bucket', {
+          aggregateType
+        });
       }
 
-      EventHub.$emit(
-        'status_list.reload_intended',
-        {
-          aggregateType
-        }
-      );
+      EventHub.$emit('status_list.reload_intended', {
+        aggregateType
+      });
     },
-    refreshStatuses: function () {
-      EventHub.$emit(
-        'status_list.reload_intended',
-        {
-          aggregateType: this.visibleStatuses.name,
-          bustCache: true
-        }
-      );
+    refreshStatuses() {
+      EventHub.$emit('status_list.reload_intended', {
+        aggregateType: this.visibleStatuses.name,
+        bustCache: true
+      });
     }
-  },
-}
+  }
+};
 </script>
 
 <style lang='scss' scoped>

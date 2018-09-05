@@ -1,5 +1,5 @@
 const raven = {
-  dsn: '',
+  dsn: ''
 };
 
 const testMode = false;
@@ -8,12 +8,12 @@ const getApi = () => ({
   host: 'press.review',
   scheme: 'https://',
   routes: {
-    pressReview: '/press-review',
-  },
+    pressReview: '/press-review'
+  }
 });
 
 const authentication = {
-  apiKey: '',
+  apiKey: ''
 };
 localStorage.setItem('x-auth-token', localStorage.getItem('x-auth-token'));
 
@@ -21,5 +21,5 @@ export default {
   getApi,
   authentication,
   raven,
-  testMode,
+  testMode
 };

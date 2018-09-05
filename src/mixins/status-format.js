@@ -7,28 +7,34 @@ export default {
     ...mapGetters([
       'isStatusInBucket',
       'isConversationInBucket',
-      'getConversationsInBucket',
+      'getConversationsInBucket'
     ]),
-    expandConversations: function (statuses) {
-      const conversations = statuses.map((status) => {
+    expandConversations: function(statuses, event) {
+      return statuses.map(status => {
         if (!this.isConversationInBucket()(status.statusId)) {
           return status;
         }
 
-        const conversationsInBucket = this.getConversationsInBucket();
-        status.conversation = conversationsInBucket[status.statusId];
+        if (
+          typeof event !== 'undefined' &&
+          typeof event.statusId !== 'undefined' &&
+          event.statusId === status.statusId
+        ) {
+          const conversationsInBucket = this.getConversationsInBucket();
+          status.conversation = conversationsInBucket[status.statusId];
+          return status;
+        }
+
         return status;
       });
-
-      return conversations;
     },
-    formatStatuses: function (statuses, fromSync) {
-      if ((typeof statuses === 'undefined') || (statuses === null)) {
+    formatStatuses: function(statuses, fromSync) {
+      if (typeof statuses === 'undefined' || statuses === null) {
         return [];
       }
 
       let syncing = false;
-      if ((typeof fromSync !== 'undefined') && (fromSync !== null)) {
+      if (typeof fromSync !== 'undefined' && fromSync !== null) {
         syncing = fromSync;
       }
 
@@ -38,9 +44,11 @@ export default {
         throw Error(this.errorMessages.REQUIRED_COLLECTION);
       }
 
-      statuses.forEach((status) => {
-        if ((typeof status.text === 'undefined')
-          || (typeof status.text.match !== 'function')) {
+      statuses.forEach(status => {
+        if (
+          typeof status.text === 'undefined' ||
+          typeof status.text.match !== 'function'
+        ) {
           return;
         }
 
@@ -59,11 +67,14 @@ export default {
           url: status.url,
           isVisible: false,
           isInBucket: false,
-          links,
+          media: status.media,
+          links
         };
 
         if (status.status_replied_to) {
-          formattedStatus.statusRepliedTo = this.formatStatuses([status.status_replied_to])[0];
+          formattedStatus.statusRepliedTo = this.formatStatuses([
+            status.status_replied_to
+          ])[0];
         }
 
         if (this.isStatusInBucket()(formattedStatus.statusId)) {
@@ -72,18 +83,24 @@ export default {
 
         formattedStatus.retweet = status.retweet;
         if (status.retweet) {
-          formattedStatus.usernameOfRetweetingMember = status.username_of_retweeting_member;
+          formattedStatus.usernameOfRetweetingMember =
+            status.username_of_retweeting_member;
         }
 
         formattedStatuses.push(formattedStatus);
       });
 
       formattedStatuses = formattedStatuses.sort(this.sortByPublicationDate);
-      formattedStatuses = formattedStatuses.reduce((statusCollection, status) => {
-        statusCollection.indexOf(status);
-        statusCollection[statusCollection.indexOf(status)].key = statusCollection.indexOf(status);
-        return statusCollection;
-      }, formattedStatuses);
+      formattedStatuses = formattedStatuses.reduce(
+        (statusCollection, status) => {
+          statusCollection.indexOf(status);
+          statusCollection[
+            statusCollection.indexOf(status)
+          ].key = statusCollection.indexOf(status);
+          return statusCollection;
+        },
+        formattedStatuses
+      );
 
       if (!syncing) {
         formattedStatuses = this.expandConversations(formattedStatuses);
@@ -91,7 +108,7 @@ export default {
 
       return formattedStatuses;
     },
-    sortByPublicationDate: function (statusA, statusB) {
+    sortByPublicationDate: function(statusA, statusB) {
       if (statusA.publishedAt === statusB.publishedAt) {
         return 0;
       }
@@ -103,13 +120,13 @@ export default {
       return -1;
     },
     // @see https://developer.mozilla.org/en-US/docs/Web/API/DOMParser
-    parseFromString: function (subject) {
+    parseFromString: function(subject) {
       const parser = new DOMParser();
       const dom = parser.parseFromString(
         `<!doctype html><body>${subject}</body>`,
-        'text/html',
+        'text/html'
       );
       return dom.body.textContent;
-    },
-  },
+    }
+  }
 };

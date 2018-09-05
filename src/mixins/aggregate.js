@@ -1,8 +1,8 @@
 export default {
   methods: {
-    declareAggregateTypesFromRoutes: (routes) => {
+    declareAggregateTypesFromRoutes: routes => {
       const aggregateTypes = {};
-      Object.keys(routes).forEach((aggregateType) => {
+      Object.keys(routes).forEach(aggregateType => {
         if (aggregateType === 'actions') {
           return;
         }
@@ -10,16 +10,16 @@ export default {
         aggregateTypes[aggregateType] = {
           statuses: [],
           isVisible: false,
-          name: aggregateType,
+          name: aggregateType
         };
       });
       aggregateTypes.bucket = {
         statuses: [],
         isVisible: false,
-        name: 'bucket',
+        name: 'bucket'
       };
 
       return aggregateTypes;
-    },
-  },
+    }
+  }
 };

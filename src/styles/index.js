@@ -4,13 +4,14 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faArrowAltCircleUp,
   faArrowAltCircleDown,
+  faComments,
   faHeart,
   faMinus,
   faPlus,
   faRedoAlt,
   faReply,
   faRetweet,
-  faSync,
+  faSync
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
@@ -19,6 +20,7 @@ import styles from './global.scss';
 // See https://fontawesome.com/how-to-use/on-the-web/using-with/vuejs
 library.add(faArrowAltCircleUp);
 library.add(faArrowAltCircleDown);
+library.add(faComments);
 library.add(faHeart);
 library.add(faMinus);
 library.add(faPlus);
@@ -32,6 +34,6 @@ Vue.component('font-awesome-icon', FontAwesomeIcon);
 export default {
   Styles: styles,
   components: {
-    'font-awesome-icon': FontAwesomeIcon,
-  },
+    'font-awesome-icon': FontAwesomeIcon
+  }
 };

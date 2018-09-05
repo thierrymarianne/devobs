@@ -4,13 +4,15 @@ const defaultRedirect = '/status-list';
 export default [
   {
     path: '/',
-    redirect: defaultRedirect,
-  }, {
+    redirect: defaultRedirect
+  },
+  {
     component: StatusList,
     path: '/status-list',
-    name: 'status-list',
-  }, {
-    path: '*',
-    redirect: defaultRedirect,
+    name: 'status-list'
   },
+  {
+    path: '*',
+    redirect: defaultRedirect
+  }
 ];
