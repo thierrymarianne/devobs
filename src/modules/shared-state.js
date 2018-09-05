@@ -111,10 +111,7 @@ const logger = {
         logger: file,
         extra
       });
-      return;
     }
-
-    console.info({ message, file, extra });
   },
   error(error, file, extra) {
     logLevel.onError({ error, file, extra });
@@ -131,7 +128,6 @@ const logger = {
       return;
     }
 
-    console.error({ error, file, extra });
     throw error;
   }
 };
