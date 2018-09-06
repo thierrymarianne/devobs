@@ -139,22 +139,24 @@ export default {
 
       return classNames;
     },
-    switchBetweenVisibleStatuses(aggregateType, statuses) {
+    switchBetweenVisibleStatuses(aggregateType, statuses, filter) {
       const visibleStatuses = statuses;
       Object.keys(this.aggregateTypes).forEach(aggregateName => {
         this.aggregateTypes[aggregateName].isVisible = false;
       });
       this.aggregateTypes[aggregateType].isVisible = true;
 
-      visibleStatuses.statuses = Object.assign(
+      let statusCollection = {};
+      statusCollection = Object.assign(
         {},
         this.aggregateTypes[aggregateType].statuses
       );
+      visibleStatuses.statuses = this.filterStatuses(statusCollection, filter);
       visibleStatuses.name = aggregateType;
 
       return visibleStatuses;
     },
-    getStatuses({ aggregateType, bustCache }) {
+    getStatuses({ aggregateType, bustCache, filter }) {
       let shouldBustCache = false;
       if (typeof bustCache !== 'undefined' && aggregateType !== 'bucket') {
         shouldBustCache = bustCache;
@@ -170,7 +172,7 @@ export default {
         (!shouldBustCache && aggregateType === 'bucket') ||
         this.aggregateTypes[aggregateType].statuses.length > 0
       ) {
-        this.switchBetweenVisibleStatuses(aggregateType, this.visibleStatuses);
+        this.switchBetweenVisibleStatuses(aggregateType, this.visibleStatuses, filter);
         return;
       }
 
@@ -186,9 +188,7 @@ export default {
         .then(response => {
           this.statuses = null;
           try {
-            this.aggregateTypes[aggregateType].statuses = this.formatStatuses(
-              response.data
-            );
+            this.aggregateTypes[aggregateType].statuses = this.formatStatuses(response.data);
           } catch (error) {
             this.logger.error(error.message, 'status-list');
             return;
@@ -237,6 +237,7 @@ export default {
   mounted() {
     EventHub.$on('status_list.reload_intended', this.getStatuses);
     EventHub.$on('status_list.intent_to_refresh_bucket', this.refreshBucket);
+    EventHub.$on('status_list.after_fetch', this.refreshBucket);
     EventHub.$on('status.added_to_bucket', this.addToBucket);
     EventHub.$on('status.removed_from_bucket', this.removeFromBucket);
   },

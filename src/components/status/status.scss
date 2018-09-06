@@ -85,6 +85,10 @@
     white-space: pre-wrap;
   }
 
+  &__vanity-metrics {
+    color: $color-black-light;
+  }
+
   &__web-intent {
     @extend .clickable;
 

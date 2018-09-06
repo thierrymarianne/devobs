@@ -14,11 +14,11 @@ import StatusList from '../../src/components/status-list/status-list.vue';
 
 const calls = {};
 const responder = {
-  reply: function () {},
-  calls: calls,
+  reply: function() {},
+  calls: calls
 };
 
-const mockApi = function (responseFactory) {
+const mockApi = function(responseFactory) {
   const mock = new MockAdapter(axios, { delayResponse: 0 });
   mock.onGet(/\/[\S+/]+/).reply(responseFactory.reply);
 
@@ -29,7 +29,7 @@ const mockApi = function (responseFactory) {
 
   localVue.component(
     'font-awesome-icon',
-    Styles.components['font-awesesome-icon'],
+    Styles.components['font-awesesome-icon']
   );
 
   return localVue;
@@ -40,8 +40,8 @@ SharedState.logLevel.isSilent = true;
 const avatarUrl = 'http://bit.ly/jasmine-bdd';
 
 describe('Status list', () => {
-  it('should handle empty aggregate.', (done) => {
-    responder.reply = () => ([200, {}]);
+  it('should handle empty aggregate.', done => {
+    responder.reply = () => [200, {}];
     const localVue = mockApi(responder);
 
     SharedState.logLevel.onError = ({ error }) => {
@@ -49,13 +49,10 @@ describe('Status list', () => {
       done();
     };
 
-    const statusListWrapper = mount(
-      StatusList,
-      {
-         localVue,
-         store,
-      },
-    );
+    const statusListWrapper = mount(StatusList, {
+      localVue,
+      store
+    });
 
     statusListWrapper.vm.$destroy();
     statusListWrapper.vm.$el.remove();
@@ -64,7 +61,7 @@ describe('Status list', () => {
   it('should handle the default aggregate.', () => {
     let statusListWrapper;
 
-    responder.reply = (config) => {
+    responder.reply = config => {
       if (config.url === '/press-review') {
         return [
           200,
@@ -72,33 +69,29 @@ describe('Status list', () => {
             {
               avatar_url: avatarUrl,
               text: '',
-              published_at: new Date(),
-            },
-          ],
+              published_at: new Date()
+            }
+          ]
         ];
       }
       return [404];
     };
     const localVue = mockApi(responder);
 
-    EventHub.$on(
-      'status_list.after_fetch',
-      () => {
-        expect(typeof statusListWrapper.vm.visibleStatuses.statuses)
-        .to.equal('object');
-        expect(Object.keys(statusListWrapper.vm.visibleStatuses.statuses).length)
-        .to.equal(1);
-      },
-    );
+    EventHub.$on('status_list.after_fetch', () => {
+      expect(typeof statusListWrapper.vm.visibleStatuses.statuses).to.equal(
+        'object'
+      );
+      expect(
+        Object.keys(statusListWrapper.vm.visibleStatuses.statuses).length
+      ).to.equal(1);
+    });
 
-    statusListWrapper = mount(
-      StatusList,
-      {
-        attachToDocument: true,
-        localVue,
-        store,
-      },
-    );
+    statusListWrapper = mount(StatusList, {
+      attachToDocument: true,
+      localVue,
+      store
+    });
 
     statusListWrapper.vm.$destroy();
     statusListWrapper.vm.$el.remove();

@@ -28,6 +28,36 @@ export default {
         return status;
       });
     },
+    filterStatuses: function(statuses, filterType) {
+      if (typeof filterType === 'undefined' || filterType === null) {
+        return statuses;
+      }
+
+      if (filterType === 'media') {
+        const filter = status => status.media && status.media.length > 0;
+
+        return Object.values(statuses).filter(filter);
+      }
+
+      if (filterType === 'top100') {
+        const filteredStatuses = Object.values(Object.assign({}, statuses));
+        const sortByRetweet = (firstStatus, secondStatus) => {
+          if (firstStatus.totalRetweet === secondStatus.totalRetweet) {
+            return 0;
+          }
+
+          if (firstStatus.totalRetweet < secondStatus.totalRetweet) {
+            return 1;
+          }
+
+          return -1;
+        };
+
+        return filteredStatuses.sort(sortByRetweet).slice(0, 10);
+      }
+
+      return statuses;
+    },
     formatStatuses: function(statuses, fromSync) {
       if (typeof statuses === 'undefined' || statuses === null) {
         return [];
@@ -68,6 +98,8 @@ export default {
           isVisible: false,
           isInBucket: false,
           media: status.media,
+          totalRetweet: status.retweet_count,
+          totalLike: status.favorite_count,
           links
         };
 

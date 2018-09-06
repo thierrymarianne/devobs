@@ -2,6 +2,12 @@
   <div class="status">
     <div class="status__row">
       <div class="status__publication-date">{{ publicationDate }}</div>
+      <div class="status__vanity-metrics">
+        <font-awesome-icon icon="retweet" />
+        <span>{{ retweet }}</span>
+        <font-awesome-icon icon="heart" />
+        <span>{{ favorite }}</span>
+      </div>
     </div>
     <div 
       v-if="isRetweet" 
@@ -58,7 +64,7 @@
         >{{ link }}</a>
       </div>
       <button
-        v-if="isBucketVisible && isConversationInBucket()(status.statusId) && canBeRefreshed"
+        v-if="isAllowedToOpenConversation"
         class="status__web-intent status__web-intent--open-conversation"
         @click="syncStatus"
       >
@@ -157,6 +163,11 @@ export default {
     };
   },
   computed: {
+    isAllowedToOpenConversation() {
+      return this.isBucketVisible &&
+        this.isConversationInBucket()(this.status.statusId) &&
+        this.canBeRefreshed;
+    },
     addedToBucketIcon() {
       if (!this.addedToBucket) {
         return 'plus';
@@ -173,6 +184,12 @@ export default {
     },
     avatarUrl() {
       return this.status.avatarUrl;
+    },
+    favorite() {
+      return this.status.totalLike || 0;
+    },
+    retweet() {
+      return this.status.totalRetweet || 0;
     },
     isBucketVisible() {
       return this.visibleStatuses.name === 'bucket';
@@ -204,7 +221,7 @@ export default {
       }
 
       const publicationDate = new Date(this.status.publishedAt);
-      return `${publicationDate.toDateString()} ${publicationDate.toTimeString()}`;
+      return this.$moment(publicationDate).format('LLLL');
     },
     memberTimelineUrl() {
       if (typeof this.status === 'undefined') {
@@ -234,7 +251,7 @@ export default {
     ]),
     ...mapGetters(['isStatusInBucket', 'isConversationInBucket']),
     getBackgroundProperties(document) {
-      return `url(${document.url}) center / cover no-repeat`;
+      return `url(${document.url}) center / 50vw no-repeat`;
     },
     getDocumentProperties(document) {
       return {

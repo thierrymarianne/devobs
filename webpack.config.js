@@ -6,6 +6,7 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const AssetsPlugin = require('assets-webpack-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 const assetsPluginInstance = new AssetsPlugin({ includeManifest: 'manifest' });
 
@@ -55,6 +56,7 @@ const sassLoaderOptions = {
 };
 
 const plugins = [
+  new FaviconsWebpackPlugin('./dist/daily-press-review.png'),
   new VueLoaderPlugin(),
   new HtmlWebpackPlugin({
     template: 'index.html.ejs',
