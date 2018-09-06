@@ -1,31 +1,26 @@
 <template>
-  <div class='conversation'>
+  <div class="conversation">
     <status
-      :status-at-first='status'
-      :can-be-refreshed='false'
-      :can-be-removed-from-bucket='canBeRemovedFromBucketList(status)'
-      :key='getKey(status)'
-      v-for='status in statuses'
+      v-for="status in statuses"
+      :status-at-first="status"
+      :can-be-refreshed="false"
+      :can-be-retweeted="isActionable(status)"
+      :can-be-replied-to="isActionable(status)"
+      :can-be-liked="isActionable(status)"
+      :can-be-removed-from-bucket="canBeRemovedFromBucketList(status)"
+      :key="getKey(status)"
     />
   </div>
 </template>
 
 <script>
-import Status from '../status/status';
+import Status from '../status/status.vue';
 
 export default {
+  name: 'conversation',
   components: {
     Status
   },
-  methods: {
-    canBeRemovedFromBucketList: function (status) {
-      return status.statusId === this.originatesFrom.statusId;
-    },
-    getKey: function (status) {
-      return `${this.originatesFrom.statusId}-${status.statusId}`;
-    }
-  },
-  name: 'conversation',
   props: {
     statuses: {
       type: Array,
@@ -33,12 +28,24 @@ export default {
     },
     originatesFrom: {
       type: Object,
+      default: () => {},
       require: true
     }
   },
+  methods: {
+    canBeRemovedFromBucketList(status) {
+      return status.statusId === this.originatesFrom.statusId;
+    },
+    isActionable(status) {
+      return status.statusId === this.originatesFrom.statusId;
+    },
+    getKey(status) {
+      return `${this.originatesFrom.statusId}-${status.statusId}`;
+    }
+  }
 };
 </script>
 
-<style lang='scss' scoped>
+<style lang='scss'>
 @import './conversation.scss';
 </style>

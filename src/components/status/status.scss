@@ -1,12 +1,13 @@
 .status {
   display: flex;
   flex-direction: column;
-  font-size: 14px;
-  font-family: roboto;
+  font-size: $font-size-base;
+  font-family: roboto, sans-serif;
   width: 100%;
 
   &__publication-date {
-    font-size: 12;
+    display: flex;
+    font-size: $font-size-date;
   }
 
   &__row {
@@ -48,6 +49,20 @@
     flex-direction: row;
     justify-content: center;
     width: 100%;
+
+    &-item {
+      cursor: pointer;
+    }
+  }
+
+  &__relay {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+
+    .status__verb {
+      line-height: $line-height-base;
+    }
   }
 
   &__url {
@@ -81,24 +96,34 @@
 
   &__text {
     display: flex;
-    margin-top: 16px;
+    margin-top: $separation-2;
     white-space: pre-wrap;
   }
 
   &__vanity-metrics {
     color: $color-black-light;
+    display: flex;
+    margin-top: $separation-1;
+  }
+
+  &__vanity-metric-icon {
+    margin-right: $separation-1;
+  }
+
+  &__vanity-metric {
+    margin-right: $separation-2;
   }
 
   &__web-intent {
     @extend .clickable;
 
+    align-items: center;
     background-color: transparent;
     border: none;
-    font-family: roboto;
-    font-size: 14px;
+    font-family: roboto, sans-serif;
+    font-size: $font-size-base;
     display: flex;
-    flex: space-between;
-    line-height: 14px;
+    line-height: $line-height-base;
     margin: 16px 16px 0 0;
     padding: 0;
     text-decoration: none;

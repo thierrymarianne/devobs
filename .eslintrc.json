@@ -34,6 +34,12 @@
         "no-param-reassign": 0,
         "indent": [["error", 2]],
         "semi": 2,
+        "prettier/prettier": "error"
+      }
+    },
+    {
+      "files": ["src/**/*.vue"],
+      "rules": {
         "prettier/prettier": "error",
         "vue/name-property-casing": ["error", "kebab-case"],
         "vue/require-valid-default-prop": 0,

@@ -25,6 +25,20 @@
         "no-param-reassign": 0,
         "indent": [["error", 2]],
         "semi": 2,
+        "prettier/prettier": "error"
+      }
+    },
+    {
+      "files": ["src/**/*.vue"],
+      "rules": {
+        "func-names": 0,
+        "object-shorthand": 0,
+        "no-underscore-dangle": 0,
+        "no-constant-condition": 0,
+        "prefer-destructuring": 0,
+        "no-param-reassign": 0,
+        "indent": [["error", 2]],
+        "semi": 2,
         "prettier/prettier": "error",
         "vue/name-property-casing": ["error", "kebab-case"],
         "vue/require-valid-default-prop": 0,

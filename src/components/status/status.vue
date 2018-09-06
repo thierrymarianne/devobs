@@ -3,10 +3,14 @@
     <div class="status__row">
       <div class="status__publication-date">{{ publicationDate }}</div>
       <div class="status__vanity-metrics">
-        <font-awesome-icon icon="retweet" />
-        <span>{{ retweet }}</span>
-        <font-awesome-icon icon="heart" />
-        <span>{{ favorite }}</span>
+        <font-awesome-icon
+          icon="retweet"
+          class="status__vanity-metric-icon" />
+        <span class="status__vanity-metric">{{ retweet }}</span>
+        <font-awesome-icon
+          icon="heart"
+          class="status__vanity-metric-icon" />
+        <span class="status__vanity-metric">{{ favorite }}</span>
       </div>
     </div>
     <div 
@@ -16,7 +20,9 @@
         <a
           :href="memberTimelineUrl"
           class="status__username"
-        >@{{ status.usernameOfRetweetingMember }}</a>&nbsp;retweeted&nbsp;<a
+        >@{{ status.usernameOfRetweetingMember }}</a>
+        <span class="status__verb">&nbsp;retweeted&nbsp;</span>
+        <a
           :href="retweetingMemberTimelineUrl"
           class="status__username"
         >@{{ status.username }}</a>
@@ -48,7 +54,10 @@
         <div
           v-for="(document, index) in status.media"
           :key="index"
-          :style="getDocumentProperties(document)" />
+          :style="getDocumentProperties(document)"
+          class="status__media-item"
+          @click="openMediaItem(document)"
+        />
       </div>
     </div>
     <div class="status__row">
@@ -76,20 +85,23 @@
       </button>
     </div>
     <div class="status__row">
-      <a 
+      <a
+        v-if="canBeRepliedTo"
         :href="urls.reply" 
         class="status__web-intent">
         <font-awesome-icon icon="reply" />
         <span>Reply</span>
       </a>
-      <a 
-        :href="urls.retweet" 
+      <a
+        v-if="canBeRetweeted"
+        :href="urls.retweet"
         class="status__web-intent">
         <font-awesome-icon icon="retweet" />
         <span>Retweet</span>
       </a>
-      <a 
-        :href="urls.like" 
+      <a
+        v-if="canBeLiked"
+        :href="urls.like"
         class="status__web-intent">
         <font-awesome-icon icon="heart" />
         <span>Like</span>
@@ -137,7 +149,7 @@ import ActionTypes from '../../store/bucket-action-types';
 const { mapActions, mapGetters } = createNamespacedHelpers('bucket');
 
 export default {
-  name: 'Status',
+  name: 'status',
   mixins: [ApiMixin, StatusFormat],
   props: {
     statusAtFirst: {
@@ -151,7 +163,19 @@ export default {
     canBeRefreshed: {
       type: Boolean,
       default: true
-    }
+    },
+    canBeLiked: {
+      type: Boolean,
+      default: true
+    },
+    canBeRetweeted: {
+      type: Boolean,
+      default: true
+    },
+    canBeRepliedTo: {
+      type: Boolean,
+      default: true
+    },
   },
   data() {
     return {
@@ -268,6 +292,9 @@ export default {
       this.addedToBucket = !this.addedToBucket;
       EventHub.$emit('status_list.intent_to_refresh_bucket');
     },
+    openMediaItem(document) {
+      EventHub.$emit('modal_window.show_intended', { media: document });
+    },
     removeFromBucket() {
       this.removeStatusFromBucket();
       EventHub.$emit('status_list.intent_to_refresh_bucket');
@@ -287,8 +314,7 @@ export default {
       })
         .then(({ data }) => {
           const syncing = true;
-          const formattedStatuses = this.formatStatuses(data, syncing);
-          this.status = formattedStatuses[0];
+          [this.status] = this.formatStatuses(data, syncing);
 
           if (this.status.statusRepliedTo) {
             const conversation = [this.status, this.status.statusRepliedTo];

@@ -5,5 +5,10 @@
     &:first-child {
       margin-top: 0;
     }
+
+    .status__username,
+    .status__url {
+      font-size: 0.9em;
+    }
   }
 }

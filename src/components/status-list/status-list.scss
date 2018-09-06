@@ -5,7 +5,7 @@
   color: $color-even-greener;
   display: flex;
   flex-direction: column;
-  font-family: roboto;
+  font-family: roboto, sans-serif;
   margin: auto;
   margin-top: 50vh;
   padding: 10px;
@@ -29,6 +29,7 @@
     display: none;
     flex-direction: column;
     margin: auto;
+    max-width: 100%;
 
     &--full-width {
       display: flex;
@@ -61,7 +62,7 @@
           color: $color-even-greener;
           display: flex;
           flex-direction: column;
-          font-family: roboto;
+          font-family: roboto, sans-serif;
           margin: auto;
           margin-top: 50vh;
           padding: 10px;
@@ -79,7 +80,7 @@
     }
   }
 
-  > div {
+  .status-list__transition {
     @extend .status-list__list;
     display: flex;
     transition: 1s;
@@ -88,11 +89,10 @@
   &__item {
     align-items: center;
     background-color: $color-beige-light;
-    border-bottom: 1px solid $color-greener;
     display: flex;
     justify-content: flex-start;
     list-style-type: none;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
     min-height: 50px;
     padding: 8px;
 
