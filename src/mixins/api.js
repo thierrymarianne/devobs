@@ -24,7 +24,11 @@ const getApiMixin = () => {
           }
 
           const path = routePaths[routeName];
-          routes[routeName] = `${schemeAndHost}${path}`;
+          const routeIndex = routeName.replace(/\s+/g, '-').toLowerCase();
+          routes[routeIndex] = {
+            name: routeName,
+            source: `${schemeAndHost}${path}`
+          };
         });
 
         // Handle actions separately for more clarity

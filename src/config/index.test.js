@@ -8,7 +8,7 @@ const getApi = () => ({
   host: 'press.review',
   scheme: 'https://',
   routes: {
-    pressReview: '/press-review'
+    'Press review': '/press-review'
   }
 });
 

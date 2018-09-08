@@ -1,4 +1,5 @@
 import Vuex from 'vuex';
+import VueRouter from 'vue-router';
 import { expect } from 'chai';
 import { createLocalVue, mount } from '@vue/test-utils';
 import axios from 'axios';
@@ -9,14 +10,22 @@ import Styles from '../../src/styles';
 
 import EventHub from '../../src/modules/event-hub';
 import SharedState from '../../src/modules/shared-state';
+import routes from '../../src/modules/routes';
 import store from '../../src/store';
 import StatusList from '../../src/components/status-list/status-list.vue';
 
 const calls = {};
 const responder = {
-  reply: function() {},
-  calls: calls
+  reply() {},
+  calls
 };
+
+const router = new VueRouter({
+	routes,
+	scrollBehavior() {
+		return { x: 0, y: 0 };
+	}
+});
 
 const mockApi = function(responseFactory) {
   const mock = new MockAdapter(axios, { delayResponse: 0 });
@@ -25,6 +34,8 @@ const mockApi = function(responseFactory) {
   const localVue = createLocalVue();
 
   localVue.use(Vuex);
+  localVue.use(VueRouter);
+
   Api.useAxios(localVue);
 
   localVue.component(
@@ -51,6 +62,7 @@ describe('Status list', () => {
 
     const statusListWrapper = mount(StatusList, {
       localVue,
+      router,
       store
     });
 
@@ -90,6 +102,7 @@ describe('Status list', () => {
     statusListWrapper = mount(StatusList, {
       attachToDocument: true,
       localVue,
+      router,
       store
     });
 

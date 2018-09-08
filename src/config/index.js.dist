@@ -1,5 +1,5 @@
 const raven = {
-  dsn: '',
+  dsn: ''
 };
 
 const testMode = true;
@@ -7,22 +7,22 @@ const testMode = true;
 const getApi = () => ({
   scheme: '',
   host: '',
-  routes: {},
+  routes: {}
 });
 
 const authentication = {
-  apiKey: '',
+  apiKey: ''
 };
 localStorage.setItem('x-auth-token', authentication.apiKey);
 
 const api = {
   routes: {
-    pressReview: '/',
-  },
+    'Press review': '/'
+  }
 };
 
-const getRoutes = () => (api.routes);
-const getSchemeAndHost = () => (`${api.scheme}${api.host}`);
+const getRoutes = () => api.routes;
+const getSchemeAndHost = () => `${api.scheme}${api.host}`;
 
 export default {
   getApi,
@@ -30,5 +30,5 @@ export default {
   getRoutes,
   getSchemeAndHost,
   raven,
-  testMode,
+  testMode
 };

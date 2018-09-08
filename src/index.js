@@ -41,11 +41,12 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (
-    typeof from.query.peek !== 'undefined' &&
-    typeof to.query.peek === 'undefined'
-  ) {
-    next({ name: to.name, query: from.query });
+  const peekQueryParamInSourceUrl = typeof from.query.peek !== 'undefined';
+  const peekQueryParamNotInDestinationUrl =
+    typeof to.query.peek === 'undefined';
+
+  if (peekQueryParamInSourceUrl && peekQueryParamNotInDestinationUrl) {
+    next({ name: to.name, params: to.params, query: from.query });
     return;
   }
 

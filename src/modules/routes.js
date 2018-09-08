@@ -1,6 +1,6 @@
 import StatusList from '../components/status-list/status-list.vue';
 
-const defaultRedirect = '/status-list';
+const defaultRedirect = '/press-review';
 export default [
   {
     path: '/',
@@ -8,8 +8,23 @@ export default [
   },
   {
     component: StatusList,
-    path: '/status-list',
-    name: 'status-list'
+    path: '/press-review',
+    name: 'press-review'
+  },
+  {
+    component: StatusList,
+    path: '/bucket',
+    name: 'bucket'
+  },
+  {
+    component: StatusList,
+    path: '/aggregate/:aggregateType',
+    name: 'aggregate'
+  },
+  {
+    component: StatusList,
+    path: '/aggregate/:aggregateType/:statusId',
+    name: 'status'
   },
   {
     path: '*',

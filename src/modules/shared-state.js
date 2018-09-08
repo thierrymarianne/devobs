@@ -20,7 +20,24 @@ const environmentProvider = { getEnvironmentParameters };
 let apiMixin = {
   computed: {
     routes: function() {
-      return testApi.getApi(environmentProvider).routes;
+      const api = testApi.getApi(environmentProvider);
+      const paths = api.routes;
+      const routes = {};
+
+      Object.keys(api.routes).forEach(routeName => {
+        if (routeName === 'actions') {
+          return;
+        }
+
+        const path = paths[routeName];
+        const routeIndex = routeName.replace(/\s+/g, '-').toLowerCase();
+        routes[routeIndex] = {
+          name: routeName,
+          source: `${api.scheme}${api.host}${path}`
+        };
+      });
+
+      return routes;
     }
   }
 };
@@ -42,8 +59,6 @@ environmentParameters.test = {
   apiMixin
 };
 
-const isDevelopmentModeActive = () =>
-  getEnvironmentParameters().developmentMode;
 const isProductionModeActive = () => getEnvironmentParameters().productionMode;
 const isTestModeActive = () => getEnvironmentParameters().testMode;
 
@@ -85,12 +100,9 @@ const errors = {
 };
 
 const state = {
-  actions: {
-    fetchedLatestStatusesOfAggregate: null
-  },
   visibleStatuses: {
     statuses: {},
-    name: 'pressReview'
+    name: 'press-review'
   }
 };
 
@@ -133,11 +145,8 @@ const logger = {
 };
 
 export default {
-  disableTestMode,
-  enableTestMode,
   errors,
   getEnvironmentParameters,
-  isDevelopmentModeActive,
   isProductionModeActive,
   isTestModeActive,
   logger,

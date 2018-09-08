@@ -1,22 +1,30 @@
 <template>
   <div class="action-menu">
     <div :class="getActionMenuContainerClasses">
+
       <button
-        :class="getButtonClass('pressReview')"
-        @click="intendToGet('pressReview')"
+        :class="getButtonClass('Press review')"
+        @click="intendToGet('Press review')"
       >Press Review</button>
-      <button
+
+      <router-link
         v-for="(menuItem, index) in menuItemsButPressReview"
-        v-if="menuItem !== 'actions' && isVisible[menuItem]"
-        :key="index"
+        :key='index'
+        :to='getPathTo(menuItem)'
         :class="getButtonClass(menuItem)"
-        @click="intendToGet(menuItem)"
-      >{{ getMenuLabel(menuItem) }}</button>
+        active-class='action-menu__get-statuses--active'
+        exact
+        tag='button'
+        @click.native="intendToGetAggregate(menuItem)"
+      >{{ getMenuLabel(menuItem) }}</router-link>
+
       <button
         :class="getButtonClass('bucket')"
         @click="intendToGet('bucket')"
       >Bucket</button>
+
       <div class="action-menu__action-wrapper">
+
         <button
           class="action-menu__button action-menu__refresh-button"
           @click="showStatusesHavingMedia"
@@ -26,6 +34,7 @@
             icon="images"
           />
         </button>
+
         <button
           :class="getActionMenuButtonClasses"
           @click="showStatusesInAggregateTop10O"
@@ -35,14 +44,17 @@
             class="action-menu__toggle-menu-icon"
           />
         </button>
+
       </div>
     </div>
+
     <font-awesome-icon
       :class="getActionMenuButtonClasses"
       :icon="getToggleMenuIcon"
       class="action-menu__toggle-menu-icon"
-      @click="showMenu = !showMenu"
+      @click="toggleMenuVisibility"
     />
+
   </div>
 </template>
 
@@ -52,13 +64,12 @@ import EventHub from '../../modules/event-hub';
 import SharedState from '../../modules/shared-state';
 
 export default {
-  name: 'ActionMenu',
+  name: 'action-menu',
   mixins: [ApiMixin],
   data() {
     return {
       showMenu: false,
-      visibleStatuses: SharedState.state.visibleStatuses,
-      loadedContentPercentage: SharedState.state.loadedContentPercentage
+      visibleStatuses: SharedState.state.visibleStatuses
     };
   },
   computed: {
@@ -98,7 +109,7 @@ export default {
           return;
         }
 
-        if (aggregateType === 'pressReview') {
+        if (aggregateType === 'Press review') {
           return;
         }
 
@@ -109,15 +120,38 @@ export default {
       return visibilities;
     },
     menuItemsButPressReview() {
-      const routeNames = Object.keys(this.routes);
-      return routeNames.sort();
+      const routeNames = [];
+      Object.values(this.routes).forEach(route => {
+        if (
+          route.name === 'Press review' ||
+          typeof route.name === 'undefined'
+        ) {
+          return;
+        }
+        routeNames.push(route.name);
+      });
+
+      return routeNames.sort().filter(route => {
+        return this.isVisible[this.getAggregateIndex(route)];
+      });
     }
   },
+  mounted() {
+    EventHub.$on('action_menu.hide_intended', this.hideActionMenu);
+  },
   methods: {
+    getAggregateIndex(aggregateType) {
+      return aggregateType.replace(/\s+/g, '-').toLowerCase();
+    },
     getButtonClass(aggregateType) {
       const classes = { 'action-menu__get-statuses': true };
 
-      if (this.visibleStatuses.name === aggregateType) {
+      const aggregateIndex = this.getAggregateIndex(aggregateType);
+
+      if (
+        this.visibleStatuses.name === aggregateType ||
+        this.visibleStatuses.name === aggregateIndex
+      ) {
         classes['action-menu__get-statuses--active'] = true;
       }
 
@@ -126,13 +160,37 @@ export default {
     getMenuLabel(aggregateType) {
       return aggregateType;
     },
+    getPathTo(aggregateType) {
+      return {
+        name: 'aggregate',
+        params: {
+          aggregateType: this.getAggregateIndex(aggregateType)
+        }
+      };
+    },
+    hideActionMenu() {
+      this.showMenu = false;
+    },
     intendToGet(aggregateType) {
+      EventHub.$emit('action_menu.hide_intended');
+
+      if (aggregateType === 'Press review') {
+        this.$router.push({ name: 'press-review' });
+      }
+
       if (aggregateType === 'bucket') {
+        this.$router.push({ name: 'bucket' });
         EventHub.$emit('status_list.intent_to_refresh_bucket', {
           aggregateType
         });
       }
 
+      EventHub.$emit('status_list.reload_intended', {
+        aggregateType
+      });
+    },
+    intendToGetAggregate(aggregateType) {
+      EventHub.$emit('action_menu.hide_intended');
       EventHub.$emit('status_list.reload_intended', {
         aggregateType
       });
@@ -150,6 +208,9 @@ export default {
         bustCache: true,
         filter: 'top100'
       });
+    },
+    toggleMenuVisibility() {
+      this.showMenu = !this.showMenu;
     }
   }
 };

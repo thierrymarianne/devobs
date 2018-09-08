@@ -5,9 +5,17 @@
   font-family: roboto, sans-serif;
   width: 100%;
 
+  &__can-be-shared {
+    border-top: 1px solid $color-greener;
+    border-bottom: 1px solid $color-greener;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
   &__publication-date {
     display: flex;
     font-size: $font-size-date;
+    margin-top: 8px;
   }
 
   &__row {
@@ -18,6 +26,7 @@
     justify-content: space-between;
 
     &:first-child {
+      align-items: center;
       margin-top: 0;
     }
   }
@@ -69,7 +78,7 @@
     @extend .clickable;
 
     display: flex;
-    margin-right: 8px;
+    margin-right: 0;
 
     &:active,
     &:hover,
@@ -80,6 +89,17 @@
 
     &:first-child {
       margin-left: 0;
+    }
+
+    &--secondary-link {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      max-width: 320px;
+      width: 320px;
+
+      @media (max-width: 321px) {
+        display: none;
+      }
     }
   }
 
@@ -98,6 +118,14 @@
     display: flex;
     margin-top: $separation-2;
     white-space: pre-wrap;
+
+    @media (max-width: 375px) {
+      white-space: normal;
+      line-height: 1em;
+      max-width: 320px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 
   &__vanity-metrics {
@@ -132,8 +160,40 @@
       margin-left: 4px;
     }
 
+    &--load-conversation {
+      margin-top: 8px;
+    }
+
     &--open-conversation {
       margin-top: 0;
+    }
+
+    &--share-url {
+      margin-top: 8px;
+    }
+
+    &--remove-from-bucket {
+      text-align: left;
+    }
+  }
+
+  &__error {
+    margin-left: 8px;
+  }
+
+  &__conversation {
+    align-items: center;
+
+    &--has-error {
+      .status__web-intent--load-conversation,
+      .status__web-intent--open-conversation {
+        color: darken($color-beige, 40%);
+      }
+
+      .status__error {
+        margin-left: 8px;
+        color: darken($color-beige, 50%);
+      }
     }
   }
 }

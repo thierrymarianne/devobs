@@ -33,6 +33,10 @@ export default {
         return statuses;
       }
 
+      if (typeof filterType === 'function') {
+        return Object.values(statuses).filter(filterType);
+      }
+
       if (filterType === 'media') {
         const filter = status => status.media && status.media.length > 0;
 

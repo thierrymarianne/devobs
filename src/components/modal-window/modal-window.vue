@@ -5,10 +5,10 @@
     @click="hide"
     @shortkey="hide()"
   >
-    <div
-      :style="mediaStyle"
+    <img
+      :src="mediaUrl"
       class="modal-window__image"
-    />
+    >
     <div
       v-shortkey="['esc']"
       class="modal-window-overlay"
@@ -26,6 +26,7 @@ export default {
     return {
       isVisible: false,
       mediaStyle: '',
+      mediaUrl: '',
       overflowStyle: {},
       noOverflowStyle: {},
       body: {}
@@ -42,26 +43,19 @@ export default {
     this.body = document.querySelector('body');
   },
   methods: {
-    getBackgroundProperties(media) {
-      return `url(${media.url}) center / 100vw no-repeat`;
-    },
-    getMediaProperties(media) {
-      return {
-        background: this.getBackgroundProperties(media),
-        height: `${media.sizes.small.h}px`,
-        width: `${media.sizes.small.w}.px`
-      };
-    },
     show({ media }) {
-      this.isVisible = true;
+      this.mediaUrl = media.url;
       this.body.classList.remove(this.overflowStyle);
       this.body.classList.add(this.noOverflowStyle);
-      this.mediaStyle = this.getMediaProperties(media);
+      this.body.classList.add('containing-modal-window');
+      this.isVisible = true;
     },
     hide() {
+      this.isVisible = false;
       this.body.classList.remove(this.noOverflowStyle);
       this.body.classList.add(this.overflowStyle);
-      this.isVisible = false;
+      this.body.classList.remove('containing-modal-window');
+      this.mediaUrl = '';
     }
   }
 };

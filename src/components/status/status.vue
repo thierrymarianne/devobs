@@ -1,5 +1,6 @@
 <template>
-  <div class="status">
+  <div :class="statusClasses()">
+
     <div class="status__row">
       <div class="status__publication-date">{{ publicationDate }}</div>
       <div class="status__vanity-metrics">
@@ -13,17 +14,18 @@
         <span class="status__vanity-metric">{{ favorite }}</span>
       </div>
     </div>
-    <div 
+
+    <div
       v-if="isRetweet" 
       class="status__row">
       <div class="status__relay">
         <a
-          :href="memberTimelineUrl"
+          :href="retweetingMemberTimelineUrl"
           class="status__username"
         >@{{ status.usernameOfRetweetingMember }}</a>
         <span class="status__verb">&nbsp;retweeted&nbsp;</span>
         <a
-          :href="retweetingMemberTimelineUrl"
+          :href="memberTimelineUrl"
           class="status__username"
         >@{{ status.username }}</a>
       </div>
@@ -44,22 +46,25 @@
             class="status__avatar"
           />
         </div>
-        <span class="status__text">{{ status.text }}</span>
+        <p class="status__text">{{ statusText }}</p>
       </div>
     </div>
-    <div 
+
+    <div
       v-if="status.media && status.media.length > 0"
       class="status__row">
       <div class="status__media">
-        <div
+        <img
           v-for="(document, index) in status.media"
           :key="index"
-          :style="getDocumentProperties(document)"
+          :src="getMediaUrl(document)"
+          :style="getMediaProperties()"
           class="status__media-item"
           @click="openMediaItem(document)"
-        />
+        >
       </div>
     </div>
+
     <div class="status__row">
       <div class="links">
         <a
@@ -69,21 +74,11 @@
           v-for="(link, index) in status.links"
           :key="index"
           :href="link"
-          class="status__url"
+          class="status__url status__url--secondary-link"
         >{{ link }}</a>
       </div>
-      <button
-        v-if="isAllowedToOpenConversation"
-        class="status__web-intent status__web-intent--open-conversation"
-        @click="syncStatus"
-      >
-        <font-awesome-icon
-          class="action-menu__replied-icon"
-          icon="comments"
-        />
-        <span>Conversation</span>
-      </button>
     </div>
+
     <div class="status__row">
       <a
         v-if="canBeRepliedTo"
@@ -120,20 +115,63 @@
         @click="removeFromBucket"
       >
         <font-awesome-icon icon="minus" />
-        <span>Remove from bucket</span>
+        <span class="status__web-intent--remove-from-bucket">Remove from bucket</span>
       </button>
     </div>
+
     <button
-      v-if="isBucketVisible && canBeRefreshed"
-      class="status__web-intent"
-      @click="syncStatus"
+      v-clipboard="urlWhichCanBeShared"
+      class="status__web-intent status__web-intent--share-url"
+      @click="shareStatus"
     >
-      <font-awesome-icon
-        class="action-menu__replied-icon"
-        icon="sync"
-      />
-      <span>Refresh</span>
-    </button>    
+      <font-awesome-icon icon="link" />
+      <span>Share this status</span>
+      <a
+        :href="urlWhichCanBeShared"
+        class='hide'
+      >{{ urlWhichCanBeShared }}</a>
+    </button>
+
+    <div :class="conversationClasses">
+      <button
+        v-if="isBucketVisible && canBeRefreshed && !isAllowedToOpenConversation"
+        class="status__web-intent status__web-intent--load-conversation"
+        @click="syncStatus"
+      >
+        <font-awesome-icon
+          class="status__replied-icon"
+          icon="comments"
+        />
+
+        <span>Load conversation</span>
+
+        <font-awesome-icon
+          v-if="couldNotFindStartOfConversation"
+          class="status__error"
+          icon="exclamation-triangle"
+        />
+      </button>
+
+      <button
+        v-else-if="isAllowedToOpenConversation"
+        class="status__web-intent status__web-intent--open-conversation"
+        @click="syncStatus"
+      >
+        <font-awesome-icon
+          class="status__replied-icon"
+          icon="comments"
+        />
+
+        <span>Conversation</span>
+
+        <font-awesome-icon
+          v-if="couldNotFindStartOfConversation"
+          class="status__error"
+          icon="exclamation-triangle"
+        />
+      </button>
+    </div>
+
   </div>
 </template>
 
@@ -176,21 +214,36 @@ export default {
       type: Boolean,
       default: true
     },
+    canBeSharedAtFirst: {
+      type: Boolean,
+      default: false
+    },
+    fromAggregateType: {
+      type: String,
+      default: ''
+    }
   },
   data() {
     return {
       addedToBucket: this.statusAtFirst.isInBucket,
       errorMessages: SharedState.errors,
+      couldNotFindStartOfConversation: false,
       logger: SharedState.logger,
       status: this.statusAtFirst,
-      visibleStatuses: SharedState.state.visibleStatuses
+      visibleStatuses: SharedState.state.visibleStatuses,
+      aggregateType: this.fromAggregateType
     };
   },
   computed: {
+    avatarUrl() {
+      return this.status.avatarUrl;
+    },
     isAllowedToOpenConversation() {
-      return this.isBucketVisible &&
+      return (
+        this.isBucketVisible &&
         this.isConversationInBucket()(this.status.statusId) &&
-        this.canBeRefreshed;
+        this.canBeRefreshed
+      );
     },
     addedToBucketIcon() {
       if (!this.addedToBucket) {
@@ -206,14 +259,22 @@ export default {
 
       return 'Remove from bucket';
     },
-    avatarUrl() {
-      return this.status.avatarUrl;
+    conversationClasses() {
+      const classes = { status__conversation: true };
+      if (this.couldNotFindStartOfConversation) {
+        classes['status__conversation--has-error'] = true;
+      }
+
+      return classes;
     },
     favorite() {
       return this.status.totalLike || 0;
     },
-    retweet() {
-      return this.status.totalRetweet || 0;
+    urlWhichCanBeShared() {
+      const basePath = `${window.location.protocol}//${window.location.host}`;
+      return `${basePath}/#/aggregate/${this.fromAggregateType}/${
+        this.status.statusId
+      }`;
     },
     isBucketVisible() {
       return this.visibleStatuses.name === 'bucket';
@@ -223,6 +284,12 @@ export default {
         return false;
       }
       return this.status.retweet;
+    },
+    retweet() {
+      return this.status.totalRetweet || 0;
+    },
+    statusText() {
+      return this.status.text.replace(/\s/g, ' ');
     },
     urls() {
       if (typeof this.status === 'undefined') {
@@ -274,15 +341,33 @@ export default {
       ActionTypes.PERSIST_CONVERSATION_REMOVAL_FROM_BUCKET
     ]),
     ...mapGetters(['isStatusInBucket', 'isConversationInBucket']),
-    getBackgroundProperties(document) {
-      return `url(${document.url}) center / 50vw no-repeat`;
+    canBeShared() {
+      if (this.$route.name !== 'status') {
+        return false;
+      }
+
+      return this.canBeShared;
     },
-    getDocumentProperties(document) {
+    statusClasses() {
+      const classes = { status: true };
+
+      if (!this.canBeShared()) {
+        return classes;
+      }
+
+      classes['status__can-be-shared'] = true;
+
+      return classes;
+    },
+    getMediaProperties() {
       return {
-        background: this.getBackgroundProperties(document),
-        height: `200px`,
-        width: '50vw'
+        height: '100%',
+        width: '100%',
+        objectFit: 'scale-down'
       };
+    },
+    getMediaUrl(media) {
+      return media.url;
     },
     intendToRemoveStatusFromBucket({ statusId }) {
       if (this.status.statusId !== statusId) {
@@ -303,7 +388,21 @@ export default {
       EventHub.$emit('status.removed_from_bucket', { status: this.status });
       this.addedToBucket = !this.addedToBucket;
     },
+    shareStatus() {
+      let { aggregateType } = this;
+      if (this.status.foundIn) {
+        aggregateType = this.status.foundIn;
+      }
+
+      const path = `/aggregate/${aggregateType}/${this.status.statusId}`;
+      this.$router.push({ path });
+      EventHub.$emit('action_menu.hide_intended');
+    },
     syncStatus() {
+      if (this.couldNotFindStartOfConversation) {
+        return;
+      }
+
       const { method } = this.routes.actions.syncStatus;
       let { route } = this.routes.actions.syncStatus;
       route = route.replace(':statusId', this.status.statusId);
@@ -331,7 +430,14 @@ export default {
             });
           }
         })
-        .catch(e => this.logger.error(e.message, 'status', e));
+        .catch(e => {
+          if (e.response.status === 404) {
+            this.couldNotFindStartOfConversation = true;
+            return;
+          }
+
+          this.logger.error(e.message, 'status', e);
+        });
     },
     toggleBucketAddition() {
       if (this.addedToBucket === false) {

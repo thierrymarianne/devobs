@@ -4,3 +4,4 @@ dist/*js
 dist/*map
 node_modules/
 webpack-assets.json
+package-lock.json

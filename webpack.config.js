@@ -50,9 +50,7 @@ if (developmentMode) {
 const sassLoaderOptions = {
   data: '@import "variables.scss";',
   sourceMap: true,
-  includePaths: [
-    path.join(__dirname, 'src/styles'),
-  ],
+  includePaths: [path.join(__dirname, 'src/styles')]
 };
 
 const plugins = [
@@ -60,22 +58,22 @@ const plugins = [
   new VueLoaderPlugin(),
   new HtmlWebpackPlugin({
     template: 'index.html.ejs',
-    inject: 'body',
-  }),
+    inject: 'body'
+  })
 ];
 
 if (productionMode) {
   plugins.concat([
     new MiniCssExtractPlugin({
       filename: '[name].[hash].css',
-      chunkFilename: '[id].[hash].css',
+      chunkFilename: '[id].[hash].css'
     }),
     assetsPluginInstance,
     new webpack.HashedModuleIdsPlugin({
       hashFunction: 'sha256',
       hashDigest: 'hex',
-      hashDigestLength: 20,
-    }),
+      hashDigestLength: 20
+    })
   ]);
 }
 
@@ -87,11 +85,11 @@ let optimization = {
       sourceMap: true,
       uglifyOptions: {
         output: {
-          ascii_only: true,
-        },
-      },
+          ascii_only: true
+        }
+      }
     }),
-    new OptimizeCSSAssetsPlugin({}),
+    new OptimizeCSSAssetsPlugin({})
   ],
   splitChunks: {
     chunks: 'all',
@@ -99,34 +97,35 @@ let optimization = {
       vendor: {
         test: /[\\/]node_modules[\\/]/,
         name: 'vendors',
-        chunks: 'all',
+        chunks: 'all'
       },
       styles: {
         name: 'styles',
         test: /\.css$/,
         chunks: 'all',
-        enforce: true,
-      },
-    },
+        enforce: true
+      }
+    }
   },
   runtimeChunk: {
-    name: 'manifest',
-  },
+    name: 'manifest'
+  }
 };
 
 if (testMode) {
   optimization = {
     splitChunks: {
-      chunks: 'async',
-    },
+      chunks: 'async'
+    }
   };
 }
 
 const rules = [
   {
     test: /\.vue$/,
-    loader: 'vue-loader',
-  }, {
+    loader: 'vue-loader'
+  },
+  {
     test: /\.(sc|c)ss$/,
     oneOf: [
       {
@@ -138,61 +137,57 @@ const rules = [
             options: {
               modules: true,
               sourceMap: true,
-              localIdentName: '[path]_[local]_[hash:base64:5]',
-            },
-          },
-        ],
-      }, {
+              localIdentName: '[path]_[local]_[hash:base64:5]'
+            }
+          }
+        ]
+      },
+      {
         use: [
           'vue-style-loader',
           {
             loader: 'css-loader',
             options: {
               importLoaders: 1,
-              sourceMap: true,
-            },
+              sourceMap: true
+            }
           },
           'postcss-loader',
           {
             loader: 'sass-loader',
-            options: sassLoaderOptions,
-          },
-        ],
-      },
-    ],
-  }, {
+            options: sassLoaderOptions
+          }
+        ]
+      }
+    ]
+  },
+  {
     test: /\.js$/,
     exclude: /node_modules/,
     use: {
       loader: 'babel-loader',
       options: {
-        presets: [
-          [
-            '@babel/preset-env',
-            { modules: false },
-          ],
-        ],
-        plugins: [
-          '@babel/plugin-transform-runtime',
-        ],
-      },
-    },
-  }, {
+        presets: [['@babel/preset-env', { modules: false }]],
+        plugins: ['@babel/plugin-transform-runtime']
+      }
+    }
+  },
+  {
     enforce: 'pre',
     test: /\.js$/,
     exclude: /node_modules/,
     loader: 'eslint-loader',
     options: {
-      configFile: path.join(__dirname, eslintConfig),
-    },
-  },
+      configFile: path.join(__dirname, eslintConfig)
+    }
+  }
 ];
 
 const webpackConfig = {
   node: {
     module: 'empty',
     net: 'empty',
-    fs: 'empty',
+    fs: 'empty'
   },
   mode,
   entry: './src/index.js',
@@ -200,8 +195,8 @@ const webpackConfig = {
     modules: ['node_modules'],
     extensions: ['.vue', '.js', '.css', '.scss'],
     alias: {
-      vue$: 'vue/dist/vue.esm.js',
-    },
+      vue$: 'vue/dist/vue.esm.js'
+    }
   },
   optimization,
   module: {
@@ -213,7 +208,7 @@ const webpackConfig = {
     chunkFilename: '[name].[chunkHash].bundle.js'
   },
   plugins,
-  devtool: sourceMap,
+  devtool: sourceMap
 };
 
 if (testMode) {
@@ -223,8 +218,8 @@ if (testMode) {
     alias: {
       // necessary to to make lang="scss" work in test when using vue-loader's ?inject option
       // see discussion at https://github.com/vuejs/vue-loader/issues/724
-      'scss-loader': 'sass-loader',
-    },
+      'scss-loader': 'sass-loader'
+    }
   };
 }
 

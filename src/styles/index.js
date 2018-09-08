@@ -5,9 +5,11 @@ import {
   faArrowAltCircleUp,
   faArrowAltCircleDown,
   faComments,
+  faExclamationTriangle,
   faFire,
   faHeart,
   faImages,
+  faLink,
   faMinus,
   faPlus,
   faRedoAlt,
@@ -23,9 +25,11 @@ import styles from './global.scss';
 library.add(faArrowAltCircleUp);
 library.add(faArrowAltCircleDown);
 library.add(faComments);
+library.add(faExclamationTriangle);
 library.add(faFire);
 library.add(faHeart);
 library.add(faImages);
+library.add(faLink);
 library.add(faMinus);
 library.add(faPlus);
 library.add(faRedoAlt);

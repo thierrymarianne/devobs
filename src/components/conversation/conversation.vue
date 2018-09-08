@@ -8,6 +8,7 @@
       :can-be-replied-to="isActionable(status)"
       :can-be-liked="isActionable(status)"
       :can-be-removed-from-bucket="canBeRemovedFromBucketList(status)"
+      :can-be-shared-at-first="canBeShared(status)"
       :key="getKey(status)"
     />
   </div>
@@ -34,6 +35,9 @@ export default {
   },
   methods: {
     canBeRemovedFromBucketList(status) {
+      return status.statusId === this.originatesFrom.statusId;
+    },
+    canBeShared(status) {
       return status.statusId === this.originatesFrom.statusId;
     },
     isActionable(status) {

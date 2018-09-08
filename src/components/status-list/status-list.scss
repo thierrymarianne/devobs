@@ -6,9 +6,8 @@
   display: flex;
   flex-direction: column;
   font-family: roboto, sans-serif;
-  margin: auto;
-  margin-top: 50vh;
-  padding: 10px;
+  margin: 50vh 0 0 0;
+  padding: 0 10px 0 10px;
   position: fixed;
   text-align: center;
   width: 100%;  
@@ -16,7 +15,10 @@
 
 .item-none {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
+  margin: 0;
+  padding: 16px;
+  white-space: pre-line;
   width: 100%
 }
 
@@ -29,7 +31,6 @@
     display: none;
     flex-direction: column;
     margin: auto;
-    max-width: 100%;
 
     &--full-width {
       display: flex;
@@ -38,43 +39,23 @@
         &.status-list__empty-list {
           @extend .empty-list;
         }
-        
+
         .status-list__list__item-none {
           @extend .item-none;
+          margin: 0;
         }
       }
 
       &[data-key="bucket"] {
         &.status-list__empty-bucket {
           @extend .empty-list;
-        }
-        
-        .status-list__list__item-none {
-          @extend .item-none;
-        }
-      }
+          width: calc(100% - 16px);
+          white-space: pre-line;
 
-      &[data-key="~bucket"] {
-        &.status-list__empty-bucket {
-          align-self: center;
-          background-color: $color-beige-light;
-          border: 1px solid $color-greener;
-          color: $color-even-greener;
-          display: flex;
-          flex-direction: column;
-          font-family: roboto, sans-serif;
-          margin: auto;
-          margin-top: 50vh;
-          padding: 10px;
-          position: fixed;
-          text-align: center;
-          width: 100%;
-        }
-        
-        .status-list__list__item-none {
-          display: flex;
-          justify-content: center;
-          width: 100%
+          .status-list__list__item-none {
+            @extend .item-none;
+            margin: 0;
+          }
         }
       }
     }
@@ -83,7 +64,12 @@
   .status-list__transition {
     @extend .status-list__list;
     display: flex;
+    margin: 0;
     transition: 1s;
+
+    &--bucket {
+      max-width: calc(100% - 2px);
+    }
   }
 
   &__item {
@@ -98,6 +84,10 @@
 
     &:first-child {
       margin-top: calc(72px - 16px);
+    }
+
+    &--can-be-shared {
+      height: 100vh;
     }
   }
 }

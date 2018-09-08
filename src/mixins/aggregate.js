@@ -7,7 +7,8 @@ export default {
           return;
         }
 
-        aggregateTypes[aggregateType] = {
+        const aggregateIndex = aggregateType.replace(/\s+/, '-').toLowerCase();
+        aggregateTypes[aggregateIndex] = {
           statuses: [],
           isVisible: false,
           name: aggregateType
