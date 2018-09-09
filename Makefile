@@ -21,6 +21,9 @@ development-server: ## Start development server
 lint: ## Lint project files
 	@/bin/bash -c 'npx eslint src/ .js'
 
+rebuild-node-sass: ## Rebuild node-sass binary
+	@/bin/bash -c 'npm rebuild node-sass'
+
 stats: ## Statistics about dependencies
 	@/bin/bash -c 'export NODE_ENV="production" && npx webpack --profile --json > stats.json'
 

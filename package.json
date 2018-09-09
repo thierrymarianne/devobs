@@ -13,7 +13,8 @@
     "lint": "make linting",
     "server": "make development-server",
     "stats": "make stats",
-    "test": "make unit-tests"
+    "test": "make unit-tests",
+    "rebuild-node-sass": "make rebuild-node-sass"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-beta.53",
