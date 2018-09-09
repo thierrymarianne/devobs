@@ -26,3 +26,9 @@ stats: ## Statistics about dependencies
 
 unit-tests: ## Test components with karma
 	@/bin/bash -c 'export NODE_ENV="test" && npx cross-env BABEL_ENV=test karma start ./karma.conf.js --auto-watch'
+
+build-nginx-image: ## Build nginx image
+	@/bin/bash -c 'source ./provisioning/docker.sh && build_nginx_image'
+
+run-nginx-container: ## Run nginx container
+	@/bin/bash -c 'source ./provisioning/docker.sh && run_nginx_container'
