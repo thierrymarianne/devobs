@@ -119,18 +119,20 @@
       </button>
     </div>
 
-    <button
-      v-clipboard="urlWhichCanBeShared"
-      class="status__web-intent status__web-intent--share-url"
-      @click="shareStatus"
-    >
-      <font-awesome-icon icon="link" />
-      <span>Share this status</span>
-      <a
-        :href="urlWhichCanBeShared"
-        class='hide'
-      >{{ urlWhichCanBeShared }}</a>
-    </button>
+    <div class="status__row">
+      <button
+        v-clipboard="urlWhichCanBeShared"
+        class="status__web-intent status__web-intent--share-url"
+        @click="shareStatus"
+      >
+        <font-awesome-icon icon="link" />
+        <span>Share this status</span>
+        <a
+          :href="urlWhichCanBeShared"
+          class='hide'
+        >{{ urlWhichCanBeShared }}</a>
+      </button>
+    </div>
 
     <div :class="conversationClasses">
       <button
