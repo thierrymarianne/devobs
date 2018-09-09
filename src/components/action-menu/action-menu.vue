@@ -189,6 +189,11 @@ export default {
       });
     },
     intendToGetAggregate(aggregateType) {
+      this.$router.push({
+        name: 'aggregate',
+        aggregateType
+      });
+
       EventHub.$emit('status_list.load_intended');
       EventHub.$emit('action_menu.hide_intended');
       EventHub.$emit('status_list.reload_intended', {

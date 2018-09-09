@@ -412,7 +412,12 @@ export default {
 
       const path = `/aggregate/${aggregateType}/${this.status.statusId}`;
       this.$router.push({ path });
+
       EventHub.$emit('action_menu.hide_intended');
+      EventHub.$emit('status_list.reload_intended', {
+        aggregateType,
+        filter: status => status.statusId === this.status.statusId
+      });
     },
     syncStatus() {
       if (this.couldNotFindStartOfConversation) {

@@ -100,10 +100,12 @@ const errors = {
 };
 
 const state = {
+  maxStatusPerAggregateAtFirst: 5,
   loadingStatuses: true,
   visibleStatuses: {
-    statuses: {},
-    name: 'press-review'
+    name: 'press-review',
+    originalCollection: [],
+    statuses: []
   }
 };
 

@@ -8,13 +8,14 @@ $color-double-greener: darken($color-greener, 10%);
   display: flex;
   flex-wrap: wrap;
   justify-items: center;
+  left: -1px;
   position: fixed;
-  width: 100%;
   background-color: #f1f1f1;
   min-height: calc(3 * 16px + 8px);
   line-height: calc(3 * 16px + 8px);
-  left: 0;
-  top: 0;
+  z-index: 1;
+  top: -1px;
+  width: calc(100% + 2px);
 
   &__container {
     display: none;

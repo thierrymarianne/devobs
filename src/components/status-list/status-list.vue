@@ -1,19 +1,13 @@
 <template>
   <div class="status-list">
-    <transition-group
-      :class="getTransitionGroupClasses()"
-      name="custom-classes-transition"
-      enter-active-class=""
-      leave-active-class=""
-      tag="div"
-    >
+    <div :class="getTransitionGroupClasses()">
       <div
         v-for="aggregateType in aggregateTypes"
         :class="listClasses(aggregateType.name)"
         :key="aggregateType.name"
         :data-key="aggregateType.name"
       >
-        <template v-if="isStatusListVisible()">
+        <template v-if="isStatusListVisible(aggregateType)">
           <div
             v-for="status in visibleStatuses.statuses"
             v-show="isAggregateVisible(aggregateType.name)"
@@ -45,13 +39,14 @@
           class="status-list__item-none"
         >{{ emptyAggregateText() }}</p>
       </div>
-    </transition-group>
+    </div>
   </div>
 </template>
 
 <script>
 import { createNamespacedHelpers } from 'vuex';
 import { css } from 'emotion';
+import { throttle } from 'lodash-es';
 
 import ApiMixin from '../../mixins/api';
 import StatusFormat from '../../mixins/status-format';
@@ -73,28 +68,55 @@ export default {
   data() {
     return {
       aggregateTypes: {},
+      emptyListKey: 'empty-list',
       state: SharedState.state,
       visibleStatuses: SharedState.state.visibleStatuses,
       errors: [],
       errorMessages: SharedState.errors,
+      lastScrollTop: 0,
       logger: SharedState.logger,
       logLevel: SharedState.logLevel,
-      environment: SharedState.getEnvironmentParameters()
+      environment: SharedState.getEnvironmentParameters(),
+      visitedAggregate: 'press-review'
     };
+  },
+  computed: {
+    virtualListHeight() {
+      // We remove the height of the menu so that scrolling does not
+      // behave weirdly at the beginning
+      return window.innerHeight - 56;
+    }
   },
   mounted() {
     EventHub.$on('status_list.load_intended', this.showLoadingMessage);
     EventHub.$on('status_list.reload_intended', this.getStatuses);
     EventHub.$on('status_list.intent_to_refresh_bucket', this.refreshBucket);
     EventHub.$on('status_list.after_fetch', this.refreshBucket);
+    EventHub.$on(
+      'status_list.load_more_statuses_intended',
+      this.appendMoreStatus
+    );
+    EventHub.$on(
+      'status_list.apologize_about_empty_list_intended',
+      this.showEmptyStatusCollectionMessage
+    );
     EventHub.$on('status.added_to_bucket', this.addToBucket);
     EventHub.$on('status.removed_from_bucket', this.removeFromBucket);
+
+    window.addEventListener('scroll', throttle(this.handleScroll, 1000));
+  },
+  beforeMount() {
+    this.visitedAggregate = this.getVisitedAggregate();
+  },
+  beforeUpdate() {
+    this.visitedAggregate = this.getVisitedAggregate();
   },
   beforeDestroy() {
     EventHub.$off('status_list.load_intended');
     EventHub.$off('status_list.reload_intended');
     EventHub.$off('status_list.intent_to_refresh_bucket');
     EventHub.$off('status_list.after_fetch');
+    EventHub.$off('status_list.load_more_statuses_intended');
     EventHub.$off('status.added_to_bucket');
     EventHub.$off('status.removed_from_bucket');
   },
@@ -140,6 +162,20 @@ export default {
       ActionTypes.RESTORE_BUCKET_FROM_PERSISTENCE_LAYER
     ]),
     ...mapGetters(['getStatusesInBucket', 'isInBucket']),
+    appendMoreStatus() {
+      const nextStatusIndex = this.nextStatusIndex();
+
+      const fullStatusCollection = Object.values(
+        this.visibleStatuses.originalCollection
+      );
+
+      if (nextStatusIndex > fullStatusCollection.length - 1) {
+        return;
+      }
+
+      const nextStatus = fullStatusCollection[nextStatusIndex];
+      this.visibleStatuses.statuses.push(nextStatus);
+    },
     canBeShared() {
       return this.$route.name === 'status';
     },
@@ -164,14 +200,62 @@ export default {
 
       return 'Your statuses of interest are being loaded.';
     },
+    handleScroll() {
+      const scrollTop =
+        document.documentElement.scrollTop || document.body.scrollTop;
+
+      if (scrollTop > 0 && this.lastScrollTop <= scrollTop) {
+        this.lastScrollTop = scrollTop;
+        EventHub.$emit('status_list.load_more_statuses_intended');
+
+        return;
+      }
+
+      this.lastScrollTop = scrollTop;
+    },
+    nextStatusIndex() {
+      const fullStatusCollection = Object.values(
+        this.visibleStatuses.originalCollection
+      );
+
+      if (this.visibleStatuses.statuses.length === 0) {
+        return 0;
+      }
+
+      const lastStatus = this.visibleStatuses.statuses[
+        this.visibleStatuses.statuses.length - 1
+      ];
+      const lastStatusIndex = fullStatusCollection.indexOf(lastStatus);
+
+      return lastStatusIndex + 1;
+    },
     getStatusKey(status, aggregateType) {
       return `${aggregateType.name}:${status.statusId}`;
     },
-    isStatusListVisible() {
+    getVisitedAggregate() {
+      if (
+        this.$route.name === 'bucket' ||
+        this.$route.name === 'press-review'
+      ) {
+        return this.$route.name;
+      }
+      return this.$route.params.aggregateType;
+    },
+    isStatusListVisible({ name }) {
+      if (
+        this.$route.name === 'bucket' ||
+        this.$route.name === 'press-review'
+      ) {
+        return name === this.$route.name;
+      }
+
+      const visitedAggregate = this.$route.params.aggregateType;
+
       const aggregateIndex = this.getAggregateIndex(this.visibleStatuses.name);
       return (
         this.aggregateTypes[aggregateIndex].statuses.length > 0 &&
-        !this.state.loadingStatuses
+        !this.state.loadingStatuses &&
+        name === visitedAggregate
       );
     },
     isStatusVisible(status) {
@@ -265,7 +349,7 @@ export default {
         this.visibleStatuses.statuses = [];
       }
 
-      let statusLimitPerList = 10;
+      let statusLimitPerList = this.state.maxStatusPerAggregateAtFirst;
       if (typeof maxStatusesPerList !== 'undefined') {
         statusLimitPerList = maxStatusesPerList;
       }
@@ -292,6 +376,7 @@ export default {
           filter,
           statusLimitPerList
         });
+
         return;
       }
 
@@ -358,6 +443,11 @@ export default {
       }
       this.refreshBucket();
     },
+    showEmptyStatusCollectionMessage() {
+      this.visibleStatuses.statuses = Object.values(
+        this.visibleStatuses.originalCollection
+      );
+    },
     showLoadingMessage() {
       this.state.loadingStatuses = true;
       this.visibleStatuses.statuses = [];
@@ -374,6 +464,8 @@ export default {
       const visibleStatuses = statuses;
       const aggregateIndex = this.getAggregateIndex(aggregateType);
 
+      visibleStatuses.name = aggregateIndex;
+
       Object.keys(this.aggregateTypes).forEach(aggregateName => {
         this.aggregateTypes[
           this.getAggregateIndex(aggregateName)
@@ -386,15 +478,21 @@ export default {
         {},
         this.aggregateTypes[aggregateIndex].statuses
       );
-      visibleStatuses.statuses = this.filterStatuses(statusCollection, filter);
-      visibleStatuses.name = aggregateIndex;
-      this.hideLoadingMessage();
+
+      visibleStatuses.originalCollection = statusCollection;
+
+      let filteredStatuses = this.filterStatuses(statusCollection, filter);
 
       if (typeof statusLimitPerList !== 'undefined') {
-        visibleStatuses.statuses = Object.values(
-          visibleStatuses.statuses
-        ).slice(0, statusLimitPerList);
+        filteredStatuses = Object.values(filteredStatuses).slice(
+          0,
+          statusLimitPerList
+        );
       }
+
+      visibleStatuses.statuses = filteredStatuses;
+
+      this.hideLoadingMessage();
 
       return visibleStatuses;
     }

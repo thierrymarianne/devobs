@@ -34,6 +34,9 @@
 
     &--full-width {
       display: flex;
+      position: relative;
+      width: calc(100% - 16px);
+      min-width: calc(100% - 16px);
 
       &[data-key] {
         &.status-list__empty-list {
@@ -68,13 +71,14 @@
     transition: 1s;
 
     &--bucket {
-      max-width: calc(100% - 2px);
+      max-width: 100%;
     }
   }
 
   &__item {
     align-items: center;
     background-color: $color-beige-light;
+    border-bottom: 1px solid $color-greenish;
     display: flex;
     justify-content: flex-start;
     list-style-type: none;
@@ -86,8 +90,20 @@
       margin-top: calc(72px - 16px);
     }
 
+    &:last-child {
+      border: none;
+    }
+
     &--can-be-shared {
-      height: calc(100vh - 56px - 17px);
+      &:first-child {
+        margin-top: 56px;
+      }
+    }
+  }
+
+  &__virtual-list {
+    .status-list__list {
+      display: flex;
     }
   }
 }

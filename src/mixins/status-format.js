@@ -1,5 +1,7 @@
 import { createNamespacedHelpers } from 'vuex';
 
+import EventHub from '../modules/event-hub';
+
 const { mapGetters } = createNamespacedHelpers('bucket');
 
 export default {
@@ -39,8 +41,13 @@ export default {
 
       if (filterType === 'media') {
         const filter = status => status.media && status.media.length > 0;
+        const filteredStatuses = Object.values(statuses).filter(filter);
+        if (filteredStatuses.length === 0) {
+          EventHub.$emit('status_list.apologize_about_empty_list_intended');
+          return Object.values(statuses);
+        }
 
-        return Object.values(statuses).filter(filter);
+        return filteredStatuses;
       }
 
       if (filterType === 'top100') {
@@ -92,7 +99,16 @@ export default {
           links = [];
         }
 
+        let aggregate;
+        if (this.$route.name === 'press-review') {
+          aggregate = 'press-review';
+        }
+        if (this.$route.name === 'aggregate') {
+          aggregate = this.$route.params.aggregateType;
+        }
+
         const formattedStatus = {
+          inAggregate: aggregate,
           username: status.username,
           avatarUrl: status.avatar_url,
           publishedAt: new Date(status.published_at),
