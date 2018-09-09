@@ -242,16 +242,20 @@ export default {
       return this.$route.params.aggregateType;
     },
     isStatusListVisible({ name }) {
+      const aggregateIndex = this.getAggregateIndex(this.visibleStatuses.name);
+
       if (
         this.$route.name === 'bucket' ||
         this.$route.name === 'press-review'
       ) {
-        return name === this.$route.name;
+        return (
+          name === this.$route.name &&
+          this.aggregateTypes[aggregateIndex].statuses.length > 0
+        );
       }
 
       const visitedAggregate = this.$route.params.aggregateType;
 
-      const aggregateIndex = this.getAggregateIndex(this.visibleStatuses.name);
       return (
         this.aggregateTypes[aggregateIndex].statuses.length > 0 &&
         !this.state.loadingStatuses &&

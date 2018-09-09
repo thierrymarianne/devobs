@@ -1,7 +1,7 @@
 {
   "name": "press-revue",
   "private": true,
-  "version": "0.4.5",
+  "version": "0.4.6",
   "repository": {
     "type": "git",
     "url": "git://github.com/thierrymarianne/press-revue.git"
