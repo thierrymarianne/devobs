@@ -79,8 +79,7 @@ export default {
       errorMessages: SharedState.errors,
       logger: SharedState.logger,
       logLevel: SharedState.logLevel,
-      environment: SharedState.getEnvironmentParameters(),
-      loadingStatuses: SharedState.state.loadingStatuses
+      environment: SharedState.getEnvironmentParameters()
     };
   },
   mounted() {
@@ -156,6 +155,13 @@ export default {
         return 'Your private bucket is empty.';
       }
 
+      if (
+        !this.state.loadingStatuses &&
+        this.visibleStatuses.statuses.length === 0
+      ) {
+        return 'This list of statuses is empty.';
+      }
+
       return 'Your statuses of interest are being loaded.';
     },
     getStatusKey(status, aggregateType) {
@@ -163,12 +169,10 @@ export default {
     },
     isStatusListVisible() {
       const aggregateIndex = this.getAggregateIndex(this.visibleStatuses.name);
-      const isStatusListVisible =
+      return (
         this.aggregateTypes[aggregateIndex].statuses.length > 0 &&
-        !this.loadingStatuses;
-      debugger;
-
-      return isStatusListVisible;
+        !this.state.loadingStatuses
+      );
     },
     isStatusVisible(status) {
       return !status.conversation || this.$route.name !== 'bucket';
@@ -225,7 +229,10 @@ export default {
 
       const emptyStatusList =
         Object.keys(this.visibleStatuses.statuses).length === 0;
-      if (!visitingBucketList && (emptyStatusList || this.loadingStatuses)) {
+      if (
+        !visitingBucketList &&
+        (emptyStatusList || this.state.loadingStatuses)
+      ) {
         classNames['status-list__empty-list'] = true;
       }
 
@@ -327,7 +334,6 @@ export default {
       return classes;
     },
     isAggregateVisible(aggregateType) {
-      debugger;
       const aggregateIndex = this.getAggregateIndex(aggregateType);
       return aggregateIndex === this.visibleStatuses.name;
     },
@@ -356,6 +362,9 @@ export default {
       this.state.loadingStatuses = true;
       this.visibleStatuses.statuses = [];
     },
+    hideLoadingMessage() {
+      this.state.loadingStatuses = false;
+    },
     switchBetweenVisibleStatuses({
       aggregateType,
       statuses,
@@ -379,7 +388,7 @@ export default {
       );
       visibleStatuses.statuses = this.filterStatuses(statusCollection, filter);
       visibleStatuses.name = aggregateIndex;
-      this.loadingStatuses = false;
+      this.hideLoadingMessage();
 
       if (typeof statusLimitPerList !== 'undefined') {
         visibleStatuses.statuses = Object.values(
