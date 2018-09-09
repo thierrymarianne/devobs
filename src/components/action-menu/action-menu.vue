@@ -172,6 +172,7 @@ export default {
       this.showMenu = false;
     },
     intendToGet(aggregateType) {
+      EventHub.$emit('status_list.load_intended');
       EventHub.$emit('action_menu.hide_intended');
 
       if (aggregateType === 'Press review') {
@@ -180,9 +181,7 @@ export default {
 
       if (aggregateType === 'bucket') {
         this.$router.push({ name: 'bucket' });
-        EventHub.$emit('status_list.intent_to_refresh_bucket', {
-          aggregateType
-        });
+        EventHub.$emit('status_list.intent_to_refresh_bucket');
       }
 
       EventHub.$emit('status_list.reload_intended', {
@@ -190,6 +189,7 @@ export default {
       });
     },
     intendToGetAggregate(aggregateType) {
+      EventHub.$emit('status_list.load_intended');
       EventHub.$emit('action_menu.hide_intended');
       EventHub.$emit('status_list.reload_intended', {
         aggregateType

@@ -100,6 +100,7 @@ const errors = {
 };
 
 const state = {
+  loadingStatuses: true,
   visibleStatuses: {
     statuses: {},
     name: 'press-review'

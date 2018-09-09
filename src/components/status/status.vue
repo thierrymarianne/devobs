@@ -33,10 +33,12 @@
     <div 
       v-else 
       class="status__row">
-      <a 
-        :href="memberTimelineUrl"
-        class="status__username"
-      >@{{ status.username }}</a>
+      <div class="status__publication">
+        <a
+          :href="memberTimelineUrl"
+          class="status__username"
+        >@{{ status.username }}</a>
+      </div>
     </div>
     <div class="status__row">
       <div class="status__content">
@@ -52,7 +54,7 @@
 
     <div
       v-if="status.media && status.media.length > 0"
-      class="status__row">
+      class="status__row status__row--media">
       <div class="status__media">
         <img
           v-for="(document, index) in status.media"
@@ -66,7 +68,7 @@
     </div>
 
     <div class="status__row">
-      <div class="links">
+      <div class="status__links">
         <a
           :href="status.url"
           class="status__url">Permalink</a>
@@ -80,98 +82,107 @@
     </div>
 
     <div class="status__row">
-      <a
-        v-if="canBeRepliedTo"
-        :href="urls.reply" 
-        class="status__web-intent">
-        <font-awesome-icon icon="reply" />
-        <span>Reply</span>
-      </a>
-      <a
-        v-if="canBeRetweeted"
-        :href="urls.retweet"
-        class="status__web-intent">
-        <font-awesome-icon icon="retweet" />
-        <span>Retweet</span>
-      </a>
-      <a
-        v-if="canBeLiked"
-        :href="urls.like"
-        class="status__web-intent">
-        <font-awesome-icon icon="heart" />
-        <span>Like</span>
-      </a>
-      <button
-        v-if="!isBucketVisible"
-        class="status__web-intent"
-        @click="toggleBucketAddition"
-      >
-        <font-awesome-icon :icon="addedToBucketIcon" />
-        <span>{{ bucketAdditionLabel }}</span>
-      </button>
-      <button 
-        v-else-if="canBeRemovedFromBucket"
-        class="status__web-intent"
-        @click="removeFromBucket"
-      >
-        <font-awesome-icon icon="minus" />
-        <span class="status__web-intent--remove-from-bucket">Remove from bucket</span>
-      </button>
+      <div class="status__web-intents">
+        <a
+          v-if="canBeRepliedTo"
+          :href="urls.reply"
+          class="status__web-intent">
+          <font-awesome-icon icon="reply" />
+          <span>Reply</span>
+        </a>
+        <a
+          v-if="canBeRetweeted"
+          :href="urls.retweet"
+          class="status__web-intent">
+          <font-awesome-icon icon="retweet" />
+          <span>Retweet</span>
+        </a>
+        <a
+          v-if="canBeLiked"
+          :href="urls.like"
+          class="status__web-intent">
+          <font-awesome-icon icon="heart" />
+          <span>Like</span>
+        </a>
+        <button
+          v-if="!isBucketVisible"
+          class="status__web-intent"
+          @click="toggleBucketAddition"
+        >
+          <font-awesome-icon :icon="addedToBucketIcon" />
+          <span>{{ bucketAdditionLabel }}</span>
+        </button>
+        <button
+          v-else-if="canBeRemovedFromBucket"
+          class="status__web-intent"
+          @click="removeFromBucket"
+        >
+          <font-awesome-icon icon="minus" />
+          <span class="status__web-intent--remove-from-bucket">Remove from bucket</span>
+        </button>
+      </div>
     </div>
 
     <div class="status__row">
-      <button
-        v-clipboard="urlWhichCanBeShared"
-        class="status__web-intent status__web-intent--share-url"
-        @click="shareStatus"
-      >
-        <font-awesome-icon icon="link" />
-        <span>Share this status</span>
-        <a
-          :href="urlWhichCanBeShared"
-          class='hide'
-        >{{ urlWhichCanBeShared }}</a>
-      </button>
+      <div class="status__web-intents">
+        <button
+          v-clipboard="urlWhichCanBeShared"
+          class="status__web-intent status__web-intent--share-url"
+          @click="shareStatus"
+        >
+          <font-awesome-icon icon="link" />
+          <span>Share this status</span>
+          <a
+            :href="urlWhichCanBeShared"
+            class='hide'
+          >{{ urlWhichCanBeShared }}</a>
+        </button>
+      </div>
     </div>
 
-    <div :class="conversationClasses">
-      <button
-        v-if="isBucketVisible && canBeRefreshed && !isAllowedToOpenConversation"
-        class="status__web-intent status__web-intent--load-conversation"
-        @click="syncStatus"
-      >
-        <font-awesome-icon
-          class="status__replied-icon"
-          icon="comments"
-        />
+    <div
+      v-if="shouldShowConversationIntentButtons"
+      :class="conversationClasses"
+    >
+      <div class="status__web-intents">
+        <button
+          v-if="isBucketVisible && canBeRefreshed && !isAllowedToOpenConversation"
+          class="status__web-intent status__web-intent--load-conversation"
+          @click="syncStatus"
+        >
+          <font-awesome-icon
+            class="status__replied-icon"
+            icon="comments"
+          />
 
-        <span>Load conversation</span>
+          <span>Load conversation</span>
 
-        <font-awesome-icon
-          v-if="couldNotFindStartOfConversation"
-          class="status__error"
-          icon="exclamation-triangle"
-        />
-      </button>
+          <font-awesome-icon
+            v-if="couldNotFindStartOfConversation"
+            class="status__error"
+            icon="exclamation-triangle"
+          />
+        </button>
 
-      <button
-        v-else-if="isAllowedToOpenConversation"
-        class="status__web-intent status__web-intent--open-conversation"
-        @click="syncStatus"
-      >
-        <font-awesome-icon
-          class="status__replied-icon"
-          icon="comments"
-        />
+        <button
+          v-else-if="isAllowedToOpenConversation"
+          class="status__web-intent status__web-intent--open-conversation"
+          @click="syncStatus"
+        >
+          <font-awesome-icon
+            class="status__replied-icon"
+            icon="comments"
+          />
 
-        <span>Conversation</span>
+          <span>Conversation</span>
 
-        <font-awesome-icon
-          v-if="couldNotFindStartOfConversation"
-          class="status__error"
-          icon="exclamation-triangle"
-        />
-      </button>
+          <font-awesome-icon
+            v-if="couldNotFindStartOfConversation"
+            class="status__error"
+            icon="exclamation-triangle"
+          />
+        </button>
+      </div>
     </div>
 
   </div>
@@ -329,6 +340,9 @@ export default {
       }
 
       return `https://twitter.com/${this.status.usernameOfRetweetingMember}`;
+    },
+    shouldShowConversationIntentButtons() {
+      return this.$route.name === 'bucket';
     }
   },
   mounted() {
@@ -363,8 +377,8 @@ export default {
     },
     getMediaProperties() {
       return {
-        height: '100%',
-        width: '100%',
+        'max-height': '80vw',
+        width: '100vmin',
         objectFit: 'scale-down'
       };
     },

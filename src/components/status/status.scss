@@ -14,7 +14,7 @@
   &__publication-date {
     display: flex;
     font-size: $font-size-date;
-    margin-top: 8px;
+    padding: 8px;
   }
 
   &__row {
@@ -27,6 +27,10 @@
     &:first-child {
       align-items: center;
       margin-top: 0;
+    }
+
+    &--media {
+      justify-content: center;
     }
   }
 
@@ -50,9 +54,12 @@
   &__content {
     flex-direction: row;
     justify-content: flex-start;
+    max-width: calc(100vw - #{$separation-2});
+    padding: $separation-1;
   }
 
   &__media {
+    background-color: lighten($color-greenish, 10%);
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -61,6 +68,11 @@
     &-item {
       cursor: pointer;
     }
+  }
+
+  &__publication,
+  &__relay {
+      padding: $separation-1;
   }
 
   &__relay {
@@ -116,7 +128,8 @@
   &__text {
     display: flex;
     margin-top: $separation-2;
-    white-space: pre-wrap;
+    max-width: calc(100vw - 16px);
+    white-space: pre-line;
 
     @media (max-width: 375px) {
       white-space: normal;
@@ -130,7 +143,7 @@
   &__vanity-metrics {
     color: $color-black-light;
     display: flex;
-    margin-top: $separation-1;
+    padding: $separation-1;
   }
 
   &__vanity-metric-icon {
@@ -139,6 +152,17 @@
 
   &__vanity-metric {
     margin-right: $separation-2;
+  }
+
+  &__links {
+    padding: $separation-1;
+  }
+
+  &__web-intents {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: $separation-1;
   }
 
   &__web-intent {

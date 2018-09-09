@@ -87,7 +87,7 @@
     }
 
     &--can-be-shared {
-      height: 100%;
+      height: calc(100vh - 56px - 17px);
     }
   }
 }
