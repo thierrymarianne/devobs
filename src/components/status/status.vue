@@ -402,7 +402,6 @@ export default {
     },
     removeStatusFromBucket() {
       EventHub.$emit('status.removed_from_bucket', { status: this.status });
-      this.addedToBucket = !this.addedToBucket;
     },
     shareStatus() {
       let { aggregateType } = this;
