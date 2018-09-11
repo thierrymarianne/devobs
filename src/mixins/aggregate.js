@@ -14,10 +14,17 @@ export default {
           name: aggregateType
         };
       });
+
       aggregateTypes.bucket = {
         statuses: [],
         isVisible: false,
         name: 'bucket'
+      };
+
+      aggregateTypes.status = {
+        statuses: [],
+        isVisible: false,
+        name: 'status'
       };
 
       return aggregateTypes;

@@ -24,6 +24,11 @@ export default [
   {
     component: StatusList,
     path: '/aggregate/:aggregateType/:statusId',
+    name: 'aggregate-status'
+  },
+  {
+    component: StatusList,
+    path: '/status/:statusId',
     name: 'status'
   },
   {

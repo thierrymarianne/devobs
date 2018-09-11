@@ -123,7 +123,10 @@
       </div>
     </div>
 
-    <div class="status__row">
+    <div
+      v-if="canBeShared()"
+      class="status__row"
+    >
       <div class="status__web-intents">
         <button
           v-clipboard="urlWhichCanBeShared"
@@ -342,7 +345,13 @@ export default {
       return `https://twitter.com/${this.status.usernameOfRetweetingMember}`;
     },
     shouldShowConversationIntentButtons() {
-      return this.$route.name === 'bucket';
+      return (
+        this.$route.name === 'bucket' &&
+        (this.isAllowedToOpenConversation ||
+          (this.isBucketVisible &&
+            this.canBeRefreshed &&
+            !this.isAllowedToOpenConversation))
+      );
     }
   },
   mounted() {
@@ -358,11 +367,16 @@ export default {
     ]),
     ...mapGetters(['isStatusInBucket', 'isConversationInBucket']),
     canBeShared() {
-      if (this.$route.name !== 'status') {
-        return false;
+      if (
+        this.$route.name === 'aggregate' ||
+        this.$route.name === 'aggregate-status' ||
+        this.$route.name === 'press-review' ||
+        this.$route.name === 'status'
+      ) {
+        return true;
       }
 
-      return this.canBeShared;
+      return this.canBeSharedAtFirst;
     },
     statusClasses() {
       const classes = { status: true };

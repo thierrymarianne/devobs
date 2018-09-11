@@ -1,6 +1,7 @@
 import { createNamespacedHelpers } from 'vuex';
 
 import EventHub from '../modules/event-hub';
+import Errors from '../modules/errors';
 
 const { mapGetters } = createNamespacedHelpers('bucket');
 
@@ -35,13 +36,18 @@ export default {
         return statuses;
       }
 
+      let filteredStatuses;
+
       if (typeof filterType === 'function') {
-        return Object.values(statuses).filter(filterType);
+        filteredStatuses = Object.values(statuses).filter(filterType);
+        if (filteredStatuses.length === 0) {
+          throw new Errors.NoRemainingStatusAfterApplyingFilter();
+        }
       }
 
       if (filterType === 'media') {
         const filter = status => status.media && status.media.length > 0;
-        const filteredStatuses = Object.values(statuses).filter(filter);
+        filteredStatuses = Object.values(statuses).filter(filter);
         if (filteredStatuses.length === 0) {
           EventHub.$emit('status_list.apologize_about_empty_list_intended');
           return Object.values(statuses);
@@ -51,7 +57,7 @@ export default {
       }
 
       if (filterType === 'top100') {
-        const filteredStatuses = Object.values(Object.assign({}, statuses));
+        filteredStatuses = Object.values(Object.assign({}, statuses));
         const sortByRetweet = (firstStatus, secondStatus) => {
           if (firstStatus.totalRetweet === secondStatus.totalRetweet) {
             return 0;
@@ -100,8 +106,11 @@ export default {
         }
 
         let aggregate;
-        if (this.$route.name === 'press-review') {
-          aggregate = 'press-review';
+        if (
+          this.$route.name === 'press-review' ||
+          this.$route.name === 'status'
+        ) {
+          aggregate = this.$route.name;
         }
         if (this.$route.name === 'aggregate') {
           aggregate = this.$route.params.aggregateType;

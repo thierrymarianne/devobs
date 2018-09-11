@@ -132,7 +132,7 @@ const logger = {
     logLevel.onError({ error, file, extra });
 
     if (logLevel.isSilent) {
-      return;
+      return error;
     }
 
     if (productionMode) {
@@ -140,10 +140,10 @@ const logger = {
         logger: file,
         extra
       });
-      return;
+      return error;
     }
 
-    throw error;
+    return error;
   }
 };
 
