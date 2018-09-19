@@ -13,6 +13,7 @@
   }
 
   &__publication-date {
+    cursor: pointer;
     display: flex;
     font-size: $font-size-date;
     padding: 8px;
@@ -165,6 +166,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     padding: $separation-1;
+    margin-top: calc(0 - #{$separation-1});
   }
 
   &__web-intent {

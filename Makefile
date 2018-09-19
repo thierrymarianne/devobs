@@ -10,6 +10,9 @@ help:
 build: ## Build package
 	@/bin/bash -c 'export NODE_ENV="production" && rm -f dist/*css && rm -f dist/*js && npx webpack --config webpack.config.js --optimize-minimize --mode=production'
 
+clone-project: ## Clone the project from github
+		@/bin/bash -c 'git clone https://github.com/thierrymarianne/daily-press-revue.git'
+
 coverage: ## Run coverage of components with karma
 	@/bin/bash -c 'export NODE_ENV="test" BABEL_ENV="test" && \
 	cp src/config/index.js{.dist,} && \
@@ -17,6 +20,9 @@ coverage: ## Run coverage of components with karma
 	
 development-server: ## Start development server
 	@/bin/bash -c 'export NODE_ENV="development" && npx webpack-serve --config ./webpack.config.js --port=8888 --open --content="dist"'
+
+install-javascript-dependencies: ## Install JavaScript dependencies as node nodules
+		@/bin/bash -ci 'npm install'
 
 lint: ## Lint project files
 	@/bin/bash -c 'npx eslint src/ .js'

@@ -2,7 +2,12 @@
   <div :class="statusClasses()">
 
     <div class="status__row">
-      <div class="status__publication-date">{{ publicationDate }}</div>
+      <div class="status__publication-date">
+        <a
+          :href="status.url"
+          class="status__url"
+        >{{ publicationDate }}</a>
+      </div>
       <div class="status__vanity-metrics">
         <font-awesome-icon
           icon="retweet"
@@ -67,11 +72,14 @@
       </div>
     </div>
 
-    <div class="status__row">
+    <div
+      v-if="shouldDisplayPermalink"
+      class="status__row"
+    >
       <div class="status__links">
         <a
-          :href="status.url"
-          class="status__url">Permalink</a>
+          class="status__url"
+          @click="goToPermalink(status)">Permalink</a>
         <a
           v-for="(link, index) in status.links"
           :key="index"
@@ -305,6 +313,13 @@ export default {
       return this.status.totalRetweet || 0;
     },
     statusText() {
+      if (
+        typeof this.status === 'undefined' ||
+        typeof this.status === 'string'
+      ) {
+        return;
+      }
+
       return this.status.text.replace(/\s/g, ' ');
     },
     urls() {
@@ -343,6 +358,9 @@ export default {
       }
 
       return `https://twitter.com/${this.status.usernameOfRetweetingMember}`;
+    },
+    shouldDisplayPermalink() {
+      return 'peek' in this.$route.query;
     },
     shouldShowConversationIntentButtons() {
       return (
@@ -398,6 +416,12 @@ export default {
     },
     getMediaUrl(media) {
       return media.url;
+    },
+    goToPermalink(status) {
+      this.$router.push({
+        name: 'status',
+        params: { statusId: status.statusId }
+      });
     },
     intendToRemoveStatusFromBucket({ statusId }) {
       if (this.status.statusId !== statusId) {

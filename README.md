@@ -11,22 +11,16 @@ A client of [daily press review](https://github.com/thierrymarianne/daily-press-
 Install [git](https://git-scm.org) and clone the project repository
 
 ```
-git clone https://github.com/thierrymarianne/daily-press-revue.git
+make clone-project
 ```
 
 Install [node.js](https://nodejs.org), 
 preferally with [nvm](https://github.com/creationix/nvm)
 
-Install the project JavaScript dependencies with [yarn](https://yarnpkg.com/en/docs/install) 
+Install the project JavaScript dependencies
 
 ```
-yarn install
-```
-
-or [npm](https://nodejs.org/en/download/)
-
-```
-npm install
+make install-javascript-dependencies
 ```
 
 ## Development
@@ -34,17 +28,17 @@ npm install
 Run a development server with [webpack](https://webpack.js.org/)
 
 ```
-npm run webpack-serve
+make development-server
 ```
 
-## Distribute
+## Build
 
 ```
-npm run build
+make build
 ```
 
 ## Test
 
 ```
-npm run test
+make unit-test
 ```

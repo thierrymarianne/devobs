@@ -171,16 +171,26 @@ export default {
     hideActionMenu() {
       this.showMenu = false;
     },
+    getRouteQuery() {
+      const canPeekAtExtendedFeatures = 'peek' in this.$route.query;
+      return canPeekAtExtendedFeatures ? { peek: null } : null;
+    },
     intendToGet(aggregateType) {
       EventHub.$emit('status_list.load_intended');
       EventHub.$emit('action_menu.hide_intended');
 
       if (aggregateType === 'Press review') {
-        this.$router.push({ name: 'press-review' });
+        this.$router.push({
+          name: 'press-review',
+          query: this.getRouteQuery()
+        });
       }
 
       if (aggregateType === 'bucket') {
-        this.$router.push({ name: 'bucket' });
+        this.$router.push({
+          name: 'bucket',
+          query: this.getRouteQuery()
+        });
         EventHub.$emit('status_list.intent_to_refresh_bucket');
       }
 
@@ -189,15 +199,16 @@ export default {
       });
     },
     intendToGetAggregate(aggregateType) {
-      this.$router.push({
-        name: 'aggregate',
+      EventHub.$emit('action_menu.hide_intended');
+      EventHub.$emit('status_list.load_intended');
+      EventHub.$emit('status_list.reload_intended', {
         aggregateType
       });
 
-      EventHub.$emit('status_list.load_intended');
-      EventHub.$emit('action_menu.hide_intended');
-      EventHub.$emit('status_list.reload_intended', {
-        aggregateType
+      this.$router.push({
+        name: 'aggregate',
+        params: { aggregateType: this.getAggregateIndex(aggregateType) },
+        query: this.getRouteQuery()
       });
     },
     showStatusesHavingMedia() {

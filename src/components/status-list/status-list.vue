@@ -37,7 +37,7 @@
           </div>
         </template>
         <p
-          v-else-if="isAggregateVisible(aggregateType.name)"
+          v-else-if="isAggregateVisibleButEmpty(aggregateType.name)"
           class="status-list__item-none"
         >{{ emptyAggregateText() }}</p>
       </div>
@@ -82,11 +82,36 @@ export default {
       visitedAggregate: 'press-review'
     };
   },
+  watch: {
+    $route(to, from) {
+      if (to.name !== from.name) {
+        this.handleNavigation({ to });
+        return;
+      }
+
+      if (
+        to.name === 'aggregate' &&
+        to.params.aggregateType !== from.params.aggregateType
+      ) {
+        this.handleNavigation({ to });
+      }
+    }
+  },
+  created() {
+    this.aggregateTypes = this.declareAggregateTypesFromRoutes(this.routes);
+
+    const noHorizontalOverflow = css`
+      overflow-x: hidden;
+    `;
+    document.body.classList.add(noHorizontalOverflow);
+
+    this.handleNavigation({});
+  },
   mounted() {
-    EventHub.$on('status_list.load_intended', this.showLoadingMessage);
-    EventHub.$on('status_list.reload_intended', this.getStatuses);
-    EventHub.$on('status_list.intent_to_refresh_bucket', this.refreshBucket);
+    EventHub.$on('status.added_to_bucket', this.addToBucket);
     EventHub.$on('status_list.after_fetch', this.refreshBucket);
+    EventHub.$on('status_list.intent_to_refresh_bucket', this.refreshBucket);
+    EventHub.$on('status_list.load_intended', this.showLoadingMessage);
     EventHub.$on(
       'status_list.load_more_statuses_intended',
       this.appendMoreStatus
@@ -95,13 +120,26 @@ export default {
       'status_list.apologize_about_empty_list_intended',
       this.showEmptyStatusCollectionMessage
     );
-    EventHub.$on('status.added_to_bucket', this.addToBucket);
+    EventHub.$on('status_list.reload_intended', this.getStatuses);
     EventHub.$on('status.removed_from_bucket', this.removeFromBucket);
 
     window.addEventListener('scroll', throttle(this.handleScroll, 1000));
   },
   beforeMount() {
     this.visitedAggregate = this.getVisitedAggregate();
+  },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.handleNavigation({ to });
+    });
+  },
+  beforeRouteUpdate(to, from, next) {
+    this.handleNavigation({ to });
+    next();
+  },
+  beforeRouteLeave(to, from, next) {
+    this.handleNavigation({ to });
+    next();
   },
   beforeUpdate() {
     this.visitedAggregate = this.getVisitedAggregate();
@@ -114,45 +152,6 @@ export default {
     EventHub.$off('status_list.load_more_statuses_intended');
     EventHub.$off('status.added_to_bucket');
     EventHub.$off('status.removed_from_bucket');
-  },
-  created() {
-    this.aggregateTypes = this.declareAggregateTypesFromRoutes(this.routes);
-
-    const noHorizontalOverflow = css`
-      overflow-x: hidden;
-    `;
-    document.body.classList.add(noHorizontalOverflow);
-
-    if (this.$route.name === 'aggregate-status') {
-      const { statusId } = this.$route.params;
-      this.getStatuses({
-        aggregateType: this.$route.params.aggregateType,
-        filter: status => status.statusId === statusId
-      });
-    }
-
-    if (this.$route.name === 'status') {
-      this.getStatuses({ action: this.routes.actions.fetchStatus });
-      return;
-    }
-
-    if (this.$route.name === 'aggregate') {
-      this.getStatuses({ aggregateType: this.$route.params.aggregateType });
-    }
-
-    if (this.$route.name === 'press-review') {
-      this.getStatuses({ aggregateType: 'press-review' });
-    }
-
-    if (this.$route.name === 'bucket') {
-      this.replaceBucketFromPersistentLayer();
-      this.refreshBucket({ aggregateType: 'bucket' });
-      this.getStatuses({ aggregateType: 'bucket' });
-
-      return;
-    }
-
-    this.refreshBucket();
   },
   methods: {
     ...mapActions([
@@ -204,6 +203,50 @@ export default {
 
       return 'Your statuses of interest are being loaded.';
     },
+    handleNavigation({ to }) {
+      let nextRoute = this.$route;
+      if (typeof to !== 'undefined') {
+        nextRoute = to;
+      }
+
+      if (nextRoute.name === 'aggregate-status') {
+        this.replaceBucketFromPersistentLayer();
+        this.refreshBucket({ aggregateType: 'bucket' });
+
+        const { statusId } = nextRoute.params;
+        this.getStatuses({
+          aggregateType: nextRoute.params.aggregateType,
+          filter: status => status.statusId === statusId
+        });
+      }
+
+      if (nextRoute.name === 'status') {
+        this.getStatuses({ action: this.routes.actions.fetchStatus });
+
+        return nextRoute;
+      }
+
+      if (nextRoute.name === 'aggregate') {
+        this.getStatuses({ aggregateType: nextRoute.params.aggregateType });
+      }
+
+      if (nextRoute.name === 'press-review') {
+        this.getStatuses({ aggregateType: 'press-review' });
+      }
+
+      if (nextRoute.name === 'bucket') {
+        this.replaceBucketFromPersistentLayer();
+        this.refreshBucket({ aggregateType: 'bucket' });
+
+        this.getStatuses({ aggregateType: 'bucket' });
+
+        return nextRoute;
+      }
+
+      this.refreshBucket();
+
+      return nextRoute;
+    },
     handleScroll() {
       const scrollTop =
         document.documentElement.scrollTop || document.body.scrollTop;
@@ -248,7 +291,7 @@ export default {
       return this.$route.params.aggregateType;
     },
     isStatusListVisible({ name }) {
-      const aggregateIndex = this.getAggregateIndex(this.visibleStatuses.name);
+      const aggregateIndex = this.getAggregateIndex(name);
 
       if (
         this.$route.name === 'bucket' ||
@@ -358,6 +401,7 @@ export default {
         this.visibleStatuses.name = this.$route.params.aggregateType;
         this.visibleStatuses.statuses = [];
       }
+
       if (
         this.$route.name === 'bucket' ||
         this.$route.name === 'press-review' ||
@@ -450,6 +494,15 @@ export default {
           return EventHub.$emit('status_list.after_fetch');
         })
         .catch(e => {
+          if (this.$route.name === 'aggregate-status') {
+            this.$router.push({
+              name: 'status',
+              params: {
+                statusId: this.$route.params.statusId
+              }
+            });
+            this.getStatuses({ action: this.routes.actions.fetchStatus });
+          }
           return this.logger.error(e.message, 'status-list', e);
         });
     },
@@ -464,6 +517,12 @@ export default {
     isAggregateVisible(aggregateType) {
       const aggregateIndex = this.getAggregateIndex(aggregateType);
       return aggregateIndex === this.visibleStatuses.name;
+    },
+    isAggregateVisibleButEmpty(aggregateType) {
+      return (
+        this.isAggregateVisible(aggregateType) &&
+        this.visibleStatuses.statuses.length === 0
+      );
     },
     shouldGuardAgainstUndefinedRoute() {
       return typeof this.routes === 'undefined';
@@ -504,6 +563,8 @@ export default {
       filter,
       statusLimitPerList
     }) {
+      let visibleStatuses;
+
       if (this.$route.name === 'status') {
         this.visibleStatuses.name = 'status';
         this.visibleStatuses.statuses = statuses;
@@ -518,7 +579,31 @@ export default {
         return statuses;
       }
 
-      const visibleStatuses = statuses;
+      if (
+        this.$route.name === 'bucket' &&
+        this.visibleStatuses.name === 'bucket' &&
+        this.visibleStatuses.statuses.length === 0 &&
+        this.visibleStatuses.originalCollection.length > 0
+      ) {
+        visibleStatuses = Object.values(
+          this.visibleStatuses.originalCollection
+        );
+        this.visibleStatuses.statuses = visibleStatuses.slice(
+          0,
+          visibleStatuses.length - 1
+        );
+        this.aggregateTypes.bucket.statuses = visibleStatuses.slice(
+          0,
+          visibleStatuses.length - 1
+        );
+        this.aggregateTypes.bucket.isVisible = true;
+
+        this.hideLoadingMessage();
+
+        return visibleStatuses.slice(0, visibleStatuses.length - 1);
+      }
+
+      visibleStatuses = statuses;
       const aggregateIndex = this.getAggregateIndex(aggregateType);
 
       visibleStatuses.name = aggregateIndex;

@@ -89,6 +89,7 @@ const Bucket = {
         MutationTypes.REPLACE_CONVERSATIONS_IN_BUCKET,
         bucket.conversations
       );
+      EventHub.$emit('status_list.intent_to_refresh_bucket');
     },
     [ActionTypes.PERSIST_REMOVAL_FROM_BUCKET]({ commit }, status) {
       const bucket = JSON.parse(localStorage.getItem('bucket'));

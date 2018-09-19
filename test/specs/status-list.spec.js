@@ -21,10 +21,10 @@ const responder = {
 };
 
 const router = new VueRouter({
-	routes,
-	scrollBehavior() {
-		return { x: 0, y: 0 };
-	}
+  routes,
+  scrollBehavior() {
+    return { x: 0, y: 0 };
+  }
 });
 
 const mockApi = function(responseFactory) {
@@ -72,6 +72,8 @@ describe('Status list', () => {
 
   it('should handle the default aggregate.', () => {
     let statusListWrapper;
+
+    SharedState.logLevel.onError = () => {};
 
     responder.reply = config => {
       if (config.url === '/press-review') {
