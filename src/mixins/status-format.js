@@ -40,9 +40,12 @@ export default {
 
       if (typeof filterType === 'function') {
         filteredStatuses = Object.values(statuses).filter(filterType);
+
         if (filteredStatuses.length === 0) {
           throw new Errors.NoRemainingStatusAfterApplyingFilter();
         }
+
+        return filteredStatuses;
       }
 
       if (filterType === 'media') {

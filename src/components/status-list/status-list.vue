@@ -94,6 +94,14 @@ export default {
         to.params.aggregateType !== from.params.aggregateType
       ) {
         this.handleNavigation({ to });
+        return;
+      }
+
+      if (
+        (to.name === 'aggregate-status' || to.name === 'status') &&
+        to.params.statusId !== from.params.statusId
+      ) {
+        this.handleNavigation({ to });
       }
     }
   },
