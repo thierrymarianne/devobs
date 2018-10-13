@@ -364,7 +364,7 @@ export default {
       };
     },
     getAggregateIndex(aggregateType) {
-      return aggregateType.replace(/\s+/, '-').toLowerCase();
+      return aggregateType.replace(/\s+/g, '-').toLowerCase();
     },
     getCollectionOfStatusesInBucket(statuses) {
       if (statuses === undefined) {
