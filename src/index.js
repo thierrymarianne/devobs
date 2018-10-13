@@ -50,7 +50,8 @@ router.beforeEach((to, from, next) => {
   EventHub.$emit('action_menu.hide_intended');
 
   const peekQueryParamInSourceUrl = typeof from.query.peek !== 'undefined';
-  const peekQueryParamNotInDestinationUrl = typeof to.query.peek === 'undefined';
+  const peekQueryParamNotInDestinationUrl =
+    typeof to.query.peek === 'undefined';
 
   if (peekQueryParamInSourceUrl && peekQueryParamNotInDestinationUrl) {
     const nextQuery = Object.assign(to.query, { peek: 1 });
