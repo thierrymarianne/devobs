@@ -229,7 +229,12 @@ export default {
       }
 
       if (nextRoute.name === 'status') {
-        this.getStatuses({ action: this.routes.actions.fetchStatus });
+        const action = this.routes.actions.fetchStatus;
+        action.route = this.routes.actions.fetchStatus.route.replace(
+          ':statusId',
+          nextRoute.params.statusId
+        );
+        this.getStatuses({ action });
 
         return nextRoute;
       }
@@ -301,8 +306,11 @@ export default {
     isStatusListVisible({ name }) {
       const aggregateIndex = this.getAggregateIndex(name);
 
+      if (this.$route.name === 'bucket') {
+        return this.aggregateTypes.bucket.statuses.length;
+      }
+
       if (
-        this.$route.name === 'bucket' ||
         this.$route.name === 'press-review' ||
         this.$route.name === 'status'
       ) {
@@ -323,7 +331,7 @@ export default {
     isStatusVisible(status) {
       return !status.conversation || this.$route.name !== 'bucket';
     },
-    refreshBucket(event) {
+    refreshBucket(event = {}) {
       const statusesInBucket = this.getStatusesInBucket();
       let statusCollection = this.getCollectionOfStatusesInBucket(
         statusesInBucket
@@ -334,15 +342,26 @@ export default {
         statusCollection = this.expandConversations(statusCollection, event);
       }
 
-      this.aggregateTypes.bucket = {
-        statuses: statusCollection,
-        isVisible: false,
-        name: 'bucket'
-      };
+      this.setBucketCollection(
+        statusCollection,
+        typeof event.next === 'function'
+      );
 
       if (visitingBucket) {
+        this.aggregateTypes.bucket.statuses = statusCollection;
         this.visibleStatuses.statuses = statusCollection;
       }
+
+      if (typeof event.next === 'function') {
+        event.next();
+      }
+    },
+    setBucketCollection(statusCollection, visible = false) {
+      this.aggregateTypes.bucket = {
+        statuses: statusCollection,
+        isVisible: visible,
+        name: 'bucket'
+      };
     },
     getAggregateIndex(aggregateType) {
       return aggregateType.replace(/\s+/, '-').toLowerCase();
@@ -439,11 +458,9 @@ export default {
       };
 
       if (typeof action !== 'undefined') {
-        const { statusId } = this.$route.params;
-        const route = action.route.replace(':statusId', statusId);
         const { method } = action;
         requestOptions.params = { refresh: 1 };
-        this.$http[method](route, requestOptions)
+        this.$http[method](action.route, requestOptions)
           .then(response => {
             try {
               const statuses = this.formatStatuses(response.data);
@@ -589,26 +606,54 @@ export default {
 
       if (
         this.$route.name === 'bucket' &&
-        this.visibleStatuses.name === 'bucket' &&
-        this.visibleStatuses.statuses.length === 0 &&
-        this.visibleStatuses.originalCollection.length > 0
+        this.visibleStatuses.name === 'bucket'
       ) {
-        visibleStatuses = Object.values(
-          this.visibleStatuses.originalCollection
+        const bucketStatuses = this.getCollectionOfStatusesInBucket(
+          this.getStatusesInBucket()
         );
-        this.visibleStatuses.statuses = visibleStatuses.slice(
-          0,
-          visibleStatuses.length - 1
-        );
-        this.aggregateTypes.bucket.statuses = visibleStatuses.slice(
-          0,
-          visibleStatuses.length - 1
-        );
-        this.aggregateTypes.bucket.isVisible = true;
+        this.setBucketCollection(bucketStatuses, true);
+        this.visibleStatuses.originalCollection = bucketStatuses;
 
-        this.hideLoadingMessage();
+        if (
+          this.visibleStatuses.statuses.length === 0 &&
+          this.visibleStatuses.originalCollection.length > 0
+        ) {
+          this.setBucketCollection(
+            this.getCollectionOfStatusesInBucket(this.getStatusesInBucket()),
+            true
+          );
 
-        return visibleStatuses.slice(0, visibleStatuses.length - 1);
+          visibleStatuses = Object.values(
+            this.visibleStatuses.originalCollection
+          );
+
+          const areThereVisibleBucketItems =
+            visibleStatuses.length > 0 &&
+            this.aggregateTypes.bucket.statuses.length > 0;
+
+          // Prevent wrongly removing items from bucket
+          // when none is available to refill it right away
+          if (areThereVisibleBucketItems) {
+            this.visibleStatuses.statuses = visibleStatuses.slice(
+              0,
+              visibleStatuses.length
+            );
+            this.aggregateTypes.bucket.statuses = visibleStatuses.slice(
+              0,
+              visibleStatuses.length
+            );
+          }
+
+          this.aggregateTypes.bucket.isVisible = true;
+
+          this.hideLoadingMessage();
+
+          if (areThereVisibleBucketItems) {
+            return visibleStatuses.slice(0, visibleStatuses.length - 1);
+          }
+
+          return this.aggregateTypes.bucket.statuses;
+        }
       }
 
       visibleStatuses = statuses;

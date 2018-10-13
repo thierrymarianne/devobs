@@ -187,11 +187,14 @@ export default {
       }
 
       if (aggregateType === 'bucket') {
-        this.$router.push({
-          name: 'bucket',
-          query: this.getRouteQuery()
+        EventHub.$emit('status_list.intent_to_refresh_bucket', {
+          next: () => {
+            this.$router.push({
+              name: 'bucket',
+              query: this.getRouteQuery()
+            });
+          }
         });
-        EventHub.$emit('status_list.intent_to_refresh_bucket');
       }
 
       EventHub.$emit('status_list.reload_intended', {

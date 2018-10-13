@@ -388,11 +388,14 @@ export default {
     ]),
     ...mapGetters(['isStatusInBucket', 'isConversationInBucket']),
     canBeShared() {
+      if (this.$route.name === 'status') {
+        return false;
+      }
+
       if (
         this.$route.name === 'aggregate' ||
         this.$route.name === 'aggregate-status' ||
-        this.$route.name === 'press-review' ||
-        this.$route.name === 'status'
+        this.$route.name === 'press-review'
       ) {
         return true;
       }
