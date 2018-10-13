@@ -1,3 +1,4 @@
+import he from 'he';
 import EmojiConvertor from 'emoji-js';
 import { createNamespacedHelpers } from 'vuex';
 
@@ -191,7 +192,7 @@ export default {
         `<!doctype html><body>${subject}</body>`,
         'text/html'
       );
-      const parsedSubject = dom.body.textContent;
+      const parsedSubject = he.escape(dom.body.textContent);
       const emoji = new EmojiConvertor();
 
       // @see https://github.com/iamcal/emoji-data
