@@ -128,11 +128,56 @@
   }
 
   &__text {
-    display: flex;
     margin-top: $separation-2;
     margin-bottom: 0;
     max-width: calc(100vw - 16px);
     white-space: pre-line;
+
+    /deep/ > span.emoji {
+      display: -moz-inline-box;
+      -moz-box-orient: vertical;
+      display: inline-block;
+      vertical-align: baseline;
+      *vertical-align: auto;
+      *zoom: 1;
+      *display: inline;
+      width: 1em;
+      height: 1em;
+      background-size: 1em;
+      background-repeat: no-repeat;
+      text-indent: -9999px;
+      background-position: 50%, 50%;
+    }
+
+    /deep/ > span.emoji-sizer {
+      line-height: 0.81em;
+      font-size: 1em;
+      margin: -2px 0;
+    }
+
+    /deep/ > span.emoji-outer {
+      display: -moz-inline-box;
+      display: inline-block;
+      *display: inline;
+      height: 1em;
+      width: 1em;
+    }
+
+    /deep/ > span.emoji-inner {
+      display: -moz-inline-box;
+      display: inline-block;
+      text-indent: -9999px;
+      width: 100%;
+      height: 100%;
+      vertical-align: baseline;
+      *vertical-align: auto;
+      *zoom: 1;
+    }
+
+    /deep/ > img.emoji {
+      width: 1em;
+      height: 1em;
+    }
 
     @media (max-width: 375px) {
       white-space: normal;

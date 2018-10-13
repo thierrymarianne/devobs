@@ -1,7 +1,7 @@
 {
   "name": "press-revue",
   "private": true,
-  "version": "0.6.0",
+  "version": "0.7.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/thierrymarianne/press-revue.git"
@@ -106,6 +106,7 @@
     "@fortawesome/vue-fontawesome": "^0.1.1",
     "axios": "^0.18.0",
     "axios-progress-bar": "^1.2.0",
+    "emoji-js": "^3.4.1",
     "emotion": "^9.2.8",
     "lodash-es": "^4.17.10",
     "mime": "^2.3.1",

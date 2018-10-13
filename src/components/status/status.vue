@@ -53,7 +53,10 @@
             class="status__avatar"
           />
         </div>
-        <p class="status__text">{{ statusText }}</p>
+        <p
+          class="status__text"
+          v-html="statusText"
+        ></p>
       </div>
     </div>
 
@@ -317,7 +320,7 @@ export default {
         typeof this.status === 'undefined' ||
         typeof this.status === 'string'
       ) {
-        return;
+        return '';
       }
 
       return this.status.text.replace(/\s/g, ' ');

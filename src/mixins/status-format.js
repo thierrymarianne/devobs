@@ -1,3 +1,4 @@
+import EmojiConvertor from 'emoji-js';
 import { createNamespacedHelpers } from 'vuex';
 
 import EventHub from '../modules/event-hub';
@@ -190,7 +191,13 @@ export default {
         `<!doctype html><body>${subject}</body>`,
         'text/html'
       );
-      return dom.body.textContent;
+      const parsedSubject = dom.body.textContent;
+      const emoji = new EmojiConvertor();
+
+      // @see https://github.com/iamcal/emoji-data
+      emoji.img_sets.apple.path =
+        'https://revue-de-presse.weaving-the-web.org/emoji-data/img-apple-64/';
+      return emoji.replace_unified(parsedSubject);
     }
   }
 };
