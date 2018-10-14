@@ -35,6 +35,23 @@
         >@{{ status.username }}</a>
       </div>
     </div>
+
+    <div
+      v-if="isLike"
+      class="status__row">
+      <div class="status__relay">
+        <a
+          :href="likingMemberTimelineUrl"
+          class="status__username"
+        >@{{ status.likedBy }}</a>
+        <span class="status__verb">&nbsp;liked&nbsp;</span>
+        <a
+          :href="memberTimelineUrl"
+          class="status__username"
+        >@{{ status.username }}</a>
+      </div>
+    </div>
+
     <div 
       v-else 
       class="status__row">
@@ -312,6 +329,12 @@ export default {
       }
       return this.status.retweet;
     },
+    isLike() {
+      if (typeof this.status === 'undefined') {
+        return false;
+      }
+      return this.status.likedBy;
+    },
     retweet() {
       return this.status.totalRetweet || 0;
     },
@@ -361,6 +384,13 @@ export default {
       }
 
       return `https://twitter.com/${this.status.usernameOfRetweetingMember}`;
+    },
+    likingMemberTimelineUrl() {
+      if (typeof this.status === 'undefined' && this.status.retweet === false) {
+        return '';
+      }
+
+      return `https://twitter.com/${this.status.likedBy}`;
     },
     shouldDisplayPermalink() {
       return 'peek' in this.$route.query;

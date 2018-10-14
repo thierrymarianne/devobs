@@ -153,6 +153,10 @@ export default {
             status.username_of_retweeting_member;
         }
 
+        if (status.liked_by) {
+          formattedStatus.likedBy = status.liked_by;
+        }
+
         formattedStatuses.push(formattedStatus);
       });
 
