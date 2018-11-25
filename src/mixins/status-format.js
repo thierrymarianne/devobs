@@ -98,9 +98,17 @@ export default {
 
       statuses.forEach(status => {
         if (
-          typeof status.text === 'undefined' ||
-          typeof status.text.match !== 'function'
+          typeof status.text === 'undefined' &&
+          typeof status.full_text === 'undefined'
         ) {
+          return;
+        }
+
+        if (typeof status.full_text !== 'undefined') {
+          status.text = status.full_text;
+        }
+
+        if (typeof status.text.match !== 'function') {
           return;
         }
 

@@ -1,0 +1,21 @@
+@import '../../styles/list.scss';
+
+.member-status-list {
+  @extend .list;
+  flex-direction: column;
+  padding: 5px;
+  width: auto;
+
+  .list__item {
+    height: auto;
+  }
+
+  /deep/ .status__links {
+    width: 100%;
+
+    .status__url--secondary-link {
+      max-width: none;
+      width: 100%;
+    }
+  }
+}

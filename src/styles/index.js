@@ -10,6 +10,7 @@ import {
   faHeart,
   faImages,
   faLink,
+  faLock,
   faMinus,
   faPlus,
   faRedoAlt,
@@ -30,6 +31,7 @@ library.add(faFire);
 library.add(faHeart);
 library.add(faImages);
 library.add(faLink);
+library.add(faLock);
 library.add(faMinus);
 library.add(faPlus);
 library.add(faRedoAlt);

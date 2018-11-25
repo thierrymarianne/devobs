@@ -229,6 +229,9 @@ import SharedState from '../../modules/shared-state';
 import ActionTypes from '../../store/bucket-action-types';
 
 const { mapActions, mapGetters } = createNamespacedHelpers('bucket');
+const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
+  'authentication'
+);
 
 export default {
   name: 'status',
@@ -279,6 +282,7 @@ export default {
     };
   },
   computed: {
+    ...mapAuthenticationGetters(['isAuthenticated']),
     avatarUrl() {
       return this.status.avatarUrl;
     },
@@ -393,7 +397,7 @@ export default {
       return `https://twitter.com/${this.status.likedBy}`;
     },
     shouldDisplayPermalink() {
-      return 'peek' in this.$route.query;
+      return this.isAuthenticated;
     },
     shouldShowConversationIntentButtons() {
       return (

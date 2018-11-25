@@ -1,7 +1,7 @@
 {
   "name": "press-revue",
   "private": true,
-  "version": "0.10.1",
+  "version": "0.11.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/thierrymarianne/press-revue.git"
@@ -88,8 +88,8 @@
     "vue-template-compiler": "^2.5.16",
     "webpack": "^4.16.0",
     "webpack-cli": "^3.1.0",
-    "webpack-manifest-plugin": "^2.0.3",
-    "webpack-serve": "^2.0.2"
+    "webpack-dev-server": "^3.1.10",
+    "webpack-manifest-plugin": "^2.0.3"
   },
   "dependencies": {
     "@babel/plugin-syntax-class-properties": "^7.0.0-beta.54",
@@ -104,6 +104,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.3.1",
     "@fortawesome/free-solid-svg-icons": "^5.1.1",
     "@fortawesome/vue-fontawesome": "^0.1.1",
+    "auth0-js": "^9.8.2",
     "axios": "^0.18.0",
     "axios-progress-bar": "^1.2.0",
     "emoji-js": "^3.4.1",

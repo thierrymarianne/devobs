@@ -25,27 +25,42 @@
 
       <div class="action-menu__action-wrapper">
 
-        <button
-          class="action-menu__button action-menu__refresh-button"
-          @click="showStatusesHavingMedia"
-        >
-          <font-awesome-icon
-            class="action-menu__refresh-icon"
-            icon="images"
-          />
-        </button>
+        <div class="action-menu__row">
+          <button
+            class="action-menu__button action-menu__refresh-button"
+            @click="showStatusesHavingMedia"
+          >
+            <font-awesome-icon
+              class="action-menu__refresh-icon"
+              icon="images"
+            />
+          </button>
 
-        <button
-          :class="getActionMenuButtonClasses"
-          @click="showStatusesInAggregateTop10O"
-        >
-          <font-awesome-icon
-            icon="fire"
-            class="action-menu__toggle-menu-icon"
-          />
-        </button>
+          <button
+            :class="getActionMenuButtonClasses"
+            @click="showStatusesInAggregateTop10O"
+          >
+            <font-awesome-icon
+              icon="fire"
+              class="action-menu__toggle-menu-icon"
+            />
+          </button>
+        </div>
+
+        <div class="action-menu__row action-menu__row--full-width">
+          <button
+            v-if="isAuthenticated"
+            class="action-menu__button action-menu__lists-button"
+            @click="goToLists()"
+          >
+            <span>Lists</span>
+          </button>
+
+          <authenticator />
+        </div>
 
       </div>
+
     </div>
 
     <font-awesome-icon
@@ -59,13 +74,22 @@
 </template>
 
 <script>
+import { createNamespacedHelpers } from 'vuex';
+
 import ApiMixin from '../../mixins/api';
+import CaseNormalizer from '../../mixins/case';
 import EventHub from '../../modules/event-hub';
 import SharedState from '../../modules/shared-state';
+import Authenticator from '../authentication/authenticator.vue';
+
+const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
+  'authentication'
+);
 
 export default {
   name: 'action-menu',
-  mixins: [ApiMixin],
+  components: { Authenticator },
+  mixins: [ApiMixin, CaseNormalizer],
   data() {
     return {
       showMenu: false,
@@ -73,6 +97,7 @@ export default {
     };
   },
   computed: {
+    ...mapAuthenticationGetters(['isAuthenticated']),
     getActionMenuButtonClasses() {
       const classes = { 'action-menu__button': true };
 
@@ -99,9 +124,7 @@ export default {
       return 'arrow-alt-circle-down';
     },
     isVisible() {
-      const hasFullMenu =
-        'peek' in this.$route.query ||
-        !SharedState.getEnvironmentParameters().productionMode;
+      const hasFullMenu = this.isAuthenticated;
 
       const visibilities = {};
       Object.keys(this.routes).forEach(aggregateType => {
@@ -121,6 +144,7 @@ export default {
     },
     menuItemsButPressReview() {
       const routeNames = [];
+
       Object.values(this.routes).forEach(route => {
         if (
           route.name === 'Press review' ||
@@ -131,17 +155,20 @@ export default {
         routeNames.push(route.name);
       });
 
-      return routeNames.sort().filter(route => {
-        return this.isVisible[this.getAggregateIndex(route)];
-      });
+      return routeNames
+        .sort()
+        .filter(route => this.isVisible[this.getAggregateIndex(route)]);
     }
+  },
+  created() {
+    EventHub.$on('navigate_to_homepage', this.goToHomepage);
   },
   mounted() {
     EventHub.$on('action_menu.hide_intended', this.hideActionMenu);
   },
   methods: {
     getAggregateIndex(aggregateType) {
-      return aggregateType.replace(/\s+/g, '-').toLowerCase();
+      return this.normalize(aggregateType);
     },
     getButtonClass(aggregateType) {
       const classes = { 'action-menu__get-statuses': true };
@@ -172,8 +199,22 @@ export default {
       this.showMenu = false;
     },
     getRouteQuery() {
-      const canPeekAtExtendedFeatures = 'peek' in this.$route.query;
+      const canPeekAtExtendedFeatures = this.isAuthenticated;
       return canPeekAtExtendedFeatures ? { peek: null } : null;
+    },
+    goToHomepage() {
+      this.$router.push({
+        name: 'press-review',
+        query: this.getRouteQuery()
+      });
+    },
+    goToLists() {
+      this.$router.push({
+        name: 'lists',
+        query: this.getRouteQuery()
+      });
+
+      EventHub.$emit('aggregate_list.reload_intended');
     },
     intendToGet(aggregateType) {
       EventHub.$emit('status_list.load_intended');

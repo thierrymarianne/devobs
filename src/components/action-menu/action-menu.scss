@@ -78,18 +78,47 @@ $color-double-greener: darken($color-greener, 10%);
   }
 
   &__action-wrapper {
-    flex-direction: row;
+    flex-direction: column;
     display: flex;
-    justify-content: space-between;
     width: 100%;
+    flex-wrap: wrap;
 
-    .action-menu__button {
-      background-color: transparent;
-      border-color: transparent;
-      border-top: 1px solid $color-greener;
-
+    .action-menu__logout-button,
+    .action-menu__login-button {
       &:first-child {
-        border-right: 1px solid $color-greener;
+        border-right-width: 0;
+        justify-content: left;
+      }
+    }
+
+    .action-menu__row {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      width: 100%;
+
+      .action-menu__button {
+        background-color: transparent;
+        border-color: transparent;
+        border-top: 1px solid $color-greener;
+        display: flex;
+        width: 50%;
+
+        &:first-child {
+          border-right: 1px solid $color-greener;
+        }
+      }
+
+      &--full-width {
+        .action-menu__button:first-child {
+          border-right-width: 0;
+          justify-content: flex-end;
+          width: 100%;
+        }
+
+        .action-menu__lists-button:first-child {
+          justify-content: flex-start;
+        }
       }
     }
   }

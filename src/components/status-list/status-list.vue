@@ -51,6 +51,7 @@ import { css } from 'emotion';
 import { throttle } from 'lodash-es';
 
 import ApiMixin from '../../mixins/api';
+import CaseNormalizer from '../../mixins/case';
 import StatusFormat from '../../mixins/status-format';
 import EventHub from '../../modules/event-hub';
 import Status from '../status/status.vue';
@@ -66,7 +67,7 @@ export default {
     Conversation,
     Status
   },
-  mixins: [ApiMixin, StatusFormat],
+  mixins: [ApiMixin, StatusFormat, CaseNormalizer],
   data() {
     return {
       aggregateTypes: {},
@@ -364,7 +365,7 @@ export default {
       };
     },
     getAggregateIndex(aggregateType) {
-      return aggregateType.replace(/\s+/g, '-').toLowerCase();
+      return this.normalize(aggregateType);
     },
     getCollectionOfStatusesInBucket(statuses) {
       if (statuses === undefined) {

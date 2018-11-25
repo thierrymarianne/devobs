@@ -59,7 +59,9 @@ const plugins = [
   new HtmlWebpackPlugin({
     template: 'index.html.ejs',
     inject: 'body'
-  })
+  }),
+  // @see https://github.com/webpack/webpack/issues/1151#issuecomment-162792966
+  new webpack.HotModuleReplacementPlugin()
 ];
 
 if (productionMode) {
@@ -206,6 +208,19 @@ const webpackConfig = {
     path: path.resolve(__dirname, outputDirectory),
     filename: '[name].[hash].js',
     chunkFilename: '[name].[chunkHash].bundle.js'
+  },
+  devServer: {
+    // @see https://webpack.js.org/configuration/dev-server/#devserver-historyapifallback
+    historyApiFallback: {
+      rewrites: [{ from: /^\/.+$/, to: '/' }, { from: /\/logout/, to: '/' }]
+    },
+    contentBase: path.join(__dirname, 'dist'),
+    compress: true,
+    // @see https://github.com/webpack/webpack/issues/1151#issuecomment-111972680
+    hot: true,
+    inline: true,
+    open: true,
+    port: 8888
   },
   plugins,
   devtool: sourceMap

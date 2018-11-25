@@ -31,7 +31,8 @@ const routingOptions = {
   routes,
   scrollBehavior() {
     return { x: 0, y: 0 };
-  }
+  },
+  mode: 'history'
 };
 
 if (SharedState.isProductionModeActive()) {
@@ -39,9 +40,8 @@ if (SharedState.isProductionModeActive()) {
   Raven.config(dsn)
     .addPlugin(RavenVue, Vue)
     .install();
-
-  routingOptions.mode = 'history';
 }
+routingOptions.mode = 'history';
 
 const router = new VueRouter(routingOptions);
 

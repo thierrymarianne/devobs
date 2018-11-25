@@ -1,0 +1,33 @@
+
+.authenticator {
+  flex-direction: column;
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+
+  .authenticator__logout-button,
+  .authenticator__login-button {
+    &:first-child {
+      border-right-width: 0;
+      height: 75px;
+      justify-content: flex-end;
+    }
+  }
+
+  .authenticator__button {
+    background-color: transparent;
+    border-color: transparent;
+    border-top: 1px solid $color-greener;
+    display: flex;
+    cursor: pointer;
+    font-size: 1.3em;
+  }
+
+  &--full-width {
+    .authenticator__button:first-child {
+      border-right-width: 0;
+      justify-content: flex-end;
+      width: 100%;
+    }
+  }
+}

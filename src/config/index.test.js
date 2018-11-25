@@ -13,7 +13,13 @@ const getApi = () => ({
 });
 
 const authentication = {
-  apiKey: ''
+  apiKey: '',
+  auth0: {
+    clientId: '',
+    host: '',
+    redirectUri: '',
+    logoutUri: ''
+  }
 };
 localStorage.setItem('x-auth-token', localStorage.getItem('x-auth-token'));
 
