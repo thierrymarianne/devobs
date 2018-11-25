@@ -2,4 +2,10 @@
 
 .member-list {
   @extend .list;
+
+  .member-list__button-collect-status,
+  .member-list__button-unlock-aggregate {
+    height: 75px;
+    margin-left: 8px;
+  }
 }

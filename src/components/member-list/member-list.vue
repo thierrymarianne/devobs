@@ -56,17 +56,29 @@
     </div>
     <ul class="list__items">
       <li
-        v-for="member in items"
+        v-for="(member, index) in items"
         :key="member.name"
         :data-key="member.name"
         class="list__item"
-        @click="goToMember(member.name)"
-      ><span>
-        @{{ format(member.name) }}
-        <font-awesome-icon
+      >
+        <span
+          @click="goToMember(member.name)"
+        >
+          @{{ format(member.name) }}
+        </span><!--
+     --><font-awesome-icon
           v-if="member.locked"
-          icon="lock" /></span><!--
-      --></li>
+          icon="lock"
+          class="member-list__button-unlock-aggregate"
+          @click="unlockAggregate(member, index)"
+        />
+        <font-awesome-icon
+          v-if="canCollectionBeRequested"
+          icon="file-download"
+          class="member-list__button-collect-status"
+          @click="requestStatusCollection(member.name)"
+        />
+      </li>
     </ul>
   </div>
 </template>
@@ -100,7 +112,10 @@ export default {
     ...mapAuthenticationGetters({
       idToken: 'getIdToken',
       isAuthenticated: 'isAuthenticated'
-    })
+    }),
+    canCollectionBeRequested() {
+      return !SharedState.getEnvironmentParameters().productionMode;
+    }
   },
   destroyed() {
     EventHub.$off('aggregate.reload_intended');
@@ -129,6 +144,13 @@ export default {
     nextPageExists() {
       return this.totalPages && this.pageIndex < this.totalPages;
     },
+    getBaseRequestOptions() {
+      return {
+        headers: {
+          'x-auth-admin-token': this.idToken
+        }
+      };
+    },
     fetchPreviousPage() {
       this.fetchMembers({ pageIndex: this.pageIndex - 1 });
     },
@@ -136,12 +158,7 @@ export default {
       this.fetchMembers({ pageIndex: this.pageIndex + 1 });
     },
     fetchMembers(params = {}) {
-      const requestOptions = {
-        headers: {
-          'x-auth-admin-token': this.idToken
-        }
-      };
-
+      const requestOptions = this.getBaseRequestOptions();
       const headerName = Object.keys(requestOptions.headers)[0];
       this.$http.defaults.headers.common[headerName] =
         requestOptions.headers[headerName];
@@ -196,6 +213,45 @@ export default {
       });
 
       EventHub.$emit('aggregate_list.reload_intended');
+    },
+    requestStatusCollection(memberName) {
+      const requestOptions = this.getBaseRequestOptions();
+      const headerName = Object.keys(requestOptions.headers)[0];
+      this.$http.defaults.headers.common[headerName] =
+        requestOptions.headers[headerName];
+
+      requestOptions.params = {
+        aggregateId: this.$route.params.aggregateId,
+        memberName
+      };
+
+      const action = this.routes.actions.requestStatusCollection;
+      const route = `${Config.getSchemeAndHost()}${action.route}`;
+      this.$http[action.method](route, requestOptions)
+        .then(response => {
+          this.logger.info(response);
+        })
+        .catch(e => this.logger.error(e.message, 'status-list', e));
+    },
+    unlockAggregate(member, index) {
+      const requestOptions = this.getBaseRequestOptions();
+      const headerName = Object.keys(requestOptions.headers)[0];
+      this.$http.defaults.headers.common[headerName] =
+        requestOptions.headers[headerName];
+
+      requestOptions.params = {
+        aggregateId: this.$route.params.aggregateId,
+        memberName: member.name
+      };
+
+      const action = this.routes.actions.unlockAggregate;
+      const route = `${Config.getSchemeAndHost()}${action.route}`;
+      this.$http[action.method](route, requestOptions)
+        .then(response => {
+          this.logger.info(response);
+          this.items[index].locked = false;
+        })
+        .catch(e => this.logger.error(e.message, 'status-list', e));
     }
   }
 };

@@ -11,6 +11,7 @@ import {
   faImages,
   faLink,
   faLock,
+  faFileDownload,
   faMinus,
   faPlus,
   faRedoAlt,
@@ -27,6 +28,7 @@ library.add(faArrowAltCircleUp);
 library.add(faArrowAltCircleDown);
 library.add(faComments);
 library.add(faExclamationTriangle);
+library.add(faFileDownload);
 library.add(faFire);
 library.add(faHeart);
 library.add(faImages);
