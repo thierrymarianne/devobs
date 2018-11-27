@@ -1,0 +1,32 @@
+
+.aggregate {
+  display: flex;
+  height: 75px;
+  flex-direction: row;
+
+  &__label {
+    height: 75px;
+  }
+
+  &__buttons {
+    height: 75px;
+
+    .aggregate__button-edit-name,
+    .aggregate__button-validate-name-edition {
+      height: 75px;
+      margin-right: 8px;
+    }
+  }
+
+  &__name-under-edition {
+    border: 1px dotted $color-black;
+    color: $color-black;
+    padding: 8px;
+    margin-right: 8px;
+  }
+
+  &__button-enter {
+    height: 75px;
+    margin-left: 8px;
+  }
+}

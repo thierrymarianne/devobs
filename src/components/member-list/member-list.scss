@@ -3,9 +3,25 @@
 .member-list {
   @extend .list;
 
+  .member-list__total-statuses {
+    margin-left: 8px;
+  }
+
   .member-list__button-collect-status,
   .member-list__button-unlock-aggregate {
     height: 75px;
     margin-left: 8px;
+  }
+
+  .member-list__button-navigate-to-twitter {
+    margin-right: 8px;
+    color: $color-black;
+
+    &:link,
+    &:active,
+    &:hover,
+    &:visited {
+      color: $color-black;
+    }
   }
 }

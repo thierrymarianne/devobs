@@ -39,12 +39,17 @@
     </div>
     <ul class="list__items">
       <li
-        v-for="aggregate in items"
+        v-for="(aggregate, index) in editableItems"
         :key="aggregate.name"
         :data-key="aggregate.name"
         class="list__item"
-        @click="goToAggregate(aggregate.id)"
-      >{{ format(aggregate.name) }}<!--
+      >
+        <aggregate
+          :click-handler="goToAggregate"
+          :aggregate="aggregate"
+          :ref-name="index"
+        />
+        <!--
       --></li>
     </ul>
   </div>
@@ -57,6 +62,7 @@ import ApiMixin from '../../mixins/api';
 import SharedState from '../../modules/shared-state';
 import EventHub from '../../modules/event-hub';
 import Config from '../../config';
+import Aggregate from '../aggregate/aggregate.vue';
 
 const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
   'authentication'
@@ -64,6 +70,9 @@ const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
 
 export default {
   name: 'aggregate-list',
+  components: {
+    Aggregate
+  },
   mixins: [ApiMixin],
   data() {
     return {
@@ -78,7 +87,10 @@ export default {
     ...mapAuthenticationGetters({
       idToken: 'getIdToken',
       isAuthenticated: 'isAuthenticated'
-    })
+    }),
+    editableItems() {
+      return this.items;
+    }
   },
   destroyed() {
     EventHub.$off('aggregate_list.reload_intended');
@@ -94,13 +106,6 @@ export default {
     this.fetchLists();
   },
   methods: {
-    format(subject) {
-      const capitalizedSubject = `${subject
-        .substring(0, 1)
-        .toUpperCase()}${subject.substring(1, subject.length)}`;
-
-      return capitalizedSubject.replace('::', '>');
-    },
     previousPageExists() {
       return this.pageIndex > 1;
     },

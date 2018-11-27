@@ -61,12 +61,23 @@
         :data-key="member.name"
         class="list__item"
       >
+        <a
+          :href="getMemberProfileUrl(member.name)"
+          class="member-list__button-navigate-to-twitter"
+        >
+          <font-awesome-icon
+            :icon="['fab', 'twitter']"
+          />
+        </a>
         <span
           @click="goToMember(member.name)"
         >
           @{{ format(member.name) }}
-        </span><!--
-     --><font-awesome-icon
+        </span>
+        <span class="member-list__total-statuses">
+          ({{ formatTotalStatuses(member) }})
+        </span>
+        <font-awesome-icon
           v-if="member.locked"
           icon="lock"
           class="member-list__button-unlock-aggregate"
@@ -87,6 +98,7 @@
 import { createNamespacedHelpers } from 'vuex';
 
 import ApiMixin from '../../mixins/api';
+import StatusMixin from '../status/status-mixin';
 import SharedState from '../../modules/shared-state';
 import EventHub from '../../modules/event-hub';
 import Config from '../../config';
@@ -97,7 +109,7 @@ const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
 
 export default {
   name: 'member-list',
-  mixins: [ApiMixin],
+  mixins: [ApiMixin, StatusMixin],
   data() {
     return {
       items: [],
@@ -150,6 +162,9 @@ export default {
           'x-auth-admin-token': this.idToken
         }
       };
+    },
+    getMemberProfileUrl(memberName) {
+      return `http://twitter.com/${memberName}`;
     },
     fetchPreviousPage() {
       this.fetchMembers({ pageIndex: this.pageIndex - 1 });

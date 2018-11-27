@@ -18,4 +18,9 @@
       width: 100%;
     }
   }
+
+  /deep/ .status-text {
+    line-height: 1.5em;
+    white-space: pre-wrap;
+  }
 }
