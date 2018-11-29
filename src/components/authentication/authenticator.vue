@@ -14,6 +14,22 @@
     >
       <span>Sign in</span>
     </button>
+    <div class="authenticator__avatar-box">
+      <img
+        v-if="getProfile().picture"
+        :src="getProfile().picture"
+        class="authenticator__avatar"
+        height="50px"
+        width="50px"
+      >
+    </div>
+    <authorization
+      ref="authorization"
+      :access-token="getAccessToken()"
+      :id-token="getIdToken()"
+      :is-authenticated="isAuthenticated()"
+      :authentication-service="authenticationService"
+    />
   </div>
 </template>
 
@@ -25,6 +41,7 @@ import Config from '../../config';
 import EventHub from '../../modules/event-hub';
 import AuthenticationActions from '../../store/authentication-actions';
 import AuthenticationMutations from '../../store/authentication-mutations';
+import Authorization from './authorization.vue';
 
 const {
   mapGetters: mapAuthenticationGetters,
@@ -35,6 +52,7 @@ const {
 // @see https://auth0.com/docs/quickstart/spa/vuejs/01-login#configure-auth0
 export default {
   name: 'authenticator',
+  components: { Authorization },
   data() {
     return {
       authenticationService: {}
@@ -43,15 +61,18 @@ export default {
   created() {
     this.configureAuthenticationService();
   },
-  updated() {
-    this.configureAuthenticationService();
-  },
   methods: {
     ...mapAuthenticationActions([AuthenticationActions.LOG_OUT]),
-    ...mapAuthenticationGetters(['isAuthenticated']),
+    ...mapAuthenticationGetters({
+      isAuthenticated: 'isAuthenticated',
+      getAuthenticatedAccessToken: 'getAccessToken',
+      getAuthenticatedIdToken: 'getIdToken',
+      getProfile: 'getProfile'
+    }),
     ...mapAuthenticationMutations([
       AuthenticationMutations.SIGN_IN,
       AuthenticationMutations.SET_EXPIRATION_DATE,
+      AuthenticationMutations.SET_ACCESS_TOKEN,
       AuthenticationMutations.SET_ID_TOKEN
     ]),
     configureAuthenticationService() {
@@ -60,7 +81,7 @@ export default {
         clientID: Config.authentication.auth0.clientId,
         redirectUri: Config.authentication.auth0.redirectUri,
         responseType: 'token id_token',
-        scope: 'openid'
+        scope: 'openid profile email read:messages'
       });
     },
     setSession(authResult) {
@@ -73,10 +94,15 @@ export default {
       localStorage.setItem('expires_at', expiresAt);
 
       this.signIn();
+
+      this.setAccessToken(authResult.accessToken);
       this.setExpirationDate(expiresAt);
       this.setIdToken(authResult.idToken);
 
-      EventHub.$emit('authentication.changed', { authenticated: true });
+      EventHub.$emit('authentication.changed', {
+        authenticated: true,
+        accessToken: authResult.accessToken
+      });
     },
     handleAuthentication() {
       this.authenticationService.parseHash((err, authResult) => {
@@ -89,23 +115,37 @@ export default {
     },
     getIdToken() {
       if (!this.isAuthenticated()) {
-        return null;
+        return '';
       }
 
-      return localStorage.getItem('id_token');
+      return this.getAuthenticatedIdToken();
+    },
+    getAccessToken() {
+      if (!this.isAuthenticated()) {
+        return '';
+      }
+
+      return this.getAuthenticatedAccessToken();
     },
     delegateSignIn() {
+      if (!this.authenticationService) {
+        return;
+      }
+
       this.authenticationService.authorize();
     },
     delegateLogOut() {
       localStorage.removeItem('access_token');
       localStorage.removeItem('id_token');
       localStorage.removeItem('expires_at');
+
       this.logOut();
 
       EventHub.$emit('authentication.changed', { authenticated: false });
       // @see https://auth0.com/docs/logout#redirect-users-after-logout
       window.location = Config.authentication.auth0.logoutUri;
+
+      this.$refs.authorization.delegateLogOut();
     }
   }
 };

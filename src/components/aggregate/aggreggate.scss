@@ -1,32 +1,182 @@
 
-.aggregate {
-  display: flex;
-  height: 75px;
-  flex-direction: row;
+$row-height: 75px;
+$margin-between-blocks: 8px;
 
-  &__label {
-    height: 75px;
-  }
+.aggregate {
+  color: $color-greener;
+  display: flex;
+  height: $row-height;
+  font-family: sans-serif;
+  flex-direction: row;
+  padding: 8px;
+  margin: 0;
 
   &__buttons {
-    height: 75px;
+    height: 16px;
 
     .aggregate__button-edit-name,
     .aggregate__button-validate-name-edition {
-      height: 75px;
-      margin-right: 8px;
+      cursor: pointer;
+      margin-left: $margin-between-blocks;
     }
   }
 
-  &__name-under-edition {
-    border: 1px dotted $color-black;
-    color: $color-black;
-    padding: 8px;
-    margin-right: 8px;
+  &__name {
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px dotted transparent;
+    color: $color-greener;
+    display: inline-flex;
+    font-size: 1em;
+    font-weight: 600;
+    line-height: 1.5em;
+    margin-bottom: $margin-between-blocks;
+    padding: 0 16px 0 0;
+    text-decoration: underline;
+    width: 184px;
+
+    &-under-edition {
+      background-color: transparent;
+      border: none;
+      border-bottom: 1px dotted $color-black;
+      color: $color-black;
+      font-size: 1em;
+      line-height: 1.5em;
+      margin-bottom: #{$margin-between-blocks};
+      padding: 0 16px 0 0;
+      width: 184px;
+    }
   }
 
   &__button-enter {
-    height: 75px;
-    margin-left: 8px;
+    cursor: pointer;
+    margin-left: $margin-between-blocks;
+    margin-right: $margin-between-blocks;
+
+    &--hidden {
+      visibility: hidden;
+    }
+  }
+
+  &__navigate-to-list {
+    display: flex;
+    line-height: 1em;
+    justify-content: center;
+
+    .aggregate__list-anchor {
+      width: 100%;
+
+      .aggregate__list-twitter-icon {
+        margin-top: calc(#{$margin-between-blocks} / 2);
+      }
+
+      &:active,
+      &:link,
+      &:visited {
+        .aggregate__list-twitter-icon {
+          color: $color-greener;
+        }
+      }
+
+      &:hover {
+        .aggregate__list-twitter-icon {
+          color: $color-even-greener;
+        }
+      }
+    }
+  }
+
+  &__button-select-aggregate {
+    cursor: pointer;
+    margin-right: 8px;
+    margin-top: 8px;
+    margin-left: 0;
+  }
+
+  &__label {
+    height: 5em;
+    flex-wrap: wrap;
+
+    &-select-aggregate {
+      display: inline-flex;
+      line-height: 2em;
+      width: 200px;
+
+      &-text {
+        cursor: pointer;
+      }
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &__name,
+  &__total-numbers {
+    display: flex;
+    line-height: 1.5em;
+  }
+
+  &__button-enter {
+    margin-right: 8px;
+  }
+
+  &__navigate-to-list {
+    cursor: pointer;
+    display: inline-flex;
+    margin-right: 8px;
+    margin-top: 0;
+    padding: 8px;
+    padding-right: 0;
+
+    &:hover {
+      color: $color-even-greener;
+    }
+  }
+
+  &__row {
+    display: flex;
+
+    &--last {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+
+  &--is-selected {
+    background-color: $color-greenish;
+    color: white;
+
+    .aggregate__name {
+      color: white;
+      font-weight: 600;
+    }
+
+    .aggregate__list-anchor {
+      &:active,
+      &:link,
+      &:visited {
+        .aggregate__list-twitter-icon {
+          color: white;
+        }
+      }
+
+      &:hover {
+        .aggregate__list-twitter-icon {
+          color: black;
+        }
+      }
+    }
+
+    .aggregate__label-select-aggregate {
+      font-weight: 600;
+      text-decoration: underline;
+
+      &:hover {
+        color: white;
+      }
+    }
   }
 }

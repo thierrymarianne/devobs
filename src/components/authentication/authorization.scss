@@ -1,0 +1,13 @@
+
+.authorization {
+  display: inline-flex;
+  align-self: flex-end;
+  margin-bottom: 8px;
+
+  .authenticator__authorize-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: inline;
+  }
+}

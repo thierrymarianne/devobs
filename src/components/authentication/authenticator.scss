@@ -1,26 +1,45 @@
 
 .authenticator {
-  flex-direction: column;
+  border-top: 1px solid $color-greener;
+  flex-direction: row;
   display: flex;
   width: 100%;
   flex-wrap: wrap;
+  justify-content: flex-end;
+  padding: 8px;
 
-  .authenticator__logout-button,
-  .authenticator__login-button {
-    &:first-child {
-      border-right-width: 0;
+  &__avatar {
+    &-box {
+      display: flex;
       height: 75px;
-      justify-content: flex-end;
+      justify-content: center;
+      flex-direction: column;
     }
+
+    border: 1px dotted $color-greener;
+    display: flex;
+    margin-left: 8px;
+    line-height: 75px;
   }
 
-  .authenticator__button {
+  &__button {
     background-color: transparent;
     border-color: transparent;
     border-top: 1px solid $color-greener;
     display: flex;
     cursor: pointer;
     font-size: 1.3em;
+  }
+
+  &__logout-button,
+  &__login-button {
+    border-top: none;
+
+    &:first-child {
+      border-right-width: 0;
+      height: 75px;
+      justify-content: flex-end;
+    }
   }
 
   &--full-width {

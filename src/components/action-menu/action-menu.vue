@@ -19,6 +19,7 @@
       >{{ getMenuLabel(menuItem) }}</router-link>
 
       <button
+        v-if="isAuthenticated"
         :class="getButtonClass('bucket')"
         @click="intendToGet('bucket')"
       >Bucket</button>
@@ -198,20 +199,14 @@ export default {
     hideActionMenu() {
       this.showMenu = false;
     },
-    getRouteQuery() {
-      const canPeekAtExtendedFeatures = this.isAuthenticated;
-      return canPeekAtExtendedFeatures ? { peek: null } : null;
-    },
     goToHomepage() {
       this.$router.push({
-        name: 'press-review',
-        query: this.getRouteQuery()
+        name: 'press-review'
       });
     },
     goToLists() {
       this.$router.push({
-        name: 'lists',
-        query: this.getRouteQuery()
+        name: 'lists'
       });
 
       EventHub.$emit('aggregate_list.reload_intended');
@@ -222,8 +217,7 @@ export default {
 
       if (aggregateType === 'Press review') {
         this.$router.push({
-          name: 'press-review',
-          query: this.getRouteQuery()
+          name: 'press-review'
         });
       }
 
@@ -231,8 +225,7 @@ export default {
         EventHub.$emit('status_list.intent_to_refresh_bucket', {
           next: () => {
             this.$router.push({
-              name: 'bucket',
-              query: this.getRouteQuery()
+              name: 'bucket'
             });
           }
         });
@@ -251,8 +244,7 @@ export default {
 
       this.$router.push({
         name: 'aggregate',
-        params: { aggregateType: this.getAggregateIndex(aggregateType) },
-        query: this.getRouteQuery()
+        params: { aggregateType: this.getAggregateIndex(aggregateType) }
       });
     },
     showStatusesHavingMedia() {

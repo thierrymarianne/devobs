@@ -7,9 +7,21 @@
       <label
         class="list__typeahead-label"
         for="typeahead">
+        <font-awesome-icon
+          v-if="isSortableByPriority"
+          icon="exclamation-triangle"
+          class="aggregate-list__button-sort-by-priority"
+          @click="sortByPriority"
+        />
+        <font-awesome-icon
+          v-if="canBeRenderedAsAGrid"
+          icon="th"
+          class="aggregate-list__button-switch-to-grid-view"
+          @click="switchToGridView"
+        />
         <input
           id="typeahead"
-          v-model="keyword"
+          v-model="keywords"
           class='list__typeahead'
           type="text"
           placeholder="Climate change, Software craftmanship, Lean"
@@ -17,7 +29,7 @@
         >
       </label>
       <input
-        class="list__button-search"
+        class="list__button list__button-search"
         type="button"
         value="Search"
         @click="fetchLists"
@@ -37,12 +49,12 @@
         @click="fetchNextPage"
       >
     </div>
-    <ul class="list__items">
+    <ul :class="listClasses">
       <li
-        v-for="(aggregate, index) in editableItems"
+        v-for="(aggregate, index) in filteredItems"
         :key="aggregate.name"
         :data-key="aggregate.name"
-        class="list__item"
+        :class="getListItemClasses(aggregate)"
       >
         <aggregate
           :click-handler="goToAggregate"
@@ -59,6 +71,7 @@
 import { createNamespacedHelpers } from 'vuex';
 
 import ApiMixin from '../../mixins/api';
+import NavigationMixin from '../navigation/navigation';
 import SharedState from '../../modules/shared-state';
 import EventHub from '../../modules/event-hub';
 import Config from '../../config';
@@ -73,14 +86,35 @@ export default {
   components: {
     Aggregate
   },
-  mixins: [ApiMixin],
+  mixins: [ApiMixin, NavigationMixin],
+  props: {
+    defaultPageSize: {
+      type: Number,
+      default: 50
+    },
+    defaultPageSizeInGridView: {
+      type: Number,
+      default: 1000
+    },
+    isSortableByPriority: {
+      type: Boolean,
+      default: false
+    },
+    canBeRenderedAsAGrid: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       items: [],
       logger: SharedState.logger,
-      keyword: null,
+      keywords: null,
       pageIndex: 1,
-      totalPages: null
+      pageSize: this.defaultPageSize,
+      totalPages: null,
+      isGridViewEnabled: !this.canBeRenderedAsAGrid,
+      sortedByPriority: !this.isSortableByPriority
     };
   },
   computed: {
@@ -88,8 +122,45 @@ export default {
       idToken: 'getIdToken',
       isAuthenticated: 'isAuthenticated'
     }),
-    editableItems() {
+    filteredItems() {
+      if (this.sortedByPriority) {
+        const sortedByTotalMembers = this.items.sort((a, b) => {
+          if (a.totalMembers === b.totalMembers) {
+            return 0;
+          }
+
+          if (a.totalMembers > b.totalMembers) {
+            return 1;
+          }
+
+          return -1;
+        });
+
+        return sortedByTotalMembers.sort((a, b) => {
+          if (a.totalStatuses === b.totalStatuses) {
+            return 0;
+          }
+
+          if (a.totalStatuses > b.totalStatuses) {
+            return 1;
+          }
+
+          return -1;
+        });
+      }
+
       return this.items;
+    },
+    listClasses() {
+      const classes = { list__items: true };
+
+      if (this.isGridViewEnabled) {
+        classes['list__items--grid'] = true;
+
+        return classes;
+      }
+
+      return classes;
     }
   },
   destroyed() {
@@ -113,12 +184,18 @@ export default {
       return this.totalPages && this.pageIndex < this.totalPages;
     },
     fetchPreviousPage() {
-      this.fetchLists({ pageIndex: this.pageIndex - 1 });
+      this.fetchLists({
+        pageIndex: this.pageIndex - 1,
+        pageSize: this.pageSize
+      });
     },
     fetchNextPage() {
-      this.fetchLists({ pageIndex: this.pageIndex + 1 });
+      this.fetchLists({
+        pageIndex: this.pageIndex + 1,
+        pageSize: this.pageSize
+      });
     },
-    fetchLists(params = {}) {
+    fetchLists(params = {}, next) {
       const requestOptions = {
         headers: {
           'x-auth-admin-token': this.idToken
@@ -129,9 +206,9 @@ export default {
       this.$http.defaults.headers.common[headerName] =
         requestOptions.headers[headerName];
 
-      if (this.keyword) {
+      if (this.keywords) {
         requestOptions.params = {
-          keyword: this.keyword
+          keyword: this.keywords
         };
       }
 
@@ -143,6 +220,11 @@ export default {
         requestOptions.params.pageIndex = params.pageIndex;
       }
 
+      if (!requestOptions.params) {
+        requestOptions.params = {};
+      }
+      requestOptions.params.pageSize = this.pageSize;
+
       const action = this.routes.actions.fetchLists;
       const route = `${Config.getSchemeAndHost()}${action.route}`;
       this.$http[action.method](route, requestOptions)
@@ -150,8 +232,32 @@ export default {
           this.items = response.data;
           this.totalPages = parseInt(response.headers['x-total-pages'], 10);
           this.pageIndex = parseInt(response.headers['x-page-index'], 10);
+
+          if (this.keywords) {
+            this.goToRoute({
+              routeName: 'searched-lists',
+              newParams: { keywords: this.keywords }
+            });
+          }
+
+          if (typeof next === 'function') {
+            next();
+          }
         })
         .catch(e => this.logger.error(e.message, 'status-list', e));
+    },
+    getListItemClasses(aggregate) {
+      const classes = { list__item: true };
+
+      if (aggregate.totalMembers === 0) {
+        classes['aggregate-list__aggregate--no-member'] = true;
+      }
+
+      if (aggregate.totalStatuses === 0) {
+        classes['aggregate-list__aggregate--no-status'] = true;
+      }
+
+      return classes;
     },
     goToAggregate(aggregateId) {
       this.$router.push({
@@ -160,6 +266,23 @@ export default {
       });
 
       EventHub.$emit('aggregate.reload_intended');
+    },
+    sortByPriority() {},
+    switchToGridView() {
+      this.pageSize = this.defaultPageSizeInGridView;
+      if (this.isGridViewEnabled) {
+        this.pageSize = this.defaultPageSize;
+      }
+
+      this.fetchLists(
+        {
+          pageIndex: this.pageIndex,
+          pageSize: this.pageSize
+        },
+        () => {
+          this.isGridViewEnabled = !this.isGridViewEnabled;
+        }
+      );
     }
   }
 };

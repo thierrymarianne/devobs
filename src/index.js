@@ -57,21 +57,6 @@ router.beforeEach((to, from, next) => {
   EventHub.$emit('status_list.load_intended');
   EventHub.$emit('action_menu.hide_intended');
 
-  const peekQueryParamInSourceUrl = typeof from.query.peek !== 'undefined';
-  const peekQueryParamNotInDestinationUrl =
-    typeof to.query.peek === 'undefined';
-
-  if (peekQueryParamInSourceUrl && peekQueryParamNotInDestinationUrl) {
-    let peek = '1';
-    if (from.query.peek === '1') {
-      peek = '';
-    }
-    const nextQuery = Object.assign(to.query, { peek: peek });
-
-    next({ name: to.name, params: to.params, query: nextQuery });
-    return;
-  }
-
   next();
 });
 

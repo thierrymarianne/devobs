@@ -63,6 +63,7 @@
       >
         <a
           :href="getMemberProfileUrl(member.name)"
+          target="_blank"
           class="member-list__button-navigate-to-twitter"
         >
           <font-awesome-icon

@@ -17,6 +17,11 @@ export default [
     name: 'lists'
   },
   {
+    component: AggregateList,
+    path: '/lists/:keywords',
+    name: 'searched-lists'
+  },
+  {
     component: MemberList,
     path: '/list/:aggregateId',
     name: 'list'

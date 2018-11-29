@@ -22,7 +22,9 @@ import {
   faRedoAlt,
   faReply,
   faRetweet,
-  faSync
+  faSync,
+  faTh,
+  faUsers
 } from '@fortawesome/free-solid-svg-icons';
 
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
@@ -49,7 +51,9 @@ library.add(faRedoAlt);
 library.add(faReply);
 library.add(faRetweet);
 library.add(faSync);
+library.add(faTh);
 library.add(faTwitter);
+library.add(faUsers);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
