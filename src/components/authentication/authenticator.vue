@@ -16,8 +16,8 @@
     </button>
     <div class="authenticator__avatar-box">
       <img
-        v-if="getProfile().picture"
-        :src="getProfile().picture"
+        v-if="loggedInMemberAvatar"
+        :src="loggedInMemberAvatar"
         class="authenticator__avatar"
         height="50px"
         width="50px"
@@ -57,6 +57,15 @@ export default {
     return {
       authenticationService: {}
     };
+  },
+  computed: {
+    loggedInMemberAvatar() {
+      if (this.getProfile()) {
+        return this.getProfile().picture;
+      }
+
+      return false;
+    }
   },
   created() {
     this.configureAuthenticationService();

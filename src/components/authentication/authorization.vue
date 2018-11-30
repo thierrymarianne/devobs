@@ -71,6 +71,7 @@ export default {
   methods: {
     ...mapAuthenticationMutations([
       AuthenticationMutations.SET_PROFILE,
+      AuthenticationMutations.SET_GRANTED_ROUTES,
       AuthenticationMutations.UNSET_PROFILE
     ]),
     configureAuthorizationService() {
@@ -121,6 +122,7 @@ export default {
                 const memberProfile = profile;
                 memberProfile.username = response.data.username;
                 this.setProfile(memberProfile);
+                this.setGrantedRoutes(response.data.grantedRoutes);
               })
               .catch(e => this.logger.error(e.message, 'status-list', e));
           }

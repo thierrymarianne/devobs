@@ -98,7 +98,7 @@ export default {
     };
   },
   computed: {
-    ...mapAuthenticationGetters(['isAuthenticated']),
+    ...mapAuthenticationGetters(['isAuthenticated', 'getGrantedRoutes']),
     getActionMenuButtonClasses() {
       const classes = { 'action-menu__button': true };
 
@@ -146,7 +146,11 @@ export default {
     menuItemsButPressReview() {
       const routeNames = [];
 
-      Object.values(this.routes).forEach(route => {
+      const grantedRoutes = this.getGrantedRoutes;
+      const routes = Object.values(this.routes).filter(route => {
+        return grantedRoutes.indexOf(route.name) !== -1;
+      });
+      routes.forEach(route => {
         if (
           route.name === 'Press review' ||
           typeof route.name === 'undefined'

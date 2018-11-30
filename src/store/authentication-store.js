@@ -8,6 +8,7 @@ const Authentication = {
     isAuthenticated: false,
     idToken: '',
     expirationDate: null,
+    grantedRoutes: ['bucket'],
     profile: {}
   },
   mutations: {
@@ -16,6 +17,9 @@ const Authentication = {
     },
     [MutationTypes.SET_ACCESS_TOKEN](state, accessToken) {
       state.accessToken = accessToken;
+    },
+    [MutationTypes.SET_GRANTED_ROUTES](state, grantedRoutes) {
+      state.grantedRoutes = grantedRoutes;
     },
     [MutationTypes.SET_EXPIRATION_DATE](state, expirationDate) {
       state.expirationDate = expirationDate;
@@ -38,6 +42,9 @@ const Authentication = {
     [MutationTypes.UNSET_ID_TOKEN](state) {
       state.idToken = null;
     },
+    [MutationTypes.UNSET_GRANTED_ROUTES](state) {
+      state.grantedRoutes = ['bucket'];
+    },
     [MutationTypes.UNSET_PROFILE](state) {
       state.profile = null;
     }
@@ -48,12 +55,16 @@ const Authentication = {
       commit(MutationTypes.UNSET_ACCESS_TOKEN);
       commit(MutationTypes.UNSET_EXPIRATION_DATE);
       commit(MutationTypes.UNSET_ID_TOKEN);
+      commit(MutationTypes.UNSET_GRANTED_ROUTES);
       commit(MutationTypes.UNSET_PROFILE);
     }
   },
   getters: {
     getAccessToken: function(state) {
       return state.accessToken;
+    },
+    getGrantedRoutes: function(state) {
+      return state.grantedRoutes;
     },
     getIdToken: function(state) {
       return state.idToken;
