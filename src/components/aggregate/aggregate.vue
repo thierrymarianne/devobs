@@ -26,16 +26,18 @@
             @click="makeEditable(refName)"
           />
         </div>
-        <font-awesome-icon
-          :class='membersClasses'
-          icon="users"
-          @click="clickHandler(aggregate.id)"
-        />
       </div>
-      <span class="aggregate__numbers">
-        ({{ formatTotalMembers(aggregate) }})
-        ({{ formatTotalStatuses(aggregate) }})
-      </span>
+      <div class="aggregate__numbers">
+        <div>
+          {{ formatTotalMembers(aggregate) }}
+          <font-awesome-icon
+            :class='membersClasses'
+            icon="users"
+            @click="clickHandler(aggregate.id)"
+          />
+        </div>
+        {{ formatTotalStatuses(aggregate) }}
+      </div>
       <div class="aggregate__row--last">
         <label
           :for="aggregate.id"
@@ -100,13 +102,17 @@ export default {
     isGridCell: {
       type: Boolean,
       default: true
+    },
+    isSelected: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
       state: {
         beingEdited: false,
-        isAggregateSelected: false
+        isAggregateSelected: this.isSelected
       }
     };
   },
@@ -139,13 +145,20 @@ export default {
       return this.format(this.aggregate.name);
     },
     membersClasses() {
-      const classes = { 'aggregate__button-enter': true };
+      const classes = { 'aggregate__button-list-members': true };
 
       if (this.aggregate.totalMembers === 0) {
-        classes['aggregate__button-enter--hidden'] = true;
+        classes['aggregate__button-list-members--hidden'] = true;
       }
 
       return classes;
+    }
+  },
+  watch: {
+    isSelected(isSelected) {
+      if (isSelected !== this.state.isAggregateSelected) {
+        this.state.isAggregateSelected = isSelected;
+      }
     }
   },
   methods: {

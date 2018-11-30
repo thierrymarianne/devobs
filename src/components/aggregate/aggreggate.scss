@@ -5,21 +5,10 @@ $margin-between-blocks: 8px;
 .aggregate {
   color: $color-greener;
   display: flex;
-  height: $row-height;
   font-family: sans-serif;
   flex-direction: row;
   padding: 8px;
   margin: 0;
-
-  &__buttons {
-    height: 16px;
-
-    .aggregate__button-edit-name,
-    .aggregate__button-validate-name-edition {
-      cursor: pointer;
-      margin-left: $margin-between-blocks;
-    }
-  }
 
   &__name {
     background-color: transparent;
@@ -45,16 +34,6 @@ $margin-between-blocks: 8px;
       margin-bottom: #{$margin-between-blocks};
       padding: 0 16px 0 0;
       width: 184px;
-    }
-  }
-
-  &__button-enter {
-    cursor: pointer;
-    margin-left: $margin-between-blocks;
-    margin-right: $margin-between-blocks;
-
-    &--hidden {
-      visibility: hidden;
     }
   }
 
@@ -94,7 +73,6 @@ $margin-between-blocks: 8px;
   }
 
   &__label {
-    height: 5em;
     flex-wrap: wrap;
 
     &-select-aggregate {
@@ -118,7 +96,7 @@ $margin-between-blocks: 8px;
     line-height: 1.5em;
   }
 
-  &__button-enter {
+  &__button-list-members {
     margin-right: 8px;
   }
 
@@ -145,6 +123,36 @@ $margin-between-blocks: 8px;
     }
   }
 
+  &__buttons {
+    height: 16px;
+
+    .aggregate__button-edit-name,
+    .aggregate__button-validate-name-edition {
+      color: $color-greener;
+      cursor: pointer;
+      margin-left: $margin-between-blocks;
+
+      &:hover {
+        color: $color-even-greener;
+      }
+    }
+  }
+
+  &__button-list-members {
+    color: $color-greener;
+    cursor: pointer;
+    margin-left: $margin-between-blocks;
+    margin-right: $margin-between-blocks;
+
+    &:hover {
+      color: $color-even-greener;
+    }
+
+    &--hidden {
+      visibility: hidden;
+    }
+  }
+
   &--is-selected {
     background-color: $color-greenish;
     color: white;
@@ -152,6 +160,25 @@ $margin-between-blocks: 8px;
     .aggregate__name {
       color: white;
       font-weight: 600;
+    }
+
+    .aggregate__buttons {
+      .aggregate__button-edit-name,
+      .aggregate__button-validate-name-edition {
+        color: $color-greener;
+
+        &:hover {
+          color: $color-even-greener;
+        }
+      }
+    }
+
+    &__button-list-members {
+      color: $color-greener;
+
+      &:hover {
+        color: $color-even-greener;
+      }
     }
 
     .aggregate__list-anchor {

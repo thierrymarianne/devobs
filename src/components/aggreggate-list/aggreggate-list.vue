@@ -4,50 +4,132 @@
     class="aggregate-list list"
   >
     <div class="list__search">
-      <label
-        class="list__typeahead-label"
-        for="typeahead">
-        <font-awesome-icon
-          v-if="isSortableByPriority"
-          icon="exclamation-triangle"
-          class="aggregate-list__button-sort-by-priority"
-          @click="sortByPriority"
-        />
-        <font-awesome-icon
-          v-if="canBeRenderedAsAGrid"
-          icon="th"
-          class="aggregate-list__button-switch-to-grid-view"
-          @click="switchToGridView"
-        />
+      <div class="list__search-row">
+        <label
+          class="list__typeahead-label"
+          for="typeahead">
+          <font-awesome-icon
+            v-if="isSortableByPriority"
+            icon="exclamation-triangle"
+            class="aggregate-list__button-sort-by-priority"
+            @click="sortByPriority"
+          />
+          <font-awesome-icon
+            v-if="canBeRenderedAsAGrid"
+            icon="th"
+            class="aggregate-list__button-switch-to-grid-view"
+            @click="switchToGridView"
+          />
+          <input
+            id="typeahead"
+            v-model="keywords"
+            class='list__typeahead'
+            type="text"
+            placeholder="Climate change, Software craftmanship, Lean"
+            @keyup.enter="fetchLists"
+          >
+        </label>
         <input
-          id="typeahead"
-          v-model="keywords"
-          class='list__typeahead'
-          type="text"
-          placeholder="Climate change, Software craftmanship, Lean"
-          @keyup.enter="fetchLists"
+          class="list__button list__button-search"
+          type="button"
+          value="Search"
+          @click="fetchLists"
         >
-      </label>
-      <input
-        class="list__button list__button-search"
-        type="button"
-        value="Search"
-        @click="fetchLists"
-      >
-      <input
-        v-if="previousPageExists()"
-        class="list__button"
-        type="button"
-        value="previous"
-        @click="fetchPreviousPage"
-      >
-      <input
-        v-if="nextPageExists()"
-        class="list__button"
-        type="button"
-        value="next"
-        @click="fetchNextPage"
-      >
+        <input
+          v-if="previousPageExists()"
+          class="list__button"
+          type="button"
+          value="previous"
+          @click="fetchPreviousPage"
+        >
+        <input
+          v-if="nextPageExists()"
+          class="list__button"
+          type="button"
+          value="next"
+          @click="fetchNextPage"
+        >
+        <label
+          for="items-per-page"
+          class="list__page-size"
+        >
+          <input
+            id="items-per-page"
+            v-model="pageSize"
+            max="70000"
+            type="number"
+            @keyup.enter="fetchLists"
+          >
+          <span class="list__page-size-label">aggregates per page</span>
+        </label>
+      </div>
+      <div class="list__search-row">
+        <label
+          for="selecting-all-aggregates"
+          @click="selectAllAggregates"
+        >
+          <input
+            id="selecting-all-aggregates"
+            v-model="areAllAggregatesSelected"
+            name="selecting-all-aggregates"
+            class="aggregate__button-select-all-aggregates"
+            type="checkbox"
+          >Select all aggregates
+        </label>
+      </div>
+      <div class="list__search-row">
+        <label
+          for="selecting-aggregates-having-members-and-statuses"
+          @click="selectAggregatesHavingMembersAndStatuses"
+        >
+          <input
+            id="selecting-aggregates-having-members-and-statuses"
+            v-model="areAggregatesHavingMembersAndStatusesSelected"
+            name="selecting-aggregates-having-members-and-statuses"
+            type="checkbox"
+          >Select aggregates having members and statuses
+        </label>
+      </div>
+      <div class="list__search-row">
+        <label
+          for="selecting-aggregates-without-members"
+          @click="selectAggregatesWithoutMembers"
+        >
+          <input
+            id="selecting-aggregates-without-members"
+            v-model="areAggregatesWithoutMembersSelected"
+            name="selecting-aggregates-without-members"
+            type="checkbox"
+          >Select aggregates having no members
+        </label>
+      </div>
+      <div class="list__search-row">
+        <label
+          for="selecting-aggregates-without-statuses"
+          @click="selectAggregatesWithoutStatuses"
+        >
+          <input
+            id="selecting-aggregates-without-statuses"
+            v-model="areAggregatesWithoutStatusesSelected"
+            name="selecting-aggregates-without-statuses"
+            type="checkbox"
+          >Select aggregates having no status
+        </label>
+      </div>
+      <div class="list__search-row">
+        <label
+          for="selecting-aggregates-without-statuses-but-members"
+          @click="selectAggregatesWithoutStatusesButMembers"
+        >
+          <input
+            id="selecting-aggregates-without-statuses-but-members"
+            v-model="areAggregatesWithoutStatusesButMembersSelected"
+            name="selecting-aggregates-without-statuses-but-members"
+            class="aggregate__button-select-aggregates-without-statuses-but-members"
+            type="checkbox"
+          >Select aggregates having no status but members
+        </label>
+      </div>
     </div>
     <ul :class="listClasses">
       <li
@@ -59,6 +141,7 @@
         <aggregate
           :click-handler="goToAggregate"
           :aggregate="aggregate"
+          :is-selected="aggregate.isSelected"
           :ref-name="index"
         />
         <!--
@@ -107,6 +190,11 @@ export default {
   },
   data() {
     return {
+      areAllAggregatesSelected: false,
+      areAggregatesWithoutMembersSelected: false,
+      areAggregatesWithoutStatusesSelected: false,
+      areAggregatesWithoutStatusesButMembersSelected: false,
+      areAggregatesHavingMembersAndStatusesSelected: false,
       items: [],
       logger: SharedState.logger,
       keywords: null,
@@ -136,7 +224,7 @@ export default {
           return -1;
         });
 
-        return sortedByTotalMembers.sort((a, b) => {
+        const sortedItems = sortedByTotalMembers.sort((a, b) => {
           if (a.totalStatuses === b.totalStatuses) {
             return 0;
           }
@@ -147,6 +235,59 @@ export default {
 
           return -1;
         });
+
+        if (this.areAllAggregatesSelected) {
+          return sortedItems.map(aggregate => {
+            const aggregateAfterSelection = Object.assign({}, aggregate);
+            aggregateAfterSelection.isSelected = true;
+
+            return aggregateAfterSelection;
+          });
+        }
+
+        if (this.areAggregatesHavingMembersAndStatusesSelected) {
+          return sortedItems.map(aggregate => {
+            const aggregateAfterSelection = Object.assign({}, aggregate);
+            aggregateAfterSelection.isSelected =
+              aggregateAfterSelection.totalStatuses > 0 &&
+              aggregateAfterSelection.totalMembers > 0;
+
+            return aggregateAfterSelection;
+          });
+        }
+
+        if (this.areAggregatesWithoutStatusesButMembersSelected) {
+          return sortedItems.map(aggregate => {
+            const aggregateAfterSelection = Object.assign({}, aggregate);
+            aggregateAfterSelection.isSelected =
+              aggregateAfterSelection.totalStatuses === 0 &&
+              aggregateAfterSelection.totalMembers > 0;
+
+            return aggregateAfterSelection;
+          });
+        }
+
+        if (this.areAggregatesWithoutStatusesSelected) {
+          return sortedItems.map(aggregate => {
+            const aggregateAfterSelection = Object.assign({}, aggregate);
+            aggregateAfterSelection.isSelected =
+              aggregateAfterSelection.totalStatuses === 0;
+
+            return aggregateAfterSelection;
+          });
+        }
+
+        if (this.areAggregatesWithoutMembersSelected) {
+          return sortedItems.map(aggregate => {
+            const aggregateAfterSelection = Object.assign({}, aggregate);
+            aggregateAfterSelection.isSelected =
+              aggregateAfterSelection.totalMembers === 0;
+
+            return aggregateAfterSelection;
+          });
+        }
+
+        return sortedItems;
       }
 
       return this.items;
@@ -266,6 +407,37 @@ export default {
       });
 
       EventHub.$emit('aggregate.reload_intended');
+    },
+    clearSelection() {
+      this.areAllAggregatesSelected = false;
+      this.areAggregatesHavingMembersAndStatusesSelected = false;
+      this.areAggregatesWithoutMembersSelected = false;
+      this.areAggregatesWithoutStatusesSelected = false;
+      this.areAggregatesWithoutStatusesButMembersSelected = false;
+    },
+    selectAllAggregates() {
+      this.clearSelection();
+      this.areAllAggregatesSelected = !this.areAllAggregatesSelected;
+    },
+    selectAggregatesHavingMembersAndStatuses() {
+      this.clearSelection();
+      this.areAggregatesHavingMembersAndStatusesSelected = !this
+        .areAggregatesHavingMembersAndStatusesSelected;
+    },
+    selectAggregatesWithoutMembers() {
+      this.clearSelection();
+      this.areAggregatesWithoutMembersSelected = !this
+        .areAggregatesWithoutMembersSelected;
+    },
+    selectAggregatesWithoutStatuses() {
+      this.clearSelection();
+      this.areAggregatesWithoutStatusesSelected = !this
+        .areAggregatesWithoutStatusesSelected;
+    },
+    selectAggregatesWithoutStatusesButMembers() {
+      this.clearSelection();
+      this.areAggregatesWithoutStatusesButMembersSelected = !this
+        .areAggregatesWithoutStatusesButMembersSelected;
     },
     sortByPriority() {},
     switchToGridView() {

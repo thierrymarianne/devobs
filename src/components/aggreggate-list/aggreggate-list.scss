@@ -3,6 +3,90 @@
 .aggregate-list {
   @extend .list;
 
+  .list__page-size {
+    border: 1px dotted $color-greener;
+    padding: 5px 0;
+
+    &-label {
+      align-self: center;
+      color: $color-greener;
+      display: inline-flex;
+      line-height: 1em;
+      width: 140px;
+    }
+
+    input {
+      height: calc(100% - 10px);
+      margin-left: 8px;
+      padding-left: 8px;
+      margin-right: 4px;
+      text-align: right;
+      width: 75px;
+
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+      }
+    }
+  }
+
+  .list__search {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 768px;
+
+    .list__search-row {
+      display: flex;
+      flex-direction: row;
+      justify-items: center;
+      width: 100%;
+    }
+
+    .list__button-search {
+      justify-content: center;
+      width: 100px;
+    }
+
+    [for="selecting-all-aggregates"],
+    [for="selecting-aggregates-having-members-and-statuses"],
+    [for="selecting-aggregates-without-statuses"],
+    [for="selecting-aggregates-without-statuses-but-members"],
+    [for="selecting-aggregates-without-members"] {
+      border-bottom: 2px solid $color-red;
+      color: $color-greener;
+      cursor: pointer;
+      display: flex;
+      font-family: sans-serif;
+      font-size: 0.8em;
+      margin-top: 8px;
+
+      [name="selecting-all-aggregates"],
+      [name="selecting-aggregates-having-members-and-statuses"],
+      [name="selecting-aggregates-without-statuses-but-members"],
+      [name="selecting-aggregates-without-statuses"],
+      [name="selecting-aggregates-without-members"] {
+        cursor: pointer;
+        display: flex;
+      }
+    }
+
+    [for="selecting-all-aggregates"] {
+      border-bottom: 2px solid transparent;
+    }
+
+    [for="selecting-aggregates-without-statuses"] {
+      border-bottom: 2px solid $color-orange;
+    }
+
+    [for="selecting-aggregates-having-members-and-statuses"] {
+      border-bottom: 2px solid $color-greener;
+    }
+
+    [for="selecting-aggregates-without-statuses-but-members"] {
+      border-bottom: 2px dotted $color-orange;
+    }
+  }
+
   &__button-sort-by-priority,
   &__button-switch-to-grid-view {
     align-self: center;
@@ -23,23 +107,42 @@
     padding: 0;
 
     .list__item {
-      border: 2px solid transparent;
+      border: 2px solid $color-greener;
       border-right: 10px solid transparent;
       font-size: 1em;
       cursor: default;
       list-style-type: none;
       justify-content: flex-start;
-      width: 275px;
       line-height: normal;
       margin-left: 4px;
       margin-top: 4px;
       height: auto;
+      width: 250px;
 
       .aggregate {
         border-right: 10px solid transparent;
 
         &--is-selected {
           border-right: 10px solid $color-even-greener;
+
+          .aggregate__buttons {
+            .aggregate__button-edit-name,
+            .aggregate__button-validate-name-edition {
+              color: white;
+
+              &:hover {
+                color: black;
+              }
+            }
+          }
+
+          .aggregate__button-list-members {
+            color: white;
+
+            &:hover {
+              color: black;
+            }
+          }
         }
       }
     }
@@ -60,6 +163,25 @@
           }
 
           .aggregate {
+            &__buttons {
+              .aggregate__button-edit-name,
+              .aggregate__button-validate-name-edition {
+                color: $color-greener;
+
+                &:hover {
+                  color: $color-even-greener;
+                }
+              }
+            }
+
+            &__button-list-members {
+              color: $color-greener;
+
+              &:hover {
+                color: $color-even-greener;
+              }
+            }
+
             &__name {
               color: $color-even-greener;
             }
@@ -104,6 +226,25 @@
           }
 
           .aggregate {
+            &__buttons {
+              .aggregate__button-edit-name,
+              .aggregate__button-validate-name-edition {
+                color: $color-greener;
+
+                &:hover {
+                  color: $color-even-greener;
+                }
+              }
+            }
+
+            &__button-list-members {
+              color: $color-greener;
+
+              &:hover {
+                color: $color-even-greener;
+              }
+            }
+
             &__name {
               color: $color-even-greener;
             }

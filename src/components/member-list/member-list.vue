@@ -39,7 +39,6 @@
         for="total-pages"
         class="list__total-pages"
       >
-        <span v-show="false">Total pages</span>
         <input
           id="total-pages"
           v-model="pageSize"
