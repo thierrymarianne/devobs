@@ -27,7 +27,7 @@ const router = new VueRouter({
   }
 });
 
-const mockApi = function(responseFactory) {
+const mockApi = responseFactory => {
   const mock = new MockAdapter(axios, { delayResponse: 0 });
   mock.onGet(/\/[\S+/]+/).reply(responseFactory.reply);
 
@@ -51,14 +51,9 @@ SharedState.logLevel.isSilent = true;
 const avatarUrl = 'http://bit.ly/jasmine-bdd';
 
 describe('Status list', () => {
-  it('should handle empty aggregate.', done => {
+  it('should handle empty aggregate.', () => {
     responder.reply = () => [200, {}];
     const localVue = mockApi(responder);
-
-    SharedState.logLevel.onError = ({ error }) => {
-      expect(error).to.equal(SharedState.errors.REQUIRED_COLLECTION);
-      done();
-    };
 
     const statusListWrapper = mount(StatusList, {
       localVue,

@@ -119,11 +119,6 @@ export default {
     this.fetchMemberStatuses();
   },
   methods: {
-    formatStatus(status) {
-      const formattedStatuses = this.formatStatuses([status]);
-
-      return formattedStatuses[0];
-    },
     previousPageExists() {
       return this.pageIndex > 1;
     },
@@ -178,7 +173,7 @@ export default {
           this.totalPages = parseInt(response.headers['x-total-pages'], 10);
           this.pageIndex = parseInt(response.headers['x-page-index'], 10);
         })
-        .catch(e => this.logger.error(e.message, 'status-list', e));
+        .catch(e => this.logger.error(e.message, 'member-status-list', e));
     },
     goToParent() {
       this.$router.push({

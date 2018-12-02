@@ -385,7 +385,7 @@ export default {
             next();
           }
         })
-        .catch(e => this.logger.error(e.message, 'status-list', e));
+        .catch(e => this.logger.error(e.message, 'aggregate-list', e));
     },
     getListItemClasses(aggregate) {
       const classes = { list__item: true };

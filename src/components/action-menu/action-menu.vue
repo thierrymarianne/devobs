@@ -1,6 +1,13 @@
 <template>
-  <div class="action-menu">
-    <div :class="getActionMenuContainerClasses">
+  <div :class="actionMenuClasses">
+    <div
+      v-if="isAuthenticated"
+      :class="getActionMenuContainerClasses"
+    >
+      <button
+        :class="getButtonClass('Press review')"
+        @click="intendToGet('Press review')"
+      >All Press Feeds</button>
 
       <button
         :class="getButtonClass('Press review')"
@@ -19,7 +26,6 @@
       >{{ getMenuLabel(menuItem) }}</router-link>
 
       <button
-        v-if="isAuthenticated"
         :class="getButtonClass('bucket')"
         @click="intendToGet('bucket')"
       >Bucket</button>
@@ -49,17 +55,30 @@
         </div>
 
         <div class="action-menu__row action-menu__row--full-width">
-          <button
+          <ul
             v-if="isAuthenticated"
-            class="action-menu__button action-menu__lists-button"
-            @click="goToLists()"
-          >
-            <span>Lists</span>
-          </button>
+            class="action-menu__sub-menu">
+            <li class="action-menu__sub-menu-item">
+              <button
+                class="action-menu__button action-menu__lists-button"
+                @click="goToLists()"
+              >
+                <span>Lists</span>
+              </button>
+            </li>
+            <li>
+              <button
+                class="action-menu__button action-menu__lists-button"
+                @click="goToHighlights()"
+              >
+                <span>Highlights</span>
+              </button>
+            </li>
+          </ul>
 
-          <authenticator />
+          <!--<authenticator />-->
+
         </div>
-
       </div>
 
     </div>
@@ -91,6 +110,12 @@ export default {
   name: 'action-menu',
   components: { Authenticator },
   mixins: [ApiMixin, CaseNormalizer],
+  props: {
+    denyAccessToAlternateRoutes: {
+      type: Boolean,
+      default: true
+    }
+  },
   data() {
     return {
       showMenu: false,
@@ -99,6 +124,13 @@ export default {
   },
   computed: {
     ...mapAuthenticationGetters(['isAuthenticated', 'getGrantedRoutes']),
+    actionMenuClasses() {
+      if (this.isAuthenticated) {
+        return { 'action-menu': true };
+      }
+
+      return { 'action-menu--hidden': true };
+    },
     getActionMenuButtonClasses() {
       const classes = { 'action-menu__button': true };
 
@@ -139,7 +171,7 @@ export default {
 
         visibilities[aggregateType] = hasFullMenu;
       });
-      visibilities.bucket = hasFullMenu;
+      visibilities.bucket = true;
 
       return visibilities;
     },
@@ -148,8 +180,13 @@ export default {
 
       const grantedRoutes = this.getGrantedRoutes;
       const routes = Object.values(this.routes).filter(route => {
+        if (this.denyAccessToAlternateRoutes) {
+          return false;
+        }
+
         return grantedRoutes.indexOf(route.name) !== -1;
       });
+
       routes.forEach(route => {
         if (
           route.name === 'Press review' ||
@@ -204,9 +241,27 @@ export default {
       this.showMenu = false;
     },
     goToHomepage() {
+      this.goToPressReview();
+    },
+    goToHighlights() {
+      const today = new Date();
+      today.setDate(today.getDate() - 1);
+
+      let day = today.getDate();
+      if (today.getDate() < 10) {
+        day = `0${day}`;
+      }
+
+      const params = {
+        date: `${today.getFullYear()}-${today.getMonth() + 1}-${day}`
+      };
+
       this.$router.push({
-        name: 'press-review'
+        name: 'highlights',
+        params
       });
+
+      EventHub.$emit('highlight_list.reload_intended');
     },
     goToLists() {
       this.$router.push({
@@ -214,6 +269,11 @@ export default {
       });
 
       EventHub.$emit('aggregate_list.reload_intended');
+    },
+    goToPressReview() {
+      this.$router.push({
+        name: 'press-review'
+      });
     },
     intendToGet(aggregateType) {
       EventHub.$emit('status_list.load_intended');

@@ -1,0 +1,21 @@
+@import '../member-status-list/member-status-list.scss';
+
+.highlight-list {
+  @extend .member-status-list;
+
+  [type="date"] {
+    font-size: 3em;
+  }
+
+  &--anonymously-visited {
+    margin-top: 8px;
+  }
+
+  .status {
+    margin-top: 15px;
+  }
+
+  .list__item:last-child {
+    border-bottom: none;
+  }
+}

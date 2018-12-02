@@ -80,6 +80,10 @@ export default {
 
       return statuses;
     },
+    formatStatus(status) {
+      const formattedStatuses = this.formatStatuses([status]);
+      return formattedStatuses[0];
+    },
     formatStatuses: function(statuses, fromSync) {
       if (typeof statuses === 'undefined' || statuses === null) {
         return [];

@@ -132,22 +132,24 @@
           <font-awesome-icon icon="heart" />
           <span>Like</span>
         </a>
-        <button
-          v-if="!isBucketVisible"
-          class="status__web-intent"
-          @click="toggleBucketAddition"
-        >
-          <font-awesome-icon :icon="addedToBucketIcon" />
-          <span>{{ bucketAdditionLabel }}</span>
-        </button>
-        <button
-          v-else-if="canBeRemovedFromBucket"
-          class="status__web-intent"
-          @click="removeFromBucket"
-        >
-          <font-awesome-icon icon="minus" />
-          <span class="status__web-intent--remove-from-bucket">Remove from bucket</span>
-        </button>
+        <template v-if="shouldDisplayAddToBucketButton">
+          <button
+            v-if="!isBucketVisible"
+            class="status__web-intent"
+            @click="toggleBucketAddition"
+          >
+            <font-awesome-icon :icon="addedToBucketIcon" />
+            <span>{{ bucketAdditionLabel }}</span>
+          </button>
+          <button
+            v-else-if="canBeRemovedFromBucket"
+            class="status__web-intent"
+            @click="removeFromBucket"
+          >
+            <font-awesome-icon icon="minus" />
+            <span class="status__web-intent--remove-from-bucket">Remove from bucket</span>
+          </button>
+        </template>
       </div>
     </div>
 
@@ -396,6 +398,9 @@ export default {
 
       return `https://twitter.com/${this.status.likedBy}`;
     },
+    shouldDisplayAddToBucketButton() {
+      return this.isAuthenticated;
+    },
     shouldDisplayPermalink() {
       return this.isAuthenticated;
     },
@@ -414,6 +419,9 @@ export default {
       'status.removal_from_bucket_intended',
       this.intendToRemoveStatusFromBucket
     );
+  },
+  updated() {
+    this.status = this.statusAtFirst;
   },
   methods: {
     ...mapActions([

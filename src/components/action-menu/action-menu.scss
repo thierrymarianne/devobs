@@ -17,6 +17,10 @@ $color-double-greener: darken($color-greener, 10%);
   top: -1px;
   width: calc(100% + 2px);
 
+  &--hidden {
+    display: none;
+  }
+
   &__container {
     display: none;
     flex-wrap: wrap;
@@ -97,6 +101,10 @@ $color-double-greener: darken($color-greener, 10%);
       flex-wrap: nowrap;
       width: 100%;
 
+      &:last-child {
+        border-top: 1px solid $color-greener;
+      }
+
       .action-menu__button {
         background-color: transparent;
         border-color: transparent;
@@ -152,5 +160,18 @@ $color-double-greener: darken($color-greener, 10%);
     display: flex;
     font-size: 1.5em;
     height: 25px; 
+  }
+
+  &__row {
+    .action-menu__sub-menu {
+      display: flex;
+      padding-left: 0;
+      flex-direction: row;
+      list-style-type: none;
+
+      .action-menu__button {
+        border: none;
+      }
+    }
   }
 }
