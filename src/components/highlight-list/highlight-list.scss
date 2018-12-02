@@ -3,8 +3,14 @@
 .highlight-list {
   @extend .member-status-list;
 
-  [type="date"] {
-    font-size: 3em;
+  [for="date"] {
+    display: flex;
+    max-width: 360px;
+    width: 340px;
+
+    [type="date"] {
+      font-size: 3em;
+    }
   }
 
   &--anonymously-visited {
