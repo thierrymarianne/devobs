@@ -63,72 +63,119 @@
           <span class="list__page-size-label">aggregates per page</span>
         </label>
       </div>
-      <div class="list__search-row">
-        <label
-          for="selecting-all-aggregates"
-          @click="selectAllAggregates"
-        >
-          <input
-            id="selecting-all-aggregates"
-            v-model="areAllAggregatesSelected"
-            name="selecting-all-aggregates"
-            class="aggregate__button-select-all-aggregates"
-            type="checkbox"
-          >Select all aggregates
-        </label>
+      <div class="list__search-column">
+        <div class="list__search-row">
+          <label
+            class="list__label"
+            for="selecting-all-aggregates"
+            @click="selectAllAggregates"
+          >
+            <input
+              id="selecting-all-aggregates"
+              v-model="areAllAggregatesSelected"
+              name="selecting-all-aggregates"
+              class="aggregate__button-select-all-aggregates"
+              type="checkbox"
+            >Select all aggregates
+          </label>
+        </div>
+        <div class="list__search-row">
+          <label
+            class="list__label"
+            for="selecting-aggregates-having-members-and-statuses"
+            @click="selectAggregatesHavingMembersAndStatuses"
+          >
+            <input
+              id="selecting-aggregates-having-members-and-statuses"
+              v-model="areAggregatesHavingMembersAndStatusesSelected"
+              name="selecting-aggregates-having-members-and-statuses"
+              type="checkbox"
+            >Select aggregates having members and statuses
+          </label>
+        </div>
+        <div class="list__search-row">
+          <label
+            class="list__label"
+            for="selecting-aggregates-without-members"
+            @click="selectAggregatesWithoutMembers"
+          >
+            <input
+              id="selecting-aggregates-without-members"
+              v-model="areAggregatesWithoutMembersSelected"
+              name="selecting-aggregates-without-members"
+              type="checkbox"
+            >Select aggregates having no members
+          </label>
+        </div>
+        <div class="list__search-row">
+          <label
+            class="list__label"
+            for="selecting-aggregates-without-statuses"
+            @click="selectAggregatesWithoutStatuses"
+          >
+            <input
+              id="selecting-aggregates-without-statuses"
+              v-model="areAggregatesWithoutStatusesSelected"
+              name="selecting-aggregates-without-statuses"
+              type="checkbox"
+            >Select aggregates having no status
+          </label>
+        </div>
+        <div class="list__search-row">
+          <label
+            class="list__label"
+            for="selecting-aggregates-without-statuses-but-members"
+            @click="selectAggregatesWithoutStatusesButMembers"
+          >
+            <input
+              id="selecting-aggregates-without-statuses-but-members"
+              v-model="areAggregatesWithoutStatusesButMembersSelected"
+              name="selecting-aggregates-without-statuses-but-members"
+              class="aggregate__button-select-aggregates-without-statuses-but-members"
+              type="checkbox"
+            >Select aggregates having no status but members
+          </label>
+        </div>
       </div>
-      <div class="list__search-row">
-        <label
-          for="selecting-aggregates-having-members-and-statuses"
-          @click="selectAggregatesHavingMembersAndStatuses"
-        >
-          <input
-            id="selecting-aggregates-having-members-and-statuses"
-            v-model="areAggregatesHavingMembersAndStatusesSelected"
-            name="selecting-aggregates-having-members-and-statuses"
-            type="checkbox"
-          >Select aggregates having members and statuses
-        </label>
-      </div>
-      <div class="list__search-row">
-        <label
-          for="selecting-aggregates-without-members"
-          @click="selectAggregatesWithoutMembers"
-        >
-          <input
-            id="selecting-aggregates-without-members"
-            v-model="areAggregatesWithoutMembersSelected"
-            name="selecting-aggregates-without-members"
-            type="checkbox"
-          >Select aggregates having no members
-        </label>
-      </div>
-      <div class="list__search-row">
-        <label
-          for="selecting-aggregates-without-statuses"
-          @click="selectAggregatesWithoutStatuses"
-        >
-          <input
-            id="selecting-aggregates-without-statuses"
-            v-model="areAggregatesWithoutStatusesSelected"
-            name="selecting-aggregates-without-statuses"
-            type="checkbox"
-          >Select aggregates having no status
-        </label>
-      </div>
-      <div class="list__search-row">
-        <label
-          for="selecting-aggregates-without-statuses-but-members"
-          @click="selectAggregatesWithoutStatusesButMembers"
-        >
-          <input
-            id="selecting-aggregates-without-statuses-but-members"
-            v-model="areAggregatesWithoutStatusesButMembersSelected"
-            name="selecting-aggregates-without-statuses-but-members"
-            class="aggregate__button-select-aggregates-without-statuses-but-members"
-            type="checkbox"
-          >Select aggregates having no status but members
-        </label>
+      <div class="list__search-column">
+        <div class="list__search-row">
+          <label
+            class="list__label"
+            for="removing-selected-aggregates"
+            @click="removeSelectedAggregates"
+          >
+            <input
+              id="removing-selected-aggregates"
+              name="removing-selected-aggregates"
+              class="aggregate__button-remove-selected-aggregates"
+              type="button"
+              value="Remove selected aggregates"
+            >
+            <font-awesome-icon
+              icon="trash"
+              class="aggregate-list__button-remove-aggregates"
+            />
+          </label>
+        </div>
+        <div class="list__search-row">
+          <label
+            class="list__label"
+            for="collect-statuses-for-selected-aggregates"
+            @click="collectStatusesForSelectedAggregates"
+          >
+            <input
+              id="collect-statuses-for-selected-aggregates"
+              name="collect-statuses-for-selected-aggregates"
+              class="aggregate__button-collect-statuses-for-selected-aggregates"
+              type="button"
+              value="Collect statuses for selected aggregates"
+            >
+            <font-awesome-icon
+              icon="file-download"
+              class="aggregate-list__button-collect-statuses-for-selected-aggregates"
+            />
+          </label>
+        </div>
       </div>
     </div>
     <ul :class="listClasses">
@@ -337,15 +384,7 @@ export default {
       });
     },
     fetchLists(params = {}, next) {
-      const requestOptions = {
-        headers: {
-          'x-auth-admin-token': this.idToken
-        }
-      };
-
-      const headerName = Object.keys(requestOptions.headers)[0];
-      this.$http.defaults.headers.common[headerName] =
-        requestOptions.headers[headerName];
+      const requestOptions = this.setUpCommonHeaders();
 
       if (this.keywords) {
         requestOptions.params = {
@@ -387,6 +426,19 @@ export default {
         })
         .catch(e => this.logger.error(e.message, 'aggregate-list', e));
     },
+    setUpCommonHeaders() {
+      const requestOptions = {
+        headers: {
+          'x-auth-admin-token': this.idToken
+        }
+      };
+
+      const headerName = Object.keys(requestOptions.headers)[0];
+      this.$http.defaults.headers.common[headerName] =
+        requestOptions.headers[headerName];
+
+      return requestOptions;
+    },
     getListItemClasses(aggregate) {
       const classes = { list__item: true };
 
@@ -414,6 +466,44 @@ export default {
       this.areAggregatesWithoutMembersSelected = false;
       this.areAggregatesWithoutStatusesSelected = false;
       this.areAggregatesWithoutStatusesButMembersSelected = false;
+    },
+    collectStatusesForSelectedAggregates() {
+      const requestOptions = this.setUpCommonHeaders();
+
+      requestOptions.params = {
+        aggregateIds: this.filteredItems
+          .filter(item => item.isSelected)
+          .map(item => item.id)
+      };
+
+      const action = this.routes.actions.collectStatuses;
+      this.$http[action.method](
+        `${Config.getSchemeAndHost()}${action.route}`,
+        requestOptions
+      )
+        .then(response => {
+          this.logger.info(response.status);
+        })
+        .catch(e => this.logger.error(e.message, 'aggregate-list', e));
+    },
+    removeSelectedAggregates() {
+      const requestOptions = this.setUpCommonHeaders();
+
+      requestOptions.params = {
+        aggregateIds: this.filteredItems
+          .filter(item => item.isSelected)
+          .map(item => item.id)
+      };
+
+      const action = this.routes.actions.bulkRemoveAggregates;
+      this.$http[action.method](
+        `${Config.getSchemeAndHost()}${action.route}`,
+        requestOptions
+      )
+        .then(response => {
+          this.logger.info(response.status);
+        })
+        .catch(e => this.logger.error(e.message, 'aggregate-list', e));
     },
     selectAllAggregates() {
       this.clearSelection();

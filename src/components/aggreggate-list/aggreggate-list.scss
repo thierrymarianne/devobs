@@ -42,11 +42,25 @@
       width: 100%;
     }
 
+    .list__label {
+      line-height: 1.5em;
+      align-self: center;
+    }
+
+    .list__search-column {
+      display: flex;
+      flex-direction: column;
+      margin-right: 8px;
+      margin-top: 8px;
+    }
+
     .list__button-search {
       justify-content: center;
       width: 100px;
     }
 
+    [for="collect-statuses-for-selected-aggregates"],
+    [for="removing-selected-aggregates"],
     [for="selecting-all-aggregates"],
     [for="selecting-aggregates-having-members-and-statuses"],
     [for="selecting-aggregates-without-statuses"],
@@ -60,6 +74,8 @@
       font-size: 0.8em;
       margin-top: 8px;
 
+      [name="collect-statuses-for-selected-aggregates"],
+      [name="removing-selected-aggregates"],
       [name="selecting-all-aggregates"],
       [name="selecting-aggregates-having-members-and-statuses"],
       [name="selecting-aggregates-without-statuses-but-members"],
@@ -67,6 +83,36 @@
       [name="selecting-aggregates-without-members"] {
         cursor: pointer;
         display: flex;
+      }
+    }
+
+    [for="removing-selected-aggregates"] {
+      align-self: flex-end;
+      border: 0;
+      display: flex;
+      margin-top: 0;
+      width: 100%;
+
+      [name="removing-selected-aggregates"] {
+        border: none;
+        background-color: transparent;
+        color: $color-red;
+        padding: 8px;
+      }
+    }
+
+    [for="collect-statuses-for-selected-aggregates"] {
+      align-self: flex-end;
+      border: 0;
+      display: flex;
+      margin-top: 0;
+      width: 100%;
+
+      [name="collect-statuses-for-selected-aggregates"] {
+        border: none;
+        background-color: transparent;
+        color: $color-greener;
+        padding: 8px;
       }
     }
 
@@ -87,6 +133,8 @@
     }
   }
 
+  &__button-collect-statuses-for-selected-aggregates,
+  &__button-remove-aggregates,
   &__button-sort-by-priority,
   &__button-switch-to-grid-view {
     align-self: center;
@@ -96,6 +144,10 @@
     font-size: 1.5em;
     line-height: 75px;
     margin-right: 8px;
+  }
+
+  &__button-remove-aggregates {
+    color: $color-red;
   }
 
   /deep/ > .list__items--grid {

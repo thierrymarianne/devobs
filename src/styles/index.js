@@ -24,6 +24,8 @@ import {
   faRetweet,
   faSync,
   faTh,
+  faTrash,
+  faTrashAlt,
   faUsers
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -51,6 +53,8 @@ library.add(faRedoAlt);
 library.add(faReply);
 library.add(faRetweet);
 library.add(faSync);
+library.add(faTrash);
+library.add(faTrashAlt);
 library.add(faTh);
 library.add(faTwitter);
 library.add(faUsers);
