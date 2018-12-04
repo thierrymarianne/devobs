@@ -69,6 +69,7 @@ export default {
   },
   created() {
     this.configureAuthenticationService();
+    this.setSessionFromLocalStorage();
   },
   methods: {
     ...mapAuthenticationActions([AuthenticationActions.LOG_OUT]),
@@ -94,9 +95,7 @@ export default {
       });
     },
     setSession(authResult) {
-      const expiresAt = JSON.stringify(
-        authResult.expiresIn * 1000 + new Date().getTime()
-      );
+      const expiresAt = this.getExpiresAt(authResult);
 
       localStorage.setItem('access_token', authResult.accessToken);
       localStorage.setItem('id_token', authResult.idToken);
@@ -113,13 +112,41 @@ export default {
         accessToken: authResult.accessToken
       });
     },
+    getExpiresAt(authResult) {
+      if (authResult.expiresIn) {
+        return JSON.stringify(
+          authResult.expiresIn * 1000 + new Date().getTime()
+        );
+      }
+
+      if (authResult.expiresAt) {
+        const { expiresAt } = authResult.expiresAt;
+        return expiresAt;
+      }
+
+      return null;
+    },
+    setSessionFromLocalStorage() {
+      if (
+        localStorage.getItem('access_token') &&
+        localStorage.getItem('id_token') &&
+        localStorage.getItem('expires_at')
+      ) {
+        const authResult = {
+          accessToken: localStorage.getItem('access_token'),
+          idToken: localStorage.getItem('id_token'),
+          expiresAt: localStorage.getItem('expires_at')
+        };
+        this.setSession(authResult);
+      }
+    },
     handleAuthentication() {
       this.authenticationService.parseHash((err, authResult) => {
         if (authResult && authResult.accessToken && authResult.idToken) {
           this.setSession(authResult);
         }
 
-        EventHub.$emit('navigate_to_homepage');
+        EventHub.$emit('navigate_to_press_review');
       });
     },
     getIdToken() {

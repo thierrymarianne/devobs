@@ -1,15 +1,11 @@
 <template>
   <div :class="actionMenuClasses">
     <div
-      v-if="isAuthenticated"
       :class="getActionMenuContainerClasses"
     >
-      <button
-        :class="getButtonClass('Press review')"
-        @click="intendToGet('Press review')"
-      >All Press Feeds</button>
 
       <button
+        v-if="isAuthenticated"
         :class="getButtonClass('Press review')"
         @click="intendToGet('Press review')"
       >Press Review</button>
@@ -26,13 +22,16 @@
       >{{ getMenuLabel(menuItem) }}</router-link>
 
       <button
+        v-if="isAuthenticated"
         :class="getButtonClass('bucket')"
         @click="intendToGet('bucket')"
       >Bucket</button>
 
       <div class="action-menu__action-wrapper">
-
-        <div class="action-menu__row">
+        <div
+          v-if="isAuthenticated"
+          class="action-menu__row"
+        >
           <button
             class="action-menu__button action-menu__refresh-button"
             @click="showStatusesHavingMedia"
@@ -76,7 +75,7 @@
             </li>
           </ul>
 
-          <!--<authenticator />-->
+          <authenticator />
 
         </div>
       </div>
@@ -89,7 +88,6 @@
       class="action-menu__toggle-menu-icon"
       @click="toggleMenuVisibility"
     />
-
   </div>
 </template>
 
@@ -125,7 +123,10 @@ export default {
   computed: {
     ...mapAuthenticationGetters(['isAuthenticated', 'getGrantedRoutes']),
     actionMenuClasses() {
-      if (this.isAuthenticated) {
+      const matchingAdministrationRoute =
+        this.$route.matched.filter(route => route.name === 'admin').length > 0;
+
+      if (this.isAuthenticated || matchingAdministrationRoute) {
         return { 'action-menu': true };
       }
 
@@ -204,6 +205,7 @@ export default {
   },
   created() {
     EventHub.$on('navigate_to_homepage', this.goToHomepage);
+    EventHub.$on('navigate_to_press_review', this.goToPressReview);
   },
   mounted() {
     EventHub.$on('action_menu.hide_intended', this.hideActionMenu);
