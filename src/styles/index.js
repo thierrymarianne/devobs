@@ -26,6 +26,7 @@ import {
   faTh,
   faTrash,
   faTrashAlt,
+  faUndo,
   faUsers
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -57,6 +58,7 @@ library.add(faTrash);
 library.add(faTrashAlt);
 library.add(faTh);
 library.add(faTwitter);
+library.add(faUndo);
 library.add(faUsers);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);

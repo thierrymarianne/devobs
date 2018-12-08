@@ -42,6 +42,7 @@
         <label
           :for="aggregate.id"
           class="aggregate__label-select-aggregate"
+          @click="selectAggregate($event)"
         >
           <input
             v-model="state.isAggregateSelected"
@@ -78,6 +79,7 @@ import { createNamespacedHelpers } from 'vuex';
 
 import MemberMixin from '../member/member-mixin';
 import StatusMixin from '../status/status-mixin';
+import EventHub from '../../modules/event-hub';
 
 const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
   'authentication'
@@ -186,6 +188,14 @@ export default {
       const editable = this.$refs[ref];
       editable.removeAttribute('contenteditable');
       this.$set(this.state, 'beingEdited', false);
+    },
+    selectAggregate(event) {
+      if (event.target.getAttribute('type')) {
+        EventHub.$emit('aggregate.selected', {
+          index: this.refName,
+          isSelected: !this.state.isAggregateSelected
+        });
+      }
     }
   }
 };

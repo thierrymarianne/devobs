@@ -176,6 +176,25 @@
             />
           </label>
         </div>
+        <div class="list__search-row">
+          <label
+            class="list__label"
+            for="reset-total-statuses-for-selected-aggregates"
+            @click="resetTotalStatusesForSelectedAggregates"
+          >
+            <input
+              id="reset-total-statuses-for-selected-aggregates"
+              name="reset-total-statuses-for-selected-aggregates"
+              class="aggregate__button-reset-total-statuses-for-selected-aggregates"
+              type="button"
+              value="Reset total statuses for selected aggregates"
+            >
+            <font-awesome-icon
+              icon="undo"
+              class="aggregate-list__button-reset-total-statuses-for-selected-aggregates"
+            />
+          </label>
+        </div>
       </div>
     </div>
     <ul :class="listClasses">
@@ -259,7 +278,8 @@ export default {
     }),
     filteredItems() {
       if (this.sortedByPriority) {
-        const sortedByTotalMembers = this.items.sort((a, b) => {
+        const items = this.items.concat([]);
+        const sortedByTotalMembers = items.sort((a, b) => {
           if (a.totalMembers === b.totalMembers) {
             return 0;
           }
@@ -353,6 +373,7 @@ export default {
   },
   destroyed() {
     EventHub.$off('aggregate_list.reload_intended');
+    EventHub.$off('aggregate.selected');
   },
   created() {
     if (!this.isAuthenticated) {
@@ -361,6 +382,9 @@ export default {
 
     EventHub.$off('aggregate_list.reload_intended');
     EventHub.$on('aggregate_list.reload_intended', this.fetchLists);
+
+    EventHub.$off('aggregate.selected');
+    EventHub.$on('aggregate.selected', this.selectAggregateById);
 
     this.fetchLists();
   },
@@ -486,6 +510,25 @@ export default {
         })
         .catch(e => this.logger.error(e.message, 'aggregate-list', e));
     },
+    resetTotalStatusesForSelectedAggregates() {
+      const requestOptions = this.setUpCommonHeaders();
+
+      requestOptions.params = {
+        aggregateIds: this.filteredItems
+          .filter(item => item.isSelected)
+          .map(item => item.id)
+      };
+
+      const action = this.routes.actions.resetTotalStatusesForAggregates;
+      this.$http[action.method](
+        `${Config.getSchemeAndHost()}${action.route}`,
+        requestOptions
+      )
+        .then(response => {
+          this.logger.info(response.status);
+        })
+        .catch(e => this.logger.error(e.message, 'aggregate-list', e));
+    },
     removeSelectedAggregates() {
       const requestOptions = this.setUpCommonHeaders();
 
@@ -504,6 +547,21 @@ export default {
           this.logger.info(response.status);
         })
         .catch(e => this.logger.error(e.message, 'aggregate-list', e));
+    },
+    selectAggregateById({ index: filteredItemIndex, isSelected }) {
+      const items = this.filteredItems.concat([]);
+      const selectedItem = this.items.filter(
+        item => item.id === items[filteredItemIndex].id
+      );
+
+      if (selectedItem.length === 0) {
+        return;
+      }
+
+      selectedItem[0].isSelected = isSelected;
+
+      const itemIndex = this.items.indexOf(selectedItem[0]);
+      this.items[itemIndex] = selectedItem;
     },
     selectAllAggregates() {
       this.clearSelection();
