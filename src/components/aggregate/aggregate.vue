@@ -165,6 +165,10 @@ export default {
   },
   methods: {
     format(subject) {
+      if (typeof subject === 'undefined') {
+        return '';
+      }
+
       const capitalizedSubject = `${subject
         .substring(0, 1)
         .toUpperCase()}${subject.substring(1, subject.length)}`;
