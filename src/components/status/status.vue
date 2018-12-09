@@ -66,9 +66,9 @@
       <div class="status__content">
         <div class="status__avatar-container">
           <div
-            :style="'background: center / 24px no-repeat url(' + avatarUrl + ')'"
+            :style="'background: center / 48px no-repeat url(' + avatarUrl + ')'"
             class="status__avatar"
-          />
+          ></div>
         </div>
         <p
           class="status__text"
@@ -283,6 +283,11 @@ export default {
       aggregateType: this.fromAggregateType
     };
   },
+  watch: {
+    statusAtFirst(newStatus) {
+      this.status = newStatus;
+    }
+  },
   computed: {
     ...mapAuthenticationGetters(['isAuthenticated']),
     avatarUrl() {
@@ -352,7 +357,7 @@ export default {
         return '';
       }
 
-      return this.status.text.replace(/\s/g, ' ');
+      return this.formatStatusText(this.status);
     },
     urls() {
       if (typeof this.status === 'undefined') {
@@ -443,6 +448,22 @@ export default {
       }
 
       return this.canBeSharedAtFirst;
+    },
+    formatStatusText(status) {
+      if (typeof status === 'undefined' || typeof status === 'string') {
+        return '';
+      }
+
+      const whitespace = 's';
+      const startCharacterClass = '[^';
+      const pattern = `(http(s?)://${startCharacterClass}${whitespace}]+)`;
+
+      const text = status.text.replace(
+        new RegExp(pattern, 'gi'),
+        '<a class="status__text-external-link" target="_blank" href="$1">$1</a>'
+      );
+
+      return text.replace(/\s/g, ' ');
     },
     statusClasses() {
       const classes = { status: true };

@@ -1,17 +1,49 @@
 <template>
   <div :class='highlightsClasses'>
-    <label for="date">
-      <input
-        id="date"
-        v-model="defaultDate"
-        :min="minDate"
-        :max="maxDate"
-        type="date"
+    <div class="highlight-list__buttons">
+      <label for="date">
+        <input
+          id="date"
+          v-model="defaultDate"
+          :min="minDate"
+          :max="maxDate"
+          type="date"
+        >
+      </label>
+      <div
+        v-if="canIdentifyRetweets"
+        class="highlight-list__retweets"
       >
-    </label>
+        <span class="highlight-list__retweets-label">
+          Retweets are
+        </span>
+        <label
+          for="included-retweets"
+          title="Include or exclude retweets">
+          <input
+            id="included-retweets"
+            v-model="includeRetweets"
+            name="retweets"
+            type="radio"
+            value="1"
+          >{{ includedRetweetsLabel }}
+        </label>
+        <label
+          for="excluded-retweets"
+          title="Include or exclude retweets">
+          <input
+            id="excluded-retweets"
+            v-model="includeRetweets"
+            type="radio"
+            name="retweets"
+            value="0"
+          >{{ excludedRetweetsLabel }}
+        </label>
+      </div>
+    </div>
     <ul class="list__items">
       <li
-        v-for="(highlight, index) in items"
+        v-for="(highlight, index) in highlights"
         :key="highlight.statusId"
         :data-key="highlight.statusId"
         class="list__item"
@@ -40,12 +72,15 @@ const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
   'authentication'
 );
 
+const RETWEETS_EXCLUDED = '0';
+
 export default {
   name: 'highlight-list',
   components: { Status },
   mixins: [ApiMixin, StatusFormat],
   data() {
     return {
+      includeRetweets: RETWEETS_EXCLUDED,
       items: [],
       logger: SharedState.logger,
       minDate: '2018-01-01',
@@ -61,6 +96,12 @@ export default {
       idToken: 'getIdToken',
       isAuthenticated: 'isAuthenticated'
     }),
+    canIdentifyRetweets() {
+      return new Date(this.defaultDate) >= new Date('2018-12-09');
+    },
+    highlights() {
+      return this.items;
+    },
     highlightsClasses() {
       const classes = {
         'highlight-list': true,
@@ -72,10 +113,21 @@ export default {
       }
 
       return classes;
+    },
+    includedRetweetsLabel() {
+      return 'included';
+    },
+    excludedRetweetsLabel() {
+      return 'excluded';
     }
   },
   watch: {
     defaultDate() {
+      this.fetchHighlights().then(items => {
+        this.items = items;
+      });
+    },
+    includeRetweets() {
       this.fetchHighlights().then(items => {
         this.items = items;
       });
@@ -120,6 +172,11 @@ export default {
 
         if (this.pageSize > 0) {
           requestOptions.params.pageSize = this.pageSize;
+        }
+
+        requestOptions.params.includeRetweets = 1;
+        if (this.includeRetweets === RETWEETS_EXCLUDED) {
+          requestOptions.params.includeRetweets = 0;
         }
 
         const action = this.routes.actions.fetchHighlights;

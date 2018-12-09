@@ -3,13 +3,61 @@
 .highlight-list {
   @extend .member-status-list;
 
-  [for="date"] {
+  &__buttons {
     display: flex;
-    max-width: 360px;
-    width: 340px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    justify-self: center;
+    width: 100%;
 
-    [type="date"] {
-      font-size: 3em;
+    [for="date"] {
+      justify-self: flex-start;
+      display: flex;
+      margin-left: 1em;
+      max-width: 360px;
+      width: 340px;
+
+      [type="date"] {
+        font-size: 3em;
+      }
+    }
+
+    .highlight-list__retweets {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin-left: 1em;
+      margin-top: 1em;
+      margin-right: 1em;
+
+      &-label,
+      [for="excluded-retweets"],
+      [for="excluded-retweets"],
+      [for="included-retweets"] {
+        align-self: center;
+        color: $color-even-greener;
+        cursor: pointer;
+        display: flex;
+        font-size: 1.5em;
+        justify-self: flex-end;
+        line-height: 1em;
+        margin-left: 0.5em;
+
+        [type="radio"] {
+          align-self: center;
+          font-size: 2em;
+          height: 0.5em;
+          line-height: 1em;
+          margin-right: 0.2em;
+          width: 0.5em;
+        }
+      }
+
+      &-label {
+        cursor: default;
+        margin-left: 0;
+      }
     }
   }
 
@@ -19,6 +67,17 @@
 
   .status {
     margin-top: 15px;
+  }
+
+  /deep/ .status__text-external-link {
+    color: $color-black;
+
+    &:link,
+    &:hover,
+    &:visited,
+    &:active {
+      color: $color-black;
+    }
   }
 
   .list__item:last-child {
