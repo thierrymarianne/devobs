@@ -111,11 +111,7 @@ const state = {
 
 const logLevel = {
   isSilent: false,
-  onError: ({ error }) => {
-    if (error && error.indexOf && error.indexOf('code 403')) {
-      window.location = window.location;
-    }
-  }
+  onError: () => {}
 };
 
 const logger = {
