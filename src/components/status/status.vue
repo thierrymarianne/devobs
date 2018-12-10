@@ -455,7 +455,7 @@ export default {
       }
 
       const whitespace = 's';
-      const startCharacterClass = '[^';
+      const startCharacterClass = '[^\\';
       const pattern = `(http(s?)://${startCharacterClass}${whitespace}]+)`;
 
       const text = status.text.replace(
