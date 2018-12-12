@@ -9,6 +9,14 @@
         >{{ publicationDate }}</a>
       </div>
       <div class="status__vanity-metrics">
+        <a
+          :href="status.url"
+          class="status__url">
+          <font-awesome-icon
+            :icon="['fab', 'twitter']"
+            class="status__vanity-metric-icon"
+          />
+        </a>
         <font-awesome-icon
           icon="retweet"
           class="status__vanity-metric-icon" />
@@ -460,7 +468,14 @@ export default {
 
       const text = status.text.replace(
         new RegExp(pattern, 'gi'),
-        '<a class="status__text-external-link" target="_blank" href="$1">$1</a>'
+        matchingText => {
+          if (matchingText.indexOf('revue-de-presse') !== -1) {
+            return matchingText;
+          }
+
+          return `<a class="status__text-external-link"
+                   target="_blank" href="${matchingText}">${matchingText}</a>`;
+        }
       );
 
       return text.replace(/\s/g, ' ');

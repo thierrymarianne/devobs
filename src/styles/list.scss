@@ -1,5 +1,6 @@
 
 .list {
+  font-family: $font-family;
   margin-top: 75px;
   display: flex;
   flex-direction: column;
@@ -76,7 +77,7 @@
       justify-content: center;
       margin-left: 0;
       height: 75px;
-      line-height: 75px;
+      line-height: 2em;
       color: $color-greener;
       list-style-type: none;
       width: 100%;

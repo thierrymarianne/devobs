@@ -24,6 +24,11 @@ export default [
     name: 'highlights'
   },
   {
+    component: HighlightList,
+    path: '/highlights/private/:date',
+    name: 'private-highlights'
+  },
+  {
     component: Admin,
     name: 'admin',
     path: '/admin',

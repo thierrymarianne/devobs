@@ -2,8 +2,10 @@
 
 .highlight-list {
   @extend .member-status-list;
+  width: 90vw;
 
   &__buttons {
+    align-self: center;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -14,12 +16,14 @@
     [for="date"] {
       justify-self: flex-start;
       display: flex;
-      margin-left: 1em;
+      margin-left: 0;
       max-width: 360px;
       width: 340px;
 
       [type="date"] {
-        font-size: 3em;
+        font-size: 2em;
+        font-family: $font-family;
+        margin-left: 0;
       }
     }
 
@@ -61,6 +65,50 @@
     }
   }
 
+  [for="select-aggregates"] {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.5em;
+    justify-content: center;
+    text-align: center;
+    color: $color-even-greener;
+    margin-top: 1em;
+    width: 100%;
+  }
+
+  &__aggregates {
+      /deep/ &.list__items {
+        margin-top: 1em;
+        background: transparent;
+        border: none;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        height: 12em;
+        width: 100%;
+
+        @media only screen and (max-device-width : 640px) {
+          height: 2em;
+        }
+
+        @media only screen and (max-device-width: 768px) {
+          height: 2em;
+        }
+
+        .list__item {
+          border: none;
+          display: flex;
+          font-size: 1.5em;
+          height: 1.5em;
+          line-height: 1.85em;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+          width: 100%;
+        }
+      }
+  };
+
   &--anonymously-visited {
     margin-top: 8px;
   }
@@ -69,6 +117,7 @@
     margin-top: 15px;
   }
 
+  .highlight-list__member-profile,
   /deep/ .status__text-external-link {
     color: $color-black;
 
@@ -78,6 +127,25 @@
     &:active {
       color: $color-black;
     }
+  }
+
+  .highlight-list__clear-selection {
+    cursor: pointer;
+    background: transparent;
+    height: 2em;
+
+    &:hover {
+      border-color: $color-orange;
+    }
+  }
+
+  .highlight-list__member-profile {
+    display: flex;
+    flex-wrap: wrap;
+    align-self: center;
+    justify-self: center;
+    justify-content: center;
+    align-content: center;
   }
 
   .list__item:last-child {

@@ -37,6 +37,7 @@
 import { createNamespacedHelpers } from 'vuex';
 
 import auth0 from 'auth0-js';
+import DateMixin from '../../mixins/date';
 import Config from '../../config';
 import EventHub from '../../modules/event-hub';
 import AuthenticationActions from '../../store/authentication-actions';
@@ -53,6 +54,7 @@ const {
 export default {
   name: 'authenticator',
   components: { Authorization },
+  mixins: [DateMixin],
   data() {
     return {
       authenticationService: {}
@@ -141,12 +143,17 @@ export default {
       }
     },
     handleAuthentication() {
+      const route = {
+        name: 'private-highlights',
+        params: { date: this.getCurrentDate() }
+      };
+
       this.authenticationService.parseHash((err, authResult) => {
         if (authResult && authResult.accessToken && authResult.idToken) {
           this.setSession(authResult);
         }
 
-        EventHub.$emit('navigate_to_press_review');
+        EventHub.$emit('navigate_to_press_review', route);
       });
     },
     getIdToken() {

@@ -73,6 +73,14 @@
                 <span>Highlights</span>
               </button>
             </li>
+            <li v-if="isAuthenticated">
+              <button
+                class="action-menu__button action-menu__lists-button"
+                @click="goToPersonalHighlights()"
+              >
+                <span>Personal highlights</span>
+              </button>
+            </li>
           </ul>
 
           <authenticator />
@@ -95,6 +103,7 @@
 import { createNamespacedHelpers } from 'vuex';
 
 import ApiMixin from '../../mixins/api';
+import DateMixin from '../../mixins/date';
 import CaseNormalizer from '../../mixins/case';
 import EventHub from '../../modules/event-hub';
 import SharedState from '../../modules/shared-state';
@@ -107,7 +116,7 @@ const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
 export default {
   name: 'action-menu',
   components: { Authenticator },
-  mixins: [ApiMixin, CaseNormalizer],
+  mixins: [ApiMixin, CaseNormalizer, DateMixin],
   props: {
     denyAccessToAlternateRoutes: {
       type: Boolean,
@@ -245,25 +254,25 @@ export default {
     goToHomepage() {
       this.goToPressReview();
     },
-    goToHighlights() {
-      const today = new Date();
-      today.setDate(today.getDate() - 1);
-
-      let day = today.getDate();
-      if (today.getDate() < 10) {
-        day = `0${day}`;
-      }
-
+    goToHighlights(aggregates) {
       const params = {
-        date: `${today.getFullYear()}-${today.getMonth() + 1}-${day}`
+        date: this.getCurrentDate()
       };
 
+      let routeName = 'highlights';
+      if (aggregates) {
+        routeName = 'private-highlights';
+      }
+
       this.$router.push({
-        name: 'highlights',
+        name: routeName,
         params
       });
 
       EventHub.$emit('highlight_list.reload_intended');
+    },
+    goToPersonalHighlights() {
+      this.goToHighlights('all-aggregates');
     },
     goToLists() {
       this.$router.push({
@@ -272,7 +281,12 @@ export default {
 
       EventHub.$emit('aggregate_list.reload_intended');
     },
-    goToPressReview() {
+    goToPressReview(route) {
+      if (route) {
+        this.$router.push(route);
+        return;
+      }
+
       this.$router.push({
         name: 'press-review'
       });

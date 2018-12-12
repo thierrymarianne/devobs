@@ -1,8 +1,10 @@
 @import 'animate.css';
+@import url('https://fonts.googleapis.com/css?family=Gabriela');
 
 body {
   background-color: $color-beige-light;
   display: flex;
+  font-family: $font-family;
   justify-content: center;
   margin: 0;
   scroll-behavior: smooth;
@@ -12,7 +14,7 @@ button {
   border: 1px solid $color-greener;
   color: $color-greener;
   outline-color: transparent;
-  font-family: 'Libre Baskerville', serif;
+  font-family: $font-family;
 }
 
 #app {

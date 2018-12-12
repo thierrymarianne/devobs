@@ -27,6 +27,8 @@ $line-height-menu-item: 1.4em;
 $separation-1: 8px;
 $separation-2: calc(2 * #{$separation-1});
 
+$font-family: 'Gabriela', 'Open Sans', sans-serif;
+
 .clickable {
   color: $color-greener;
   cursor: pointer;

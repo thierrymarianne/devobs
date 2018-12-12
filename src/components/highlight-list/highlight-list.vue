@@ -41,6 +41,37 @@
         </label>
       </div>
     </div>
+    <label
+      v-if="aggregates.length > 0"
+      for="select-aggregates">
+      Select one or more Twitter accounts to fetch their highlights
+      <select
+        id="select-aggregates"
+        v-model="selectedAggregates"
+        name="selected-aggregates"
+        multiple="multiple"
+        class="list__items highlight-list__aggregates"
+        @change="fetchHighlights"
+      >
+        <option
+          v-for="(aggregate) in sortedAggregates"
+          :key="aggregate.twitterMemberId"
+          :data-key="aggregate.twitterMemberId"
+          :value="aggregate.memberId"
+          class="list__item"
+        >
+          @{{ aggregate.memberName }}
+          - {{ aggregate.memberFullName }}
+          - {{ aggregate.totalHighlights }} statuses
+        </option>
+      </select>
+      <button
+        class="highlight-list__clear-selection"
+        type="reset"
+        value="clear"
+        @click="clearAggregateSelection"
+      >Clear selection</button>
+    </label>
     <ul class="list__items">
       <li
         v-for="(highlight, index) in highlights"
@@ -52,8 +83,7 @@
           :status-at-first="formatStatus(highlight.status)"
           :ref-name="index"
         />
-      <!--
-   --></li>
+      </li>
     </ul>
   </div>
 </template>
@@ -79,16 +109,23 @@ export default {
   components: { Status },
   mixins: [ApiMixin, StatusFormat],
   data() {
+    let defaultDate = this.$route.params.date;
+    if (this.$route.params.date === '1970-01-01') {
+      defaultDate = this.getMaxDate();
+    }
+
     return {
       includeRetweets: RETWEETS_EXCLUDED,
+      aggregates: [],
       items: [],
       logger: SharedState.logger,
       minDate: '2018-01-01',
       maxDate: this.getMaxDate(),
+      selectedAggregates: [],
       pageIndex: 1,
       pageSize: 10,
       totalPages: null,
-      defaultDate: this.$route.params.date
+      defaultDate
     };
   },
   computed: {
@@ -119,18 +156,18 @@ export default {
     },
     excludedRetweetsLabel() {
       return 'excluded';
+    },
+    sortedAggregates() {
+      const reversedAggregates = this.aggregates.concat([]);
+      return reversedAggregates.reverse();
     }
   },
   watch: {
     defaultDate() {
-      this.fetchHighlights().then(items => {
-        this.items = items;
-      });
+      this.updateHighlights();
     },
     includeRetweets() {
-      this.fetchHighlights().then(items => {
-        this.items = items;
-      });
+      this.updateHighlights();
     }
   },
   destroyed() {
@@ -143,8 +180,12 @@ export default {
     this.fetchHighlights();
   },
   methods: {
+    clearAggregateSelection() {
+      this.selectedAggregates = [];
+      this.fetchHighlights();
+    },
     fetchHighlights(params = {}) {
-      return new Promise((resolved, rejected) => {
+      return new Promise(resolved => {
         const authenticationToken = localStorage.getItem('x-auth-token');
         const requestOptions = {
           headers: { 'x-auth-token': authenticationToken }
@@ -179,16 +220,34 @@ export default {
           requestOptions.params.includeRetweets = 0;
         }
 
+        if (this.$route.name !== 'highlights') {
+          requestOptions.params.routeName = this.$route.name;
+          requestOptions.headers['x-auth-admin-token'] = this.idToken;
+        }
+
+        if (this.selectedAggregates.length > 0) {
+          requestOptions.params.selectedAggregates = this.selectedAggregates;
+        }
+
         const action = this.routes.actions.fetchHighlights;
         const route = `${Config.getSchemeAndHost()}${action.route}`;
         this.$http[action.method](route, requestOptions)
           .then(response => {
-            this.items = response.data;
+            this.items = response.data.statuses;
+
+            if (response.data.aggregates) {
+              this.aggregates = response.data.aggregates;
+            }
+
             this.totalPages = parseInt(response.headers['x-total-pages'], 10);
             this.pageIndex = parseInt(response.headers['x-page-index'], 10);
 
+            let routeName = 'highlights';
+            if (this.$route.name !== 'highlights') {
+              routeName = this.$route.name;
+            }
             this.$router.push({
-              name: 'highlights',
+              name: routeName,
               params: { date: this.defaultDate }
             });
 
@@ -196,7 +255,12 @@ export default {
           })
           .catch(e => {
             this.logger.error(e.message, 'highlight-list', e);
-            rejected(e);
+
+            if (requestOptions.params.routeName) {
+              this.$router.replace({
+                name: 'press-review'
+              });
+            }
           });
       });
     },
@@ -210,6 +274,14 @@ export default {
       }
 
       return `${today.getFullYear()}-${today.getMonth() + 1}-${day}`;
+    },
+    getMemberProfileUrl(aggregate) {
+      return `https://twitter.com/${aggregate.memberName}`;
+    },
+    updateHighlights() {
+      this.fetchHighlights().then(items => {
+        this.items = items;
+      });
     }
   }
 };
