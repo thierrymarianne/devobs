@@ -279,8 +279,12 @@ export default {
       return `https://twitter.com/${aggregate.memberName}`;
     },
     updateHighlights() {
-      this.fetchHighlights().then(items => {
-        this.items = items;
+      this.fetchHighlights().then(data => {
+        this.items = data.statuses;
+
+        if (data.aggregates) {
+          this.aggregates = data.aggregates;
+        }
       });
     }
   }
