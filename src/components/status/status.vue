@@ -462,23 +462,41 @@ export default {
         return '';
       }
 
+      let text = this.replaceHyperlinksWithAnchors(status.text);
+      text = this.replaceMentionsWithWithAnchors(text);
+
+      return text.replace(/\s/g, ' ');
+    },
+    replaceHyperlinksWithAnchors(subject) {
       const whitespace = 's';
       const startCharacterClass = '[^\\';
       const pattern = `(http(s?)://${startCharacterClass}${whitespace}]+)`;
 
-      const text = status.text.replace(
+      return subject.replace(new RegExp(pattern, 'gi'), matchingText => {
+        if (matchingText.indexOf('revue-de-presse') !== -1) {
+          return matchingText;
+        }
+
+        return `<a class="status__text-external-link"
+                   target="_blank" href="${matchingText}">${matchingText}</a>`;
+      });
+    },
+    replaceMentionsWithWithAnchors(subject) {
+      const whitespace = 's';
+      const startCharacterClass = '[^\\';
+      const pattern = `(\\${whitespace}?)@(${startCharacterClass}${whitespace}]+)(\\${whitespace}?)`;
+
+      return subject.replace(
         new RegExp(pattern, 'gi'),
-        matchingText => {
-          if (matchingText.indexOf('revue-de-presse') !== -1) {
-            return matchingText;
+        (matchingSubstring, prefix, mention, suffix) => {
+          if (matchingSubstring.indexOf('revue-de-presse') !== -1) {
+            return matchingSubstring;
           }
 
-          return `<a class="status__text-external-link"
-                   target="_blank" href="${matchingText}">${matchingText}</a>`;
+          return `${prefix}<a class="status__text-external-link"
+                   target="_blank" href="https://twitter.com/${mention}">@${mention}</a>${suffix}`;
         }
       );
-
-      return text.replace(/\s/g, ' ');
     },
     statusClasses() {
       const classes = { status: true };
