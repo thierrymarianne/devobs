@@ -6,6 +6,7 @@
         <a
           :href="status.url"
           class="status__url"
+          target="_blank"
         >{{ publicationDate }}</a>
       </div>
       <div class="status__vanity-metrics">
@@ -35,11 +36,13 @@
         <a
           :href="retweetingMemberTimelineUrl"
           class="status__username"
+          target="_blank"
         >@{{ status.usernameOfRetweetingMember }}</a>
         <span class="status__verb">&nbsp;retweeted&nbsp;</span>
         <a
           :href="memberTimelineUrl"
           class="status__username"
+          target="_blank"
         >@{{ status.username }}</a>
       </div>
     </div>
@@ -51,11 +54,13 @@
         <a
           :href="likingMemberTimelineUrl"
           class="status__username"
+          target="_blank"
         >@{{ status.likedBy }}</a>
         <span class="status__verb">&nbsp;liked&nbsp;</span>
         <a
           :href="memberTimelineUrl"
           class="status__username"
+          target="_blank"
         >@{{ status.username }}</a>
       </div>
     </div>
@@ -67,6 +72,7 @@
         <a
           :href="memberTimelineUrl"
           class="status__username"
+          target="_blank"
         >@{{ status.username }}</a>
       </div>
     </div>
@@ -122,21 +128,27 @@
         <a
           v-if="canBeRepliedTo"
           :href="urls.reply"
-          class="status__web-intent">
+          class="status__web-intent"
+          target="_blank"
+        >
           <font-awesome-icon icon="reply" />
           <span>Reply</span>
         </a>
         <a
           v-if="canBeRetweeted"
           :href="urls.retweet"
-          class="status__web-intent">
+          class="status__web-intent"
+          target="_blank"
+        >
           <font-awesome-icon icon="retweet" />
           <span>Retweet</span>
         </a>
         <a
           v-if="canBeLiked"
           :href="urls.like"
-          class="status__web-intent">
+          class="status__web-intent"
+          target="_blank"
+        >
           <font-awesome-icon icon="heart" />
           <span>Like</span>
         </a>
@@ -412,10 +424,18 @@ export default {
       return `https://twitter.com/${this.status.likedBy}`;
     },
     shouldDisplayAddToBucketButton() {
-      return this.isAuthenticated;
+      return (
+        this.$router
+          .match(window.location)
+          .matched.find(route => route.name === 'admin') && this.isAuthenticated
+      );
     },
     shouldDisplayPermalink() {
-      return this.isAuthenticated;
+      return (
+        this.$router
+          .match(window.location)
+          .matched.find(route => route.name === 'admin') && this.isAuthenticated
+      );
     },
     shouldShowConversationIntentButtons() {
       return (
@@ -452,10 +472,10 @@ export default {
         this.$route.name === 'aggregate-status' ||
         this.$route.name === 'press-review'
       ) {
-        return true;
+        return this.isAuthenticated;
       }
 
-      return this.canBeSharedAtFirst;
+      return this.canBeSharedAtFirst && this.isAuthenticated;
     },
     formatStatusText(status) {
       if (typeof status === 'undefined' || typeof status === 'string') {

@@ -93,6 +93,7 @@ import { createNamespacedHelpers } from 'vuex';
 
 import ApiMixin from '../../mixins/api';
 import Config from '../../config';
+import DateMixin from '../../mixins/date';
 import EventHub from '../../modules/event-hub';
 import StatusFormat from '../../mixins/status-format';
 import SharedState from '../../modules/shared-state';
@@ -107,7 +108,7 @@ const RETWEETS_EXCLUDED = '0';
 export default {
   name: 'highlight-list',
   components: { Status },
-  mixins: [ApiMixin, StatusFormat],
+  mixins: [ApiMixin, DateMixin, StatusFormat],
   data() {
     let defaultDate = this.$route.params.date;
     if (this.$route.params.date === '1970-01-01') {
@@ -265,15 +266,7 @@ export default {
       });
     },
     getMaxDate() {
-      const today = new Date();
-      today.setDate(today.getDate() - 1);
-
-      let day = today.getDate();
-      if (today.getDate() < 10) {
-        day = `0${day}`;
-      }
-
-      return `${today.getFullYear()}-${today.getMonth() + 1}-${day}`;
+      return this.getCurrentDate();
     },
     getMemberProfileUrl(aggregate) {
       return `https://twitter.com/${aggregate.memberName}`;

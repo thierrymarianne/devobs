@@ -7,11 +7,7 @@ import MemberStatusList from '../components/member-status-list/member-status-lis
 import StatusList from '../components/status-list/status-list.vue';
 import Time from './time';
 
-let defaultRedirect = '/admin/timeline/press-review';
-const isAuthenticated = localStorage.getItem('access_token');
-if (!isAuthenticated) {
-  defaultRedirect = `/highlights/${Time.yesterday()}`;
-}
+const defaultRedirect = `/highlights/${Time.today()}`;
 
 export default [
   {

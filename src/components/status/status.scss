@@ -15,6 +15,7 @@ $status-margin: 1em;
   }
 
   &__publication-date {
+    color: $color-black;
     cursor: pointer;
     display: flex;
     font-size: $font-size-date;
@@ -103,7 +104,9 @@ $status-margin: 1em;
     }
 
     &:first-child {
+      align-self: center;
       margin-left: 0;
+      margin-right: 0.5em;
     }
 
     &--secondary-link {
@@ -130,10 +133,16 @@ $status-margin: 1em;
   }
 
   &__text {
+    color: $color-even-greener;
     margin-top: $separation-2;
     margin-bottom: 0;
     max-width: calc(100vw - 16px);
     white-space: pre-line;
+
+    /deep/ .status__text-external-link {
+      font-size: 1em;
+      @extend .clickable;
+    }
 
     /deep/ > span.emoji {
       display: -moz-inline-box;
@@ -191,19 +200,31 @@ $status-margin: 1em;
   }
 
   &__vanity-metrics {
-    color: $color-black-light;
+    align-content: center;
+    cursor: default;
+    color: $color-even-greener;
     display: flex;
+    flex-direction: row;
     padding: $separation-1;
+    line-height: 1.3em;
+    height: 1.3em;
+
+    [data-icon] {
+      line-height: 1.3em;
+      height: 1.3em;
+    }
   }
 
   &__vanity-metric-icon {
+    line-height: 1.3em;
+    height: 1.3em;
     margin-right: $separation-1;
-    height: 75px;
   }
 
   &__vanity-metric {
     align-self: center;
     display: flex;
+    line-height: 1.3em;
     margin-right: $separation-2;
   }
 

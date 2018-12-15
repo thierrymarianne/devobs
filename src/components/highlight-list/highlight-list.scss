@@ -14,6 +14,7 @@
     width: 100%;
 
     [for="date"] {
+      color: $color-hyperlink;
       justify-self: flex-start;
       display: flex;
       margin-left: 0;
@@ -21,9 +22,13 @@
       width: 340px;
 
       [type="date"] {
+        background: transparent;
+        border: 1px solid $color-hyperlink;
+        color: $color-hyperlink;
         font-size: 2em;
         font-family: $font-family;
         margin-left: 0;
+        padding: 0.2em;
       }
     }
 
@@ -40,13 +45,14 @@
       [for="excluded-retweets"],
       [for="included-retweets"] {
         align-self: center;
-        color: $color-even-greener;
+        color: $color-hyperlink;
         cursor: pointer;
         display: flex;
         font-size: 1.5em;
         justify-self: flex-end;
         line-height: 1em;
         margin-left: 0.5em;
+        text-decoration: underline;
 
         [type="radio"] {
           align-self: center;
@@ -59,8 +65,10 @@
       }
 
       &-label {
+        color: $color-even-greener;
         cursor: default;
         margin-left: 0;
+        text-decoration: none;
       }
     }
   }
@@ -97,6 +105,8 @@
 
         .list__item {
           border: none;
+          color: $color-hyperlink;
+          text-decoration: underline;
           display: flex;
           font-size: 1.5em;
           font-family: $font-family;
@@ -118,8 +128,7 @@
     margin-top: 15px;
   }
 
-  .highlight-list__member-profile,
-  /deep/ .status__text-external-link {
+  .highlight-list__member-profile {
     color: $color-black;
 
     &:link,
