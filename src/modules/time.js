@@ -1,15 +1,20 @@
-const padDateDay = date => {
-  let day = date.getDate();
-  if (date.getDate() < 10) {
-    day = `0${day}`;
+const padWithCharacter = (subject, character) => {
+  let paddedSubject = subject;
+  if (subject < 10) {
+    paddedSubject = `${character}${subject}`;
   }
 
-  return day;
+  return paddedSubject;
+};
+
+const padDateDay = date => {
+  return padWithCharacter(date.getDate(), 0);
 };
 
 const formatDate = date => {
   const day = padDateDay(date);
-  return `${date.getFullYear()}-${date.getMonth() + 1}-${day}`;
+  const month = padWithCharacter(date.getMonth() + 1, 0);
+  return `${date.getFullYear()}-${month}-${day}`;
 };
 
 const yesterday = () => {
