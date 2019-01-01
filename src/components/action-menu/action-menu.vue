@@ -125,17 +125,14 @@ export default {
   },
   data() {
     return {
-      showMenu: false,
+      showMenu: this.isAdministrativeRoute(),
       visibleStatuses: SharedState.state.visibleStatuses
     };
   },
   computed: {
     ...mapAuthenticationGetters(['isAuthenticated', 'getGrantedRoutes']),
     actionMenuClasses() {
-      const matchingAdministrationRoute =
-        this.$route.matched.filter(route => route.name === 'admin').length > 0;
-
-      if (this.isAuthenticated || matchingAdministrationRoute) {
+      if (this.isAuthenticated || this.isAdministrativeRoute()) {
         return { 'action-menu': true };
       }
 
@@ -223,6 +220,11 @@ export default {
     getAggregateIndex(aggregateType) {
       return this.normalize(aggregateType);
     },
+    isAdministrativeRoute() {
+      return (
+        this.$route.matched.filter(route => route.name === 'admin').length > 0
+      );
+    },
     getButtonClass(aggregateType) {
       const classes = { 'action-menu__get-statuses': true };
 
@@ -256,7 +258,8 @@ export default {
     },
     goToHighlights(aggregates) {
       const params = {
-        date: this.getCurrentDate()
+        startDate: this.getCurrentDate(),
+        endDate: this.getCurrentDate()
       };
 
       let routeName = 'highlights';

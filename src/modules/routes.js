@@ -21,7 +21,7 @@ export default [
   },
   {
     component: HighlightList,
-    path: '/highlights/private/:date',
+    path: '/highlights/private/:startDate/:endDate',
     name: 'private-highlights'
   },
   {

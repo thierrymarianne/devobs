@@ -1,13 +1,31 @@
 <template>
   <div :class='highlightsClasses'>
     <div class="highlight-list__buttons">
-      <label for="date">
+      <label
+        :class="{ 'highlight-list__dates': showEndDate }"
+        for="start-date"
+      >
         <input
-          id="date"
-          v-model="defaultDate"
+          id="start-date"
+          v-model="startDate"
           :min="minDate"
+          :max="maxStartDate"
+          type="date"
+        >
+        <input
+          v-if="showEndDate"
+          id="end-date"
+          v-model="endDate"
+          :min="minEndDate"
           :max="maxDate"
           type="date"
+        >
+        <input
+          v-else
+          v-model="startDate"
+          :min="minEndDate"
+          :max="maxDate"
+          type="hidden"
         >
       </label>
       <div
@@ -126,7 +144,8 @@ export default {
       pageIndex: 1,
       pageSize: 10,
       totalPages: null,
-      defaultDate
+      endDate: defaultDate,
+      startDate: defaultDate
     };
   },
   computed: {
@@ -158,13 +177,33 @@ export default {
     excludedRetweetsLabel() {
       return 'excluded';
     },
+    maxStartDate() {
+      if (new Date(this.maxDate) > new Date(this.endDate)) {
+        return this.endDate;
+      }
+
+      return this.maxDate;
+    },
+    minEndDate() {
+      if (new Date(this.minDate) > new Date(this.startDate)) {
+        return this.minDate;
+      }
+
+      return this.startDate;
+    },
+    showEndDate() {
+      return this.$route.name !== 'highlights';
+    },
     sortedAggregates() {
       const reversedAggregates = this.aggregates.concat([]);
       return reversedAggregates.reverse();
     }
   },
   watch: {
-    defaultDate() {
+    startDate() {
+      this.updateHighlights();
+    },
+    endDate() {
       this.updateHighlights();
     },
     includeRetweets() {
@@ -197,8 +236,13 @@ export default {
           requestOptions.headers[headerName];
 
         requestOptions.params = {
-          date: this.defaultDate
+          startDate: this.startDate,
+          endDate: this.endDate
         };
+
+        if (!this.showEndDate) {
+          requestOptions.params.endDate = this.startDate;
+        }
 
         if (params.pageIndex) {
           if (!('params' in requestOptions)) {
@@ -247,9 +291,16 @@ export default {
             if (this.$route.name !== 'highlights') {
               routeName = this.$route.name;
             }
+
+            const dateParams = { startDate: this.startDate };
+            dateParams.endDate = this.endDate;
+            if (!this.showEndDate) {
+              dateParams.endDate = this.startDate;
+            }
+
             this.$router.push({
               name: routeName,
-              params: { date: this.defaultDate }
+              params: dateParams
             });
 
             resolved(response.data);

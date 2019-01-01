@@ -13,6 +13,8 @@
     justify-self: center;
     width: 100%;
 
+    [for="start-date"],
+    [for="end-date"],
     [for="date"] {
       color: $color-hyperlink;
       justify-self: flex-start;
@@ -29,6 +31,11 @@
         font-family: $font-family;
         margin-left: 0;
         padding: 0.2em;
+      }
+
+      &.highlight-list__dates {
+        max-width: 660px;
+        width: 660px;
       }
     }
 
