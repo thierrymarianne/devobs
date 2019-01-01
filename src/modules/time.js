@@ -7,9 +7,7 @@ const padWithCharacter = (subject, character) => {
   return paddedSubject;
 };
 
-const padDateDay = date => {
-  return padWithCharacter(date.getDate(), 0);
-};
+const padDateDay = date => padWithCharacter(date.getDate(), 0);
 
 const formatDate = date => {
   const day = padDateDay(date);
