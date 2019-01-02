@@ -154,7 +154,7 @@ export default {
       isAuthenticated: 'isAuthenticated'
     }),
     canIdentifyRetweets() {
-      return new Date(this.defaultDate) >= new Date('2018-12-09');
+      return new Date(this.startDate) >= new Date('2018-12-09');
     },
     highlights() {
       return this.items;
