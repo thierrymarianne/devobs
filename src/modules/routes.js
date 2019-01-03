@@ -7,7 +7,7 @@ import MemberStatusList from '../components/member-status-list/member-status-lis
 import StatusList from '../components/status-list/status-list.vue';
 import Time from './time';
 
-const defaultRedirect = `/highlights/${Time.today()}`;
+const defaultRedirect = `/highlights/${Time.today()}/${Time.today()}`;
 
 export default [
   {
@@ -16,7 +16,7 @@ export default [
   },
   {
     component: HighlightList,
-    path: '/highlights/:date',
+    path: '/highlights/:startDate/:endDate',
     name: 'highlights'
   },
   {

@@ -145,7 +145,10 @@ export default {
     handleAuthentication() {
       const route = {
         name: 'private-highlights',
-        params: { date: this.getCurrentDate() }
+        params: {
+          startDate: this.getCurrentDate(),
+          endDate: this.getCurrentDate()
+        }
       };
 
       this.authenticationService.parseHash((err, authResult) => {
