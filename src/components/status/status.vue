@@ -292,22 +292,6 @@ export default {
       default: ''
     }
   },
-  data() {
-    return {
-      addedToBucket: this.statusAtFirst.isInBucket,
-      errorMessages: SharedState.errors,
-      couldNotFindStartOfConversation: false,
-      logger: SharedState.logger,
-      status: this.statusAtFirst,
-      visibleStatuses: SharedState.state.visibleStatuses,
-      aggregateType: this.fromAggregateType
-    };
-  },
-  watch: {
-    statusAtFirst(newStatus) {
-      this.status = newStatus;
-    }
-  },
   computed: {
     ...mapAuthenticationGetters(['isAuthenticated']),
     avatarUrl() {
@@ -445,6 +429,22 @@ export default {
             this.canBeRefreshed &&
             !this.isAllowedToOpenConversation))
       );
+    }
+  },
+  data() {
+    return {
+      addedToBucket: this.statusAtFirst.isInBucket,
+      errorMessages: SharedState.errors,
+      couldNotFindStartOfConversation: false,
+      logger: SharedState.logger,
+      status: this.statusAtFirst,
+      visibleStatuses: SharedState.state.visibleStatuses,
+      aggregateType: this.fromAggregateType
+    };
+  },
+  watch: {
+    statusAtFirst(newStatus) {
+      this.status = newStatus;
     }
   },
   mounted() {

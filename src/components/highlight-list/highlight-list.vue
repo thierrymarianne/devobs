@@ -60,7 +60,7 @@
       </div>
     </div>
     <label
-      v-if="aggregates.length > 0"
+      v-if="aggregates.length > 0 && showEndDate"
       for="select-aggregates">
       Select one or more Twitter accounts to fetch their highlights
       <select
