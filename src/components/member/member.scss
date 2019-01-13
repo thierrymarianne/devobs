@@ -12,7 +12,7 @@
     flex-wrap: wrap;
 
     &:first-child {
-      width: 250px
+      width: 200px;
     }
 
     &:last-child {
@@ -24,6 +24,11 @@
     display: flex;
     justify-content: left;
     width: 100%
+  }
+
+  &__total-statuses {
+    line-height: 1em;
+    font-size: 0.8em;
   }
 
   .member__button-collect-status,

@@ -53,6 +53,16 @@
         @click="fetchNextPage"
       >
     </div>
+    <div
+      class="member-list__selectors"
+    >
+      <toggler
+        id="less-than-ten"
+        :click-handler="getMembersHavingLessThanTenStatusesSelector()"
+        :is-selected="areMembersHavingLessThanTenStatusesSelected"
+        label-text="Select members with less than 10 statuses"
+      />
+    </div>
     <ul class="list__items">
       <li
         v-for="(member, index) in sortedItems"
@@ -61,7 +71,10 @@
         class="list__item"
       >
         <member
+          :data-index="getOriginalIndexBySortedItemIndex(index)"
+          :is-selected="getMemberSelectionIsser(index)"
           :member="member"
+          :select-member="getMemberSelector(index)"
           :unlock="getMemberUnlockingCapability(index)"
         />
       </li>
@@ -79,6 +92,7 @@ import EventHub from '../../modules/event-hub';
 import Config from '../../config';
 import Member from '../member/member.vue';
 import SharedState from '../../modules/shared-state';
+import Toggler from '../toggler/toggler.vue';
 
 const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
   'authentication'
@@ -86,7 +100,7 @@ const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
 
 export default {
   name: 'member-list',
-  components: { Member },
+  components: { Member, Toggler },
   mixins: [ApiMixin, RequestMixin, StatusMixin],
   data() {
     return {
@@ -95,7 +109,11 @@ export default {
       keyword: null,
       pageIndex: 1,
       pageSize: 25,
-      totalPages: null
+      totalPages: null,
+      selection: {
+        lessThan10: false
+      },
+      sortedItems: []
     };
   },
   computed: {
@@ -103,19 +121,13 @@ export default {
       idToken: 'getIdToken',
       isAuthenticated: 'isAuthenticated'
     }),
-    sortedItems() {
-      const sortedItems = this.items.concat([]);
-      return sortedItems.sort((firstItem, secondItem) => {
-        if (secondItem.totalStatuses === firstItem.totalStatuses) {
-          return 0;
-        }
-
-        if (secondItem.totalStatuses > firstItem.totalStatuses) {
-          return -1;
-        }
-
-        return 1;
-      });
+    areMembersHavingLessThanTenStatusesSelected() {
+      return this.selection.lessThan10;
+    }
+  },
+  watch: {
+    items(newItems) {
+      this.sortedItems = this.sortItems(newItems);
     }
   },
   destroyed() {
@@ -130,6 +142,7 @@ export default {
     EventHub.$on('aggregate.reload_intended', this.fetchMembers);
 
     this.fetchMembers();
+    this.filterMembers();
   },
   methods: {
     previousPageExists() {
@@ -177,11 +190,40 @@ export default {
       const route = `${Config.getSchemeAndHost()}${action.route}`;
       this.$http[action.method](route, requestOptions)
         .then(response => {
-          this.items = response.data;
+          this.items = response.data.map((member, index) => {
+            const notSelectedMember = Object.assign({}, member);
+            notSelectedMember.isSelected = false;
+            notSelectedMember.index = index;
+            return notSelectedMember;
+          });
           this.totalPages = parseInt(response.headers['x-total-pages'], 10);
           this.pageIndex = parseInt(response.headers['x-page-index'], 10);
         })
         .catch(e => this.logger.error(e.message, 'member-list', e));
+    },
+    filterMembers() {
+      const filteredMembers = this.sortedItems.concat([]);
+
+      if (this.selection.lessThan10) {
+        filteredMembers.forEach((member, index) => {
+          if (member.totalStatuses < 10) {
+            this.selectMember(member.name, index);
+          }
+        });
+        return;
+      }
+
+      filteredMembers.forEach((member, index) => {
+        return this.unselectMember(member.name, index);
+      });
+    },
+    getMemberSelectionIsser(index) {
+      const members = this.items;
+
+      return () => {
+        const member = members[this.getOriginalIndexBySortedItemIndex(index)];
+        return this.isMemberSelected(member);
+      };
     },
     goToParent() {
       this.$router.push({
@@ -194,6 +236,78 @@ export default {
       return () => {
         this.items[index].locked = false;
       };
+    },
+    isMemberSelected(member) {
+      if (typeof member.isSelected === 'undefined') {
+        return false;
+      }
+
+      return member.isSelected;
+    },
+    getMemberSelector(index) {
+      return ($event, updateSelection) => {
+        const memberName = $event.itemId.replace('member-', '');
+
+        const member = this.items[
+          this.getOriginalIndexBySortedItemIndex(index)
+        ];
+        const shouldSelectMember = !this.isMemberSelected(member);
+        updateSelection(shouldSelectMember);
+
+        if (shouldSelectMember) {
+          this.selectMember(memberName, index);
+          return;
+        }
+
+        this.unselectMember(memberName, index);
+      };
+    },
+    getMembersHavingLessThanTenStatusesSelector() {
+      return ($event, updateSelection) => {
+        const areMembersSelected = this.selection.lessThan10;
+        const shouldSelectMembers = !areMembersSelected;
+        updateSelection(shouldSelectMembers);
+
+        this.selection.lessThan10 = shouldSelectMembers;
+
+        this.filterMembers();
+      };
+    },
+    getOriginalIndexBySortedItemIndex(index) {
+      const sortedItem = this.sortedItems[index];
+      let originalIndex = -1;
+      this.items.forEach((item, itemIndex) => {
+        if (item.name === sortedItem.name) {
+          originalIndex = itemIndex;
+        }
+      });
+      return originalIndex;
+    },
+    selectMember(memberName, index) {
+      this.items[
+        this.getOriginalIndexBySortedItemIndex(index)
+      ].isSelected = true;
+    },
+    sortItems(items) {
+      const sortedItems = items.concat([]);
+      sortedItems.sort((firstItem, secondItem) => {
+        if (secondItem.totalStatuses === firstItem.totalStatuses) {
+          return 0;
+        }
+
+        if (secondItem.totalStatuses > firstItem.totalStatuses) {
+          return -1;
+        }
+
+        return 1;
+      });
+
+      return sortedItems;
+    },
+    unselectMember(memberName, index) {
+      this.items[
+        this.getOriginalIndexBySortedItemIndex(index)
+      ].isSelected = false;
     }
   }
 };

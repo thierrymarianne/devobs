@@ -42,7 +42,7 @@
         <toggler
           :click-handler="selectAggregate"
           :id="getAggregateId(aggregate)"
-          :initially-toggled="state.isAggregateSelected"
+          :is-selected="state.isAggregateSelected"
           label-text="Add to bucket"
         />
         <span

@@ -6,13 +6,14 @@
   >
     <input
       v-model="toggled"
+      :checked="toggled"
       :id="id"
       :name="id"
       class="toggler__button"
       type="checkbox"
     >
     <span
-      class="toggler__text"
+      :class="textClasses"
     >{{ labelText }}</span>
   </label>
 </template>
@@ -33,20 +34,40 @@ export default {
       type: String,
       default: ''
     },
-    initiallyToggled: {
+    isSelected: {
       type: Boolean,
-      default: false
+      required: true
     }
   },
   data() {
-    return { toggled: this.initiallyToggled };
+    return { toggled: this.isSelected };
+  },
+  computed: {
+    textClasses() {
+      return {
+        toggler__text: true,
+        'toggler__text--highlighted': this.isSelected
+      };
+    }
+  },
+  updated() {
+    this.toggled = this.isSelected;
   },
   methods: {
     updateToggling(isToggled) {
       this.toggled = isToggled;
     },
     handleClick($event) {
-      return this.clickHandler($event, this.updateToggling);
+      $event.stopPropagation();
+
+      if ($event.target.type !== 'checkbox') {
+        return false;
+      }
+
+      const event = Object.assign($event, { itemId: this.id });
+      this.clickHandler(event, this.updateToggling);
+
+      return false;
     }
   }
 };

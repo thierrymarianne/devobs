@@ -29,6 +29,14 @@
           @click="unlockAggregate(member, index)"
         />
       </div>
+      <div class="member__row">
+        <toggler
+          :click-handler="selectMember"
+          :id="getMemberId(member)"
+          :is-selected="member.isSelected"
+          label-text="Add to bucket"
+        />
+      </div>
     </div>
     <div class="member__column">
       <font-awesome-icon
@@ -47,9 +55,11 @@ import EventHub from '../../modules/event-hub';
 import RequestMixin from '../../mixins/request';
 import StatusMixin from '../status/status-mixin';
 import SharedState from '../../modules/shared-state';
+import Toggler from '../toggler/toggler.vue';
 
 export default {
   name: 'member',
+  components: { Toggler },
   mixins: [RequestMixin, StatusMixin],
   props: {
     member: {
@@ -61,6 +71,10 @@ export default {
     unlock: {
       type: Function,
       default: () => () => {}
+    },
+    selectMember: {
+      type: Function,
+      required: true
     }
   },
   methods: {
@@ -73,6 +87,9 @@ export default {
         .toUpperCase()}${subject.substring(1, subject.length)}`;
 
       return capitalizedSubject.replace('::', '>');
+    },
+    getMemberId(member) {
+      return `member-${member.name}`;
     },
     getMemberProfileUrl(memberName) {
       return `http://twitter.com/${memberName}`;

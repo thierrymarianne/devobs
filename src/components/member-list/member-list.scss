@@ -16,6 +16,7 @@
       border-left: 2px solid $color-greener;
       border-bottom: 2px solid $color-greener;
       flex-wrap: wrap;
+      height: 100px;
       justify-content: left;
       padding-bottom: 0.5em;
       padding-left: 1em;
@@ -23,6 +24,14 @@
       margin-bottom: 0.5em;
       margin-right: 0.5em;
       width: 300px;
+    }
+  }
+
+  .member-list__selectors {
+    color: $color-even-greener;
+
+    /deep/ .toggler {
+      width: 100%;
     }
   }
 }
