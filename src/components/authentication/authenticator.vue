@@ -88,10 +88,16 @@ export default {
       AuthenticationMutations.SET_ID_TOKEN
     ]),
     configureAuthenticationService() {
+      let { redirectUri } = Config.authentication.auth0;
+      const isAdministrativeRoute =
+        this.$route.matched.filter(route => route.name === 'admin').length > 0;
+      if (isAdministrativeRoute) {
+        redirectUri = `${Config.getClientSchemeAndHost()}${this.$route.path}`;
+      }
       this.authenticationService = new auth0.WebAuth({
         domain: Config.authentication.auth0.host,
         clientID: Config.authentication.auth0.clientId,
-        redirectUri: Config.authentication.auth0.redirectUri,
+        redirectUri,
         responseType: 'token id_token',
         scope: 'openid profile email read:messages'
       });
@@ -143,20 +149,14 @@ export default {
       }
     },
     handleAuthentication() {
-      const route = {
-        name: 'private-highlights',
-        params: {
-          startDate: this.getCurrentDate(),
-          endDate: this.getCurrentDate()
-        }
-      };
+      if (this.isAuthenticated()) {
+        return;
+      }
 
       this.authenticationService.parseHash((err, authResult) => {
         if (authResult && authResult.accessToken && authResult.idToken) {
           this.setSession(authResult);
         }
-
-        EventHub.$emit('navigate_to_press_review', route);
       });
     },
     getIdToken() {

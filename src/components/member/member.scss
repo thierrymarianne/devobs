@@ -1,0 +1,47 @@
+.member {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+
+  &__username {
+    margin-right: 1em;
+  }
+
+  &__column {
+    display: flex;
+    flex-wrap: wrap;
+
+    &:first-child {
+      width: 250px
+    }
+
+    &:last-child {
+      padding-top: 1em;
+    }
+  }
+
+  &__row {
+    display: flex;
+    justify-content: left;
+    width: 100%
+  }
+
+  .member__button-collect-status,
+  .member__button-unlock-aggregate {
+    font-size: 1.3em;
+    line-height: 2em;
+    margin-left: 8px;
+  }
+
+  .member__button-navigate-to-twitter {
+    margin-right: 8px;
+    color: $color-greener;
+
+    &:link,
+    &:active,
+    &:hover,
+    &:visited {
+      color: $color-greener;
+    }
+  }
+}

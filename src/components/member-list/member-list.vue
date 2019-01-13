@@ -55,39 +55,14 @@
     </div>
     <ul class="list__items">
       <li
-        v-for="(member, index) in items"
+        v-for="(member, index) in sortedItems"
         :key="member.name"
         :data-key="member.name"
         class="list__item"
       >
-        <a
-          :href="getMemberProfileUrl(member.name)"
-          target="_blank"
-          class="member-list__button-navigate-to-twitter"
-        >
-          <font-awesome-icon
-            :icon="['fab', 'twitter']"
-          />
-        </a>
-        <span
-          @click="goToMember(member.name)"
-        >
-          @{{ format(member.name) }}
-        </span>
-        <span class="member-list__total-statuses">
-          ({{ formatTotalStatuses(member) }})
-        </span>
-        <font-awesome-icon
-          v-if="member.locked"
-          icon="lock"
-          class="member-list__button-unlock-aggregate"
-          @click="unlockAggregate(member, index)"
-        />
-        <font-awesome-icon
-          v-if="canCollectionBeRequested"
-          icon="file-download"
-          class="member-list__button-collect-status"
-          @click="requestStatusCollection(member.name)"
+        <member
+          :member="member"
+          :unlock="getMemberUnlockingCapability(index)"
         />
       </li>
     </ul>
@@ -98,10 +73,12 @@
 import { createNamespacedHelpers } from 'vuex';
 
 import ApiMixin from '../../mixins/api';
+import RequestMixin from '../../mixins/request';
 import StatusMixin from '../status/status-mixin';
-import SharedState from '../../modules/shared-state';
 import EventHub from '../../modules/event-hub';
 import Config from '../../config';
+import Member from '../member/member.vue';
+import SharedState from '../../modules/shared-state';
 
 const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
   'authentication'
@@ -109,7 +86,8 @@ const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
 
 export default {
   name: 'member-list',
-  mixins: [ApiMixin, StatusMixin],
+  components: { Member },
+  mixins: [ApiMixin, RequestMixin, StatusMixin],
   data() {
     return {
       items: [],
@@ -125,8 +103,19 @@ export default {
       idToken: 'getIdToken',
       isAuthenticated: 'isAuthenticated'
     }),
-    canCollectionBeRequested() {
-      return !SharedState.getEnvironmentParameters().productionMode;
+    sortedItems() {
+      const sortedItems = this.items.concat([]);
+      return sortedItems.sort((firstItem, secondItem) => {
+        if (secondItem.totalStatuses === firstItem.totalStatuses) {
+          return 0;
+        }
+
+        if (secondItem.totalStatuses > firstItem.totalStatuses) {
+          return -1;
+        }
+
+        return 1;
+      });
     }
   },
   destroyed() {
@@ -143,28 +132,11 @@ export default {
     this.fetchMembers();
   },
   methods: {
-    format(subject) {
-      const capitalizedSubject = `${subject
-        .substring(0, 1)
-        .toUpperCase()}${subject.substring(1, subject.length)}`;
-
-      return capitalizedSubject.replace('::', '>');
-    },
     previousPageExists() {
       return this.pageIndex > 1;
     },
     nextPageExists() {
       return this.totalPages && this.pageIndex < this.totalPages;
-    },
-    getBaseRequestOptions() {
-      return {
-        headers: {
-          'x-auth-admin-token': this.idToken
-        }
-      };
-    },
-    getMemberProfileUrl(memberName) {
-      return `http://twitter.com/${memberName}`;
     },
     fetchPreviousPage() {
       this.fetchMembers({ pageIndex: this.pageIndex - 1 });
@@ -211,17 +183,6 @@ export default {
         })
         .catch(e => this.logger.error(e.message, 'member-list', e));
     },
-    goToMember(memberName) {
-      this.$router.push({
-        name: 'member',
-        params: {
-          memberName,
-          aggregateId: this.$route.params.aggregateId
-        }
-      });
-
-      EventHub.$emit('member_status.reload_intended');
-    },
     goToParent() {
       this.$router.push({
         name: 'lists'
@@ -229,44 +190,10 @@ export default {
 
       EventHub.$emit('aggregate_list.reload_intended');
     },
-    requestStatusCollection(memberName) {
-      const requestOptions = this.getBaseRequestOptions();
-      const headerName = Object.keys(requestOptions.headers)[0];
-      this.$http.defaults.headers.common[headerName] =
-        requestOptions.headers[headerName];
-
-      requestOptions.params = {
-        aggregateId: this.$route.params.aggregateId,
-        memberName
+    getMemberUnlockingCapability(index) {
+      return () => {
+        this.items[index].locked = false;
       };
-
-      const action = this.routes.actions.requestStatusCollection;
-      const route = `${Config.getSchemeAndHost()}${action.route}`;
-      this.$http[action.method](route, requestOptions)
-        .then(response => {
-          this.logger.info(response);
-        })
-        .catch(e => this.logger.error(e.message, 'status-list', e));
-    },
-    unlockAggregate(member, index) {
-      const requestOptions = this.getBaseRequestOptions();
-      const headerName = Object.keys(requestOptions.headers)[0];
-      this.$http.defaults.headers.common[headerName] =
-        requestOptions.headers[headerName];
-
-      requestOptions.params = {
-        aggregateId: this.$route.params.aggregateId,
-        memberName: member.name
-      };
-
-      const action = this.routes.actions.unlockAggregate;
-      const route = `${Config.getSchemeAndHost()}${action.route}`;
-      this.$http[action.method](route, requestOptions)
-        .then(response => {
-          this.logger.info(response);
-          this.items[index].locked = false;
-        })
-        .catch(e => this.logger.error(e.message, 'status-list', e));
     }
   }
 };

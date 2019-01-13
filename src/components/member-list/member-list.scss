@@ -2,26 +2,27 @@
 
 .member-list {
   @extend .list;
+  display: flex;
+  text-align: center;
 
-  .member-list__total-statuses {
-    margin-left: 8px;
-  }
+  /deep/ > .list__items {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
 
-  .member-list__button-collect-status,
-  .member-list__button-unlock-aggregate {
-    height: 75px;
-    margin-left: 8px;
-  }
-
-  .member-list__button-navigate-to-twitter {
-    margin-right: 8px;
-    color: $color-greener;
-
-    &:link,
-    &:active,
-    &:hover,
-    &:visited {
-      color: $color-greener;
+    .list__item {
+      border-top: 2px solid $color-greener;
+      border-left: 2px solid $color-greener;
+      border-bottom: 2px solid $color-greener;
+      flex-wrap: wrap;
+      justify-content: left;
+      padding-bottom: 0.5em;
+      padding-left: 1em;
+      padding-top: 0.5em;
+      margin-bottom: 0.5em;
+      margin-right: 0.5em;
+      width: 300px;
     }
   }
 }

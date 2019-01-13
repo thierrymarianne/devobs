@@ -128,10 +128,10 @@ export default {
   components: { Status },
   mixins: [ApiMixin, DateMixin, StatusFormat],
   data() {
-    let { starttDate, endDate } = this.$route.params;
+    let { startDate, endDate } = this.$route.params;
 
-    if (starttDate === '1970-01-01') {
-      starttDate = this.getMaxDate();
+    if (startDate === '1970-01-01') {
+      startDate = this.getMaxDate();
     }
 
     if (endDate === '1970-01-01') {
@@ -149,8 +149,8 @@ export default {
       pageIndex: 1,
       pageSize: 10,
       totalPages: null,
-      endDate: starttDate,
-      startDate: endDate
+      endDate,
+      startDate
     };
   },
   computed: {
