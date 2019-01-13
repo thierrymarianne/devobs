@@ -1,0 +1,29 @@
+.toggler {
+  justify-self: center;
+  flex-wrap: wrap;
+  cursor: pointer;
+  display: inline-flex;
+  height: 1.5em;
+  margin-top: 0.5em;
+  width: 200px;
+
+  &__button {
+    cursor: pointer;
+    margin-left: 0;
+    margin-right: 0.5em;
+    margin-top: 0;
+    padding-left: 0;
+    height: 1.5em;
+    width: 1.5em;
+  }
+
+  &__text {
+    display: inline-flex;
+    justify-self: center;
+    line-height: 1.5em;
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

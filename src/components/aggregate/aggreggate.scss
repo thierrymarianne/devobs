@@ -72,24 +72,6 @@ $margin-between-blocks: 8px;
     margin-left: 0;
   }
 
-  &__label {
-    flex-wrap: wrap;
-
-    &-select-aggregate {
-      display: inline-flex;
-      line-height: 2em;
-      width: 200px;
-
-      &-text {
-        cursor: pointer;
-      }
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
-
   &__name,
   &__total-numbers {
     display: flex;
@@ -103,9 +85,11 @@ $margin-between-blocks: 8px;
   &__navigate-to-list {
     cursor: pointer;
     display: inline-flex;
+    line-height: 1em;
     margin-right: 8px;
     margin-top: 0;
     padding: 8px;
+    padding-top: 0.2em;
     padding-right: 0;
 
     &:hover {

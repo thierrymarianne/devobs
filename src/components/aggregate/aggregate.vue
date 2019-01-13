@@ -39,22 +39,12 @@
         {{ formatTotalStatuses(aggregate) }}
       </div>
       <div class="aggregate__row--last">
-        <label
-          :for="aggregate.id"
-          class="aggregate__label-select-aggregate"
-          @click="selectAggregate($event)"
-        >
-          <input
-            v-model="state.isAggregateSelected"
-            :id="aggregate.id"
-            :name="aggregate.id"
-            class="aggregate__button-select-aggregate"
-            type="checkbox"
-          >
-          <span
-            class="aggregate__label-select-aggregate-text"
-          >Add to bucket</span>
-        </label>
+        <toggler
+          :click-handler="selectAggregate"
+          :id="getAggregateId(aggregate)"
+          :initially-toggled="state.isAggregateSelected"
+          label-text="Add to bucket"
+        />
         <span
           class="aggregate__navigate-to-list"
         >
@@ -80,6 +70,7 @@ import { createNamespacedHelpers } from 'vuex';
 import MemberMixin from '../member/member-mixin';
 import StatusMixin from '../status/status-mixin';
 import EventHub from '../../modules/event-hub';
+import Toggler from '../toggler/toggler.vue';
 
 const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
   'authentication'
@@ -87,6 +78,7 @@ const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
 
 export default {
   name: 'aggregate',
+  components: { Toggler },
   mixins: [MemberMixin, StatusMixin],
   props: {
     aggregate: {
@@ -180,6 +172,9 @@ export default {
         this.getProfile.username
       }/lists/${subject.name.replace(' :: ', '-')}`;
     },
+    getAggregateId(aggregate) {
+      return `aggregate-${aggregate.id}`;
+    },
     makeEditable(ref) {
       const editable = this.$refs[ref];
 
@@ -193,12 +188,15 @@ export default {
       editable.removeAttribute('contenteditable');
       this.$set(this.state, 'beingEdited', false);
     },
-    selectAggregate(event) {
+    selectAggregate(event, updateToggling) {
       if (event.target.getAttribute('type')) {
+        const isSelected = !this.state.isAggregateSelected;
         EventHub.$emit('aggregate.selected', {
           index: this.refName,
-          isSelected: !this.state.isAggregateSelected
+          isSelected
         });
+        updateToggling(isSelected);
+        this.state.isAggregateSelected = isSelected;
       }
     }
   }
