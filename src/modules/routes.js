@@ -1,6 +1,7 @@
 import Admin from '../components/admin/admin.vue';
 import AggregateList from '../components/aggreggate-list/aggreggate-list.vue';
 import Callback from '../components/authentication/callback.vue';
+import KeywordList from '../components/keyword-list/keyword-list.vue';
 import HighlightList from '../components/highlight-list/highlight-list.vue';
 import MemberList from '../components/member-list/member-list.vue';
 import MemberStatusList from '../components/member-status-list/member-status-list.vue';
@@ -29,6 +30,11 @@ export default [
     name: 'admin',
     path: '/admin',
     children: [
+      {
+        component: KeywordList,
+        path: 'keywords/:startDate/:endDate',
+        name: 'keywords'
+      },
       {
         component: AggregateList,
         path: 'lists',

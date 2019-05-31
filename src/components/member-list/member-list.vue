@@ -59,8 +59,10 @@
       <toggler
         id="less-than-ten"
         :click-handler="getMembersHavingLessThanTenStatusesSelector()"
+        :do="() => requestBulkStatusCollection()"
         :is-selected="areMembersHavingLessThanTenStatusesSelected"
-        label-text="Select members with less than 10 statuses"
+        :label-text="lessThanLabel"
+        icon-name="file-download"
       />
     </div>
     <ul class="list__items">
@@ -91,8 +93,13 @@ import StatusMixin from '../status/status-mixin';
 import EventHub from '../../modules/event-hub';
 import Config from '../../config';
 import Member from '../member/member.vue';
+import MemberListActions from './store/actions';
 import SharedState from '../../modules/shared-state';
 import Toggler from '../toggler/toggler.vue';
+
+const { mapActions: mapMemberListActions } = createNamespacedHelpers(
+  'member-list'
+);
 
 const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
   'authentication'
@@ -102,6 +109,12 @@ export default {
   name: 'member-list',
   components: { Member, Toggler },
   mixins: [ApiMixin, RequestMixin, StatusMixin],
+  props: {
+    statusesThreshold: {
+      type: Number,
+      default: 300
+    }
+  },
   data() {
     return {
       items: [],
@@ -123,6 +136,12 @@ export default {
     }),
     areMembersHavingLessThanTenStatusesSelected() {
       return this.selection.lessThan10;
+    },
+    lessThanLabel() {
+      return `Select members with less than ${this.statusesThreshold} statuses`;
+    },
+    selectedMembers() {
+      return this.sortedItems.concat([]).filter(member => member.isSelected);
     }
   },
   watch: {
@@ -145,6 +164,9 @@ export default {
     this.filterMembers();
   },
   methods: {
+    ...mapMemberListActions({
+      bulkCollectStatuses: MemberListActions.BULK_COLLECT_STATUS
+    }),
     previousPageExists() {
       return this.pageIndex > 1;
     },
@@ -190,7 +212,7 @@ export default {
       const route = `${Config.getSchemeAndHost()}${action.route}`;
       this.$http[action.method](route, requestOptions)
         .then(response => {
-          this.items = response.data.map((member, index) => {
+          this.items = JSON.parse(response.data).map((member, index) => {
             const notSelectedMember = Object.assign({}, member);
             notSelectedMember.isSelected = false;
             notSelectedMember.index = index;
@@ -206,7 +228,7 @@ export default {
 
       if (this.selection.lessThan10) {
         filteredMembers.forEach((member, index) => {
-          if (member.totalStatuses < 10) {
+          if (member.totalStatuses < this.statusesThreshold) {
             this.selectMember(member.name, index);
           }
         });
@@ -282,6 +304,30 @@ export default {
         }
       });
       return originalIndex;
+    },
+    requestBulkStatusCollection() {
+      const requestOptions = this.getBaseRequestOptions();
+      const headerName = Object.keys(requestOptions.headers)[0];
+      this.$http.defaults.headers.common[headerName] =
+        requestOptions.headers[headerName];
+
+      requestOptions.params = {
+        aggregateId: this.$route.params.aggregateId,
+        membersNames: this.selectedMembers.map(member => member.name)
+      };
+
+      const action = this.routes.actions.bulkRequestStatusCollection;
+
+      this.bulkCollectStatuses({
+        $http: this.$http,
+        method: action.method,
+        route: `${Config.getSchemeAndHost()}${action.route}`,
+        requestOptions,
+        onSuccess: response => {
+          this.logger.info(response);
+        },
+        onFailure: e => this.logger.error(e.message, 'status-list', e)
+      });
     },
     selectMember(memberName, index) {
       this.items[

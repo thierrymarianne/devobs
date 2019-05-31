@@ -52,6 +52,7 @@
 <script>
 import Config from '../../config';
 import EventHub from '../../modules/event-hub';
+import ApiMixin from '../../mixins/api';
 import RequestMixin from '../../mixins/request';
 import StatusMixin from '../status/status-mixin';
 import SharedState from '../../modules/shared-state';
@@ -60,7 +61,7 @@ import Toggler from '../toggler/toggler.vue';
 export default {
   name: 'member',
   components: { Toggler },
-  mixins: [RequestMixin, StatusMixin],
+  mixins: [ApiMixin, RequestMixin, StatusMixin],
   props: {
     member: {
       type: Object,
@@ -76,6 +77,11 @@ export default {
       type: Function,
       required: true
     }
+  },
+  data: () => {
+    return {
+      logger: SharedState.logger
+    };
   },
   methods: {
     canCollectionBeRequested() {

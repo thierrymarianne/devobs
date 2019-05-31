@@ -1,0 +1,44 @@
+
+.date-label {
+  color: $color-hyperlink;
+  justify-self: flex-start;
+  display: flex;
+  max-width: 360px;
+
+  [type="date"] {
+    background: transparent;
+    border: 1px solid $color-hyperlink;
+    color: $color-hyperlink;
+    font-size: 2em;
+    font-family: $font-family;
+    margin-left: 0;
+    padding: 0.2em;
+  }
+}
+
+.date-interval {
+  align-self: center;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-self: center;
+
+  &[for="end-date"],
+  &[for="date"] {
+    @extend .date-label;
+  }
+
+  &[for="start-date"] {
+    @extend .date-label;
+
+    [type="date"] {
+      max-width: 350px;
+    }
+  }
+
+  &--having-end-date {
+    &[for="start-date"] {
+      width: 700px;
+    }
+  }
+}

@@ -1,0 +1,9 @@
+@import '../../styles/list.scss';
+
+.keyword-list {
+  @extend .list;
+
+  .list__item {
+    height: auto;
+  }
+}

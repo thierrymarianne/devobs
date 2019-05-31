@@ -73,12 +73,20 @@
                 <span>Highlights</span>
               </button>
             </li>
-            <li v-if="isAuthenticated">
+            <li>
               <button
                 class="action-menu__button action-menu__lists-button"
                 @click="goToPersonalHighlights()"
               >
                 <span>Personal highlights</span>
+              </button>
+            </li>
+            <li>
+              <button
+                class="action-menu__button action-menu__lists-button"
+                @click="goToKeywords()"
+              >
+                <span>Keywords</span>
               </button>
             </li>
           </ul>
@@ -253,6 +261,11 @@ export default {
     hideActionMenu() {
       this.showMenu = false;
     },
+    goToKeywords() {
+      this.$router.push({
+        name: 'keywords'
+      });
+    },
     goToHomepage() {
       this.goToPressReview();
     },
@@ -351,6 +364,6 @@ export default {
 };
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import './action-menu.scss';
 </style>
