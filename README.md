@@ -1,10 +1,10 @@
-# Daily press revue
+# DevObs
 
-[ ![Codeship Status for thierrymarianne/daily-press-revue](https://app.codeship.com/projects/02fd6420-8f92-0136-e771-36ebf2fded6f/status?branch=master)](https://app.codeship.com/projects/304050)
+[![Codeship Status for thierrymarianne/devobs](https://app.codeship.com/projects/c9564a00-669b-0137-9ac1-5e66d93e8e29/status?branch=master)](https://app.codeship.com/projects/345360)
 
 ## About
 
-A client of [daily press review](https://github.com/thierrymarianne/daily-press-review)
+A client of [DevObs API](https://github.com/thierrymarianne/devobs-api)
 
 ## Installation
 
