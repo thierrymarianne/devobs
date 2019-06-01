@@ -2,13 +2,14 @@ import Admin from '../components/admin/admin.vue';
 import AggregateList from '../components/aggreggate-list/aggreggate-list.vue';
 import Callback from '../components/authentication/callback.vue';
 import KeywordList from '../components/keyword-list/keyword-list.vue';
+import MemberSubscriptionList from '../components/member-subscription-list/member-subscription-list.vue';
 import HighlightList from '../components/highlight-list/highlight-list.vue';
 import MemberList from '../components/member-list/member-list.vue';
 import MemberStatusList from '../components/member-status-list/member-status-list.vue';
 import StatusList from '../components/status-list/status-list.vue';
 import Time from './time';
 
-const defaultRedirect = `/highlights/${Time.today()}/${Time.today()}`;
+const defaultRedirect = `/highlights/private/${Time.today()}/${Time.today()}`;
 
 export default [
   {
@@ -34,6 +35,11 @@ export default [
         component: KeywordList,
         path: 'keywords/:startDate/:endDate',
         name: 'keywords'
+      },
+      {
+        component: MemberSubscriptionList,
+        path: 'member-subscriptions',
+        name: 'member-subscriptions'
       },
       {
         component: AggregateList,

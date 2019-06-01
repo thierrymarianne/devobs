@@ -77,6 +77,8 @@ export default {
       endDate = this.getCurrentDate();
     }
 
+    const minEndDate = endDate;
+
     return {
       aggregates: [],
       colors: ['#1f77b4', '#629fc9', '#94bedb', '#c9e0ef'],
@@ -86,6 +88,7 @@ export default {
       includeRetweets: RETWEETS_INCLUDED,
       items: [],
       logger: SharedState.logger,
+      minEndDate,
       pageIndex: 1,
       selectedAggregates: [],
       totalPages: null,
@@ -148,8 +151,6 @@ export default {
         startDate: this.startDate,
         endDate: this.endDate
       };
-
-      requestOptions.params.pageSize = this.pageSize;
 
       const action = this.routes.actions.fetchKeywords;
       const route = `${Config.getSchemeAndHost()}${action.route}`;

@@ -14,14 +14,14 @@
     >
       <span>Sign in</span>
     </button>
-    <div class="authenticator__avatar-box">
+    <div v-if="isAuthenticated()" class="authenticator__avatar-box">
       <img
         v-if="loggedInMemberAvatar"
         :src="loggedInMemberAvatar"
         class="authenticator__avatar"
         height="50px"
         width="50px"
-      >
+      />
     </div>
     <authorization
       ref="authorization"
@@ -197,6 +197,6 @@ export default {
 };
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import './authenticator.scss';
 </style>
