@@ -1,7 +1,7 @@
 {
-  "name": "press-revue",
+  "name": "devobs",
   "private": true,
-  "version": "0.23.3",
+  "version": "0.24.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/thierrymarianne/press-revue.git"
@@ -45,7 +45,7 @@
     "cross-env": "^5.2.0",
     "css-loader": "^1.0.0",
     "cssnano": "^4.0.3",
-    "eslint": "^4.14.0",
+    "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "13.0.0",
     "eslint-config-prettier": "^3.0.1",
     "eslint-loader": "^2.0.0",
