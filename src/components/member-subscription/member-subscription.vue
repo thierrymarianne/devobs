@@ -8,18 +8,12 @@
       ></p>
     </div>
     <div class="member-subscription__row">
-      <anchored-icon
-        v-if="subscription.username"
-        :icons="['fab', 'twitter']"
-        :url="formatMemberProfileUrl(subscription.username)"
-        :anchor-classes="{}"
-        :icon-classes="{}"
-        :wrapper-classes="{
-          'member-subscription__anchored-icon-wrapper': true
-        }"
-      />
       <template v-if="subscription.url">
-        <a :href="subscription.url" class="member-subscription__url">
+        <a
+          :href="subscription.url"
+          class="member-subscription__url"
+          target="__blank"
+        >
           <span class="member-subscription__username">{{
             subscription.username
           }}</span>
@@ -28,6 +22,28 @@
       <span v-else class="member-subscription__username">{{
         subscription.username
       }}</span>
+    </div>
+    <div class="member-subscription__row">
+      <div
+        class="member-subscription__row member-subscription__row--actionable"
+      >
+        <anchored-icon
+          v-if="subscription.username"
+          :icons="['fab', 'twitter']"
+          :url="formatMemberProfileUrl(subscription.username)"
+          :anchor-classes="{}"
+          :icon-classes="{}"
+          :wrapper-classes="{
+            'member-subscription__anchored-icon-wrapper': true
+          }"
+        />
+        <a
+          :href="formatMemberProfileUrl(subscription.username)"
+          class="member-subscription__external-link"
+          target="_blank"
+          >Go to profile</a
+        >
+      </div>
     </div>
     <div
       class="member-subscription__row member-subscription__row--actionable"
@@ -140,7 +156,6 @@ export default {
       const action = this.routes.actions.refreshMemberProfile;
       const requestOptions = this.setUpCommonHeaders();
       requestOptions.params = { memberName };
-
 
       this.refreshMemberProfile({
         $http: this.$http,

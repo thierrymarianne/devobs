@@ -94,6 +94,7 @@ $status-margin: 1em;
 
   &__url {
     @extend .clickable;
+    font-size: $font-size-base;
 
     display: flex;
     margin-right: 0;
@@ -103,7 +104,8 @@ $status-margin: 1em;
     &:link,
     &:visited {
       @extend .clickable;
-    }
+
+    font-size: $font-size-base;}
 
     &:first-child {
       align-self: center;
@@ -125,24 +127,26 @@ $status-margin: 1em;
 
   &__username {
     @extend .clickable;
+    font-size: $font-size-base;
 
     &:active,
     &:hover,
     &:link,
     &:visited {
       @extend .clickable;
+      font-size: $font-size-base;
     }
   }
 
   &__text {
     color: $color-even-greener;
+    font-size: $font-size-base;
     margin-top: $separation-2;
     margin-bottom: 0;
     max-width: calc(100vw - 16px);
     white-space: pre-line;
 
     /deep/ .status__text-external-link {
-      font-size: 1em;
       @extend .clickable;
     }
 
@@ -200,6 +204,7 @@ $status-margin: 1em;
 
   &__web-intent {
     @extend .clickable;
+    font-size: $font-size-base;
 
     align-items: center;
     background-color: transparent;

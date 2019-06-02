@@ -1,5 +1,18 @@
 <template>
   <div class="member-subscription-list list">
+    <pagination-menu
+      v-show="isPaginationMenuVisible"
+      :is-previous-button-visible="hasPreviousPage"
+      :is-next-button-visible="hasNextPage"
+      :previous-icons="['fa', 'arrow-circle-left']"
+      :next-icons="['fa', 'arrow-circle-right']"
+      :next-button-classes="{}"
+      :previous-button-classes="{}"
+      :next-icon-classes="{}"
+      :previous-icon-classes="{}"
+      :go-to-next-page-handler="() => goToNextPage()"
+      :go-to-previous-page-handler="() => goToPreviousPage()"
+    />
     <ul class="list__items">
       <li
         v-for="subscription in items"
@@ -10,12 +23,27 @@
         <member-subscription :subscription="subscription" />
       </li>
     </ul>
+    <pagination-menu
+      v-show="isPaginationMenuVisible"
+      :is-previous-button-visible="hasPreviousPage"
+      :is-next-button-visible="hasNextPage"
+      :previous-icons="['fa', 'arrow-circle-left']"
+      :next-icons="['fa', 'arrow-circle-right']"
+      :next-button-classes="{}"
+      :previous-button-classes="{}"
+      :next-icon-classes="{}"
+      :previous-icon-classes="{}"
+      :go-to-next-page-handler="() => goToNextPage()"
+      :go-to-previous-page-handler="() => goToPreviousPage()"
+    />
   </div>
 </template>
 
 <script>
 import { createNamespacedHelpers } from 'vuex';
 
+import ActionIcon from '../action-icon/action-icon.vue';
+import PaginationMenu from '../pagination-menu/pagination-menu.vue';
 import AuthenticationHeadersMixin from '../../mixins/authentication-headers';
 import ApiMixin from '../../mixins/api';
 import Config from '../../config';
@@ -30,7 +58,9 @@ const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
 export default {
   name: 'member-subscription-list',
   components: {
-    MemberSubscription
+    ActionIcon,
+    MemberSubscription,
+    PaginationMenu
   },
   mixins: [ApiMixin, AuthenticationHeadersMixin],
   data() {
@@ -38,7 +68,7 @@ export default {
       items: [],
       logger: SharedState.logger,
       pageIndex: 1,
-      pageSize: 25,
+      pageSize: 96,
       totalPages: null
     };
   },
@@ -46,7 +76,20 @@ export default {
     ...mapAuthenticationGetters({
       idToken: 'getIdToken',
       isAuthenticated: 'isAuthenticated'
-    })
+    }),
+    hasNextPage() {
+      if (this.totalPages === null) {
+        return true;
+      }
+
+      return this.pageIndex < this.totalPages;
+    },
+    hasPreviousPage() {
+      return this.pageIndex > 1;
+    },
+    isPaginationMenuVisible() {
+      return this.items && this.items.length === this.pageSize;
+    }
   },
   watch: {
     isAuthenticated(newAuthenticationStatus) {
@@ -67,17 +110,7 @@ export default {
   },
   methods: {
     fetchList(params = {}, next) {
-      const requestOptions = this.setUpCommonHeaders();
-
-      if (typeof params.pageIndex === 'undefined') {
-        if (!('params' in requestOptions)) {
-          requestOptions.params = {};
-        }
-
-        requestOptions.params.pageIndex = this.pageIndex;
-      }
-
-      requestOptions.params.pageSize = this.pageSize;
+      const requestOptions = this.getRequestOptions(params);
 
       const action = this.routes.actions.fetchMemberSubscriptions;
       const route = `${Config.getSchemeAndHost()}${action.route}`;
@@ -92,6 +125,38 @@ export default {
           }
         })
         .catch(e => this.logger.error(e.message, 'keyword-list', e));
+    },
+    getRequestOptions(params) {
+      const requestOptions = this.setUpCommonHeaders();
+      if (!('params' in requestOptions)) {
+        requestOptions.params = {};
+      }
+
+      requestOptions.params.pageSize = this.pageSize;
+
+      if (typeof params.pageIndex === 'undefined') {
+        requestOptions.params.pageIndex = this.pageIndex;
+
+        return requestOptions;
+      }
+
+      requestOptions.params.pageIndex = params.pageIndex;
+
+      return requestOptions;
+    },
+    goToPreviousPage() {
+      const params = {
+        pageIndex: this.pageIndex - 1,
+        pageSize: this.pageSize
+      };
+      this.fetchList(params);
+    },
+    goToNextPage() {
+      const params = {
+        pageIndex: this.pageIndex + 1,
+        pageSize: this.pageSize
+      };
+      this.fetchList(params);
     }
   }
 };

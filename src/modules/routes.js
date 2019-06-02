@@ -67,6 +67,7 @@ export default [
       },
       {
         component: StatusList,
+        name: 'timeline',
         path: 'timeline',
         children: [
           {

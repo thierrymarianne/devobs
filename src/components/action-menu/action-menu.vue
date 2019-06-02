@@ -3,7 +3,7 @@
     <div :class="getActionMenuContainerClasses">
       <button
         v-if="isAuthenticated"
-        v-show="!isAdministrativeRoute"
+        v-show="isPressMenuItemVisible"
         :class="getButtonClass('Press review')"
         @click="intendToGet('Press review')"
       >
@@ -12,7 +12,7 @@
 
       <router-link
         v-for="(menuItem, index) in menuItemsButPressReview"
-        v-show="!isAdministrativeRoute"
+        v-show="isPressMenuItemVisible"
         :key="index"
         :to="getPathTo(menuItem)"
         :class="getButtonClass(menuItem)"
@@ -25,7 +25,7 @@
 
       <button
         v-if="isAuthenticated"
-        v-show="!isAdministrativeRoute"
+        v-show="isPressMenuItemVisible"
         :class="getButtonClass('bucket')"
         @click="intendToGet('bucket')"
       >
@@ -35,7 +35,7 @@
       <div class="action-menu__action-wrapper">
         <div
           v-if="isAuthenticated"
-          v-show="!isAdministrativeRoute"
+          v-show="isPressMenuItemVisible"
           class="action-menu__row"
         >
           <button
@@ -48,15 +48,12 @@
             />
           </button>
 
-          <button
-            :class="getActionMenuButtonClasses"
-            @click="showStatusesInAggregateTop10O"
-          >
-            <font-awesome-icon
-              icon="fire"
-              class="action-menu__toggle-menu-icon"
-            />
-          </button>
+          <action-icon
+            :click-handler="showStatusesInAggregateTop10O"
+            :button-classes="{ 'action-menu__button': true }"
+            :icon-classes="{ 'action-menu__toggle-menu-icon': true }"
+            icons="fire"
+          />
         </div>
 
         <div class="action-menu__row action-menu__row--full-width">
@@ -108,11 +105,10 @@
       </div>
     </div>
 
-    <font-awesome-icon
-      :class="getActionMenuButtonClasses"
-      :icon="getToggleMenuIcon"
-      class="action-menu__toggle-menu-icon"
-      @click="toggleMenuVisibility"
+    <action-icon
+      :click-handler="toggleMenuVisibility"
+      :icon-classes="getVisibilityTogglerClasses"
+      :icons="getToggleMenuIcon"
     />
   </div>
 </template>
@@ -120,6 +116,7 @@
 <script>
 import { createNamespacedHelpers } from 'vuex';
 
+import ActionIcon from '../action-icon/action-icon.vue';
 import ApiMixin from '../../mixins/api';
 import DateMixin from '../../mixins/date';
 import CaseNormalizer from '../../mixins/case';
@@ -134,7 +131,7 @@ const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
 
 export default {
   name: 'action-menu',
-  components: { Authenticator },
+  components: { ActionIcon, Authenticator },
   mixins: [ApiMixin, CaseNormalizer, DateMixin],
   props: {
     denyAccessToAlternateRoutes: {
@@ -156,6 +153,12 @@ export default {
       }
 
       return { 'action-menu--hidden': true };
+    },
+    getVisibilityTogglerClasses() {
+      return {
+        ...this.getActionMenuButtonClasses,
+        'action-menu__toggle-menu-icon': true
+      };
     },
     getActionMenuButtonClasses() {
       const classes = { 'action-menu__button': true };
@@ -181,6 +184,9 @@ export default {
       }
 
       return 'arrow-alt-circle-down';
+    },
+    isPressMenuItemVisible() {
+      return this.isTimelineRoute();
     },
     isVisible() {
       const hasFullMenu = this.isAuthenticated;
@@ -242,6 +248,11 @@ export default {
     isAdministrativeRoute() {
       return (
         this.$route.matched.filter(route => route.name === 'admin').length > 0
+      );
+    },
+    isTimelineRoute() {
+      return (
+        this.$route.matched.filter(route => route.name === 'timeline').length > 0
       );
     },
     getButtonClass(aggregateType) {

@@ -61,7 +61,7 @@ $color-double-greener: darken($color-greener, 10%);
       border-bottom-width: 5px;
       border-bottom-style: solid;
       font-weight: 600;
-      margin-bottom: 0px;
+      margin-bottom: 0;
       opacity: 1;
     }
   }
@@ -69,6 +69,7 @@ $color-double-greener: darken($color-greener, 10%);
   &__button {
     @extend .clickable;
 
+    font-size: $font-size-menu-item;
     border-top: 2px solid $color-greener; 
     cursor: pointer;
     display: flex;
@@ -131,13 +132,6 @@ $color-double-greener: darken($color-greener, 10%);
     }
   }
 
-  &__toggle-menu-icon {
-    display: flex;
-    font-size: 1.5em;
-    align-self: center;
-    justify-self: center;
-  }
-
   &__refresh-button,
   &__replied-button {
     background: transparent;
@@ -158,7 +152,7 @@ $color-double-greener: darken($color-greener, 10%);
   &__refresh-icon,
   &__replied-icon {
     display: flex;
-    font-size: 1.5em;
+    font-size: $font-size-action-icon;
     height: 25px; 
   }
 

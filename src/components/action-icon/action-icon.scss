@@ -1,0 +1,31 @@
+
+.action-icon {
+  background-color: transparent;
+  border-color: transparent;
+  display: flex;
+  font-size: $font-size-action-icon;
+  width: 100%;
+
+  &__icon {
+    display: flex;
+    align-self: center;
+    justify-self: center;
+  }
+
+  /deep/ > .action-menu__button {
+    @extend .clickable;
+
+    border-top: 2px solid $color-greener;
+    cursor: pointer;
+    display: flex;
+    font-size: $font-size-action-icon;
+    justify-content: center;
+    padding: 16px;
+    width: 100%;
+
+    &--with-top-border {
+      border-top-width: 0;
+    }
+  }
+
+}
