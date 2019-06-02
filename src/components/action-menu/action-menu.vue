@@ -3,6 +3,7 @@
     <div :class="getActionMenuContainerClasses">
       <button
         v-if="isAuthenticated"
+        v-show="!isAdministrativeRoute"
         :class="getButtonClass('Press review')"
         @click="intendToGet('Press review')"
       >
@@ -11,6 +12,7 @@
 
       <router-link
         v-for="(menuItem, index) in menuItemsButPressReview"
+        v-show="!isAdministrativeRoute"
         :key="index"
         :to="getPathTo(menuItem)"
         :class="getButtonClass(menuItem)"
@@ -23,6 +25,7 @@
 
       <button
         v-if="isAuthenticated"
+        v-show="!isAdministrativeRoute"
         :class="getButtonClass('bucket')"
         @click="intendToGet('bucket')"
       >
@@ -30,7 +33,9 @@
       </button>
 
       <div class="action-menu__action-wrapper">
-        <div v-if="isAuthenticated" class="action-menu__row">
+        <div
+          v-if="isAuthenticated"
+          v-show="!isAdministrativeRoute"
           <button
             class="action-menu__button action-menu__refresh-button"
             @click="showStatusesHavingMedia"
