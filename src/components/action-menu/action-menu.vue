@@ -1,37 +1,36 @@
 <template>
   <div :class="actionMenuClasses">
-    <div
-      :class="getActionMenuContainerClasses"
-    >
-
+    <div :class="getActionMenuContainerClasses">
       <button
         v-if="isAuthenticated"
         :class="getButtonClass('Press review')"
         @click="intendToGet('Press review')"
-      >Press Review</button>
+      >
+        Press Review
+      </button>
 
       <router-link
         v-for="(menuItem, index) in menuItemsButPressReview"
-        :key='index'
-        :to='getPathTo(menuItem)'
+        :key="index"
+        :to="getPathTo(menuItem)"
         :class="getButtonClass(menuItem)"
-        active-class='action-menu__get-statuses--active'
+        active-class="action-menu__get-statuses--active"
         exact
-        tag='button'
+        tag="button"
         @click.native="intendToGetAggregate(menuItem)"
-      >{{ getMenuLabel(menuItem) }}</router-link>
+        >{{ getMenuLabel(menuItem) }}</router-link
+      >
 
       <button
         v-if="isAuthenticated"
         :class="getButtonClass('bucket')"
         @click="intendToGet('bucket')"
-      >Bucket</button>
+      >
+        Bucket
+      </button>
 
       <div class="action-menu__action-wrapper">
-        <div
-          v-if="isAuthenticated"
-          class="action-menu__row"
-        >
+        <div v-if="isAuthenticated" class="action-menu__row">
           <button
             class="action-menu__button action-menu__refresh-button"
             @click="showStatusesHavingMedia"
@@ -54,9 +53,7 @@
         </div>
 
         <div class="action-menu__row action-menu__row--full-width">
-          <ul
-            v-if="isAuthenticated"
-            class="action-menu__sub-menu">
+          <ul v-if="isAuthenticated" class="action-menu__sub-menu">
             <li class="action-menu__sub-menu-item">
               <button
                 class="action-menu__button action-menu__lists-button"
@@ -89,13 +86,19 @@
                 <span>Keywords</span>
               </button>
             </li>
+            <li>
+              <button
+                class="action-menu__button action-menu__lists-button"
+                @click="goToSubscriptions()"
+              >
+                <span>Subscriptions</span>
+              </button>
+            </li>
           </ul>
 
           <authenticator />
-
         </div>
       </div>
-
     </div>
 
     <font-awesome-icon
@@ -116,6 +119,7 @@ import CaseNormalizer from '../../mixins/case';
 import EventHub from '../../modules/event-hub';
 import SharedState from '../../modules/shared-state';
 import Authenticator from '../authentication/authenticator.vue';
+import Time from '../../modules/time';
 
 const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
   'authentication'
@@ -262,8 +266,17 @@ export default {
       this.showMenu = false;
     },
     goToKeywords() {
+      const startDate = Time.today();
+      const endDate = Time.today();
+
       this.$router.push({
-        name: 'keywords'
+        name: 'keywords',
+        params: { startDate, endDate }
+      });
+    },
+    goToSubscriptions() {
+      this.$router.push({
+        name: 'member-subscriptions'
       });
     },
     goToHomepage() {

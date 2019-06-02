@@ -1,13 +1,8 @@
 <template>
-  <div
-    v-if="isAuthenticated"
-    class="aggregate-list list"
-  >
+  <div v-if="isAuthenticated" class="aggregate-list list">
     <div class="list__search">
       <div class="list__search-row">
-        <label
-          class="list__typeahead-label"
-          for="typeahead">
+        <label class="list__typeahead-label" for="typeahead">
           <font-awesome-icon
             v-if="isSortableByPriority"
             icon="exclamation-triangle"
@@ -23,43 +18,40 @@
           <input
             id="typeahead"
             v-model="keywords"
-            class='list__typeahead'
+            class="list__typeahead"
             type="text"
             placeholder="Climate change, Software craftmanship, Lean"
             @keyup.enter="fetchLists"
-          >
+          />
         </label>
         <input
           class="list__button list__button-search"
           type="button"
           value="Search"
           @click="fetchLists"
-        >
+        />
         <input
           v-if="previousPageExists()"
           class="list__button"
           type="button"
           value="previous"
           @click="fetchPreviousPage"
-        >
+        />
         <input
           v-if="nextPageExists()"
           class="list__button"
           type="button"
           value="next"
           @click="fetchNextPage"
-        >
-        <label
-          for="items-per-page"
-          class="list__page-size"
-        >
+        />
+        <label for="items-per-page" class="list__page-size">
           <input
             id="items-per-page"
             v-model="pageSize"
             max="70000"
             type="number"
             @keyup.enter="fetchLists"
-          >
+          />
           <span class="list__page-size-label">aggregates per page</span>
         </label>
       </div>
@@ -76,7 +68,7 @@
               name="selecting-all-aggregates"
               class="aggregate__button-select-all-aggregates"
               type="checkbox"
-            >Select all aggregates
+            />Select all aggregates
           </label>
         </div>
         <div class="list__search-row">
@@ -90,7 +82,7 @@
               v-model="areAggregatesHavingMembersAndStatusesSelected"
               name="selecting-aggregates-having-members-and-statuses"
               type="checkbox"
-            >Select aggregates having members and statuses
+            />Select aggregates having members and statuses
           </label>
         </div>
         <div class="list__search-row">
@@ -104,7 +96,7 @@
               v-model="areAggregatesWithoutMembersSelected"
               name="selecting-aggregates-without-members"
               type="checkbox"
-            >Select aggregates having no members
+            />Select aggregates having no members
           </label>
         </div>
         <div class="list__search-row">
@@ -118,7 +110,7 @@
               v-model="areAggregatesWithoutStatusesSelected"
               name="selecting-aggregates-without-statuses"
               type="checkbox"
-            >Select aggregates having no status
+            />Select aggregates having no status
           </label>
         </div>
         <div class="list__search-row">
@@ -133,7 +125,7 @@
               name="selecting-aggregates-without-statuses-but-members"
               class="aggregate__button-select-aggregates-without-statuses-but-members"
               type="checkbox"
-            >Select aggregates having no status but members
+            />Select aggregates having no status but members
           </label>
         </div>
       </div>
@@ -150,7 +142,7 @@
               class="aggregate__button-remove-selected-aggregates"
               type="button"
               value="Remove selected aggregates"
-            >
+            />
             <font-awesome-icon
               icon="trash"
               class="aggregate-list__button-remove-aggregates"
@@ -169,7 +161,7 @@
               class="aggregate__button-collect-statuses-for-selected-aggregates"
               type="button"
               value="Collect statuses for selected aggregates"
-            >
+            />
             <font-awesome-icon
               icon="file-download"
               class="aggregate-list__button-collect-statuses-for-selected-aggregates"
@@ -188,7 +180,7 @@
               class="aggregate__button-reset-total-statuses-for-selected-aggregates"
               type="button"
               value="Reset total statuses for selected aggregates"
-            >
+            />
             <font-awesome-icon
               icon="undo"
               class="aggregate-list__button-reset-total-statuses-for-selected-aggregates"
@@ -608,6 +600,6 @@ export default {
 };
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import './aggreggate-list.scss';
 </style>

@@ -5,7 +5,8 @@
     "plugin:import/warnings",
     "plugin:prettier/recommended",
     "plugin:vue/recommended",
-    "prettier"
+    "prettier",
+    "prettier/vue"
   ],
   "plugins": ["prettier", "vue", "import"],
   "parserOptions": {
