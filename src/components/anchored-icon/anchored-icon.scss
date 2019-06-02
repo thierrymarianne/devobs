@@ -11,12 +11,14 @@
     &:visited {
       .anchored-icon__icon {
         color: $color-greener;
+        cursor: pointer;
       }
     }
 
     &:hover {
       .anchored-icon__icon {
         color: $color-even-greener;
+        cursor: pointer;
       }
     }
   }

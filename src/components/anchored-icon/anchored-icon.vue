@@ -11,7 +11,7 @@
 export default {
   name: 'anchored-icon',
   props: {
-    wrapperClasses: {
+    anchorClasses: {
       type: Object,
       default: () => ({})
     },
@@ -27,7 +27,7 @@ export default {
       type: Array,
       required: true
     },
-    anchorClasses: {
+    wrapperClasses: {
       type: Object,
       default: () => ({})
     }
@@ -35,21 +35,21 @@ export default {
   data() {
     return {
       classes: {
-        wrapperClasses: {
-          'anchored-icon': true,
-          ...this.wrapperClasses
+        anchorClasses: {
+          'anchored-icon__anchor': true,
+          ...this.anchorClasses
         },
         iconClasses: {
           'anchored-icon__icon': true,
           ...this.iconClasses
         },
-        anchorClasses: {
-          'anchored-icon__anchor': true,
-          ...this.anchorClasses
+        wrapperClasses: {
+          'anchored-icon': true,
+          ...this.wrapperClasses
         }
       }
     };
-  }
+  },
 };
 </script>
 
