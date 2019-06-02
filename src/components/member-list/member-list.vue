@@ -1,49 +1,37 @@
 <template>
-  <div
-    v-if="isAuthenticated"
-    class="member-list list"
-  >
+  <div v-if="isAuthenticated" class="member-list list">
     <div class="list__search">
       <input
         class="list__button list__button-go-to-parent"
         type="button"
         value="Parent"
         @click="goToParent()"
-      >
-      <label
-        class="list__typeahead-label"
-        for="typeahead">
+      />
+      <label class="list__typeahead-label" for="typeahead">
         <input
           id="typeahead"
           v-model="keyword"
-          class='list__typeahead'
+          class="list__typeahead"
           type="text"
           placeholder="fabpot, dan_abramov, youyuxi"
           @keyup.enter="fetchMembers"
-        >
+        />
       </label>
       <input
         class="list__button-search"
         type="button"
         value="Search"
         @click="fetchMembers"
-      >
+      />
       <input
         v-if="previousPageExists()"
         class="list__button"
         type="button"
         value="previous"
         @click="fetchPreviousPage"
-      >
-      <label
-        for="total-pages"
-        class="list__total-pages"
-      >
-        <input
-          id="total-pages"
-          v-model="pageSize"
-          type="number"
-        >
+      />
+      <label for="total-pages" class="list__total-pages">
+        <input id="total-pages" v-model="pageSize" type="number" />
       </label>
       <input
         v-if="nextPageExists()"
@@ -51,11 +39,9 @@
         type="button"
         value="next"
         @click="fetchNextPage"
-      >
+      />
     </div>
-    <div
-      class="member-list__selectors"
-    >
+    <div class="member-list__selectors">
       <toggler
         id="less-than-ten"
         :click-handler="getMembersHavingLessThanTenStatusesSelector()"
@@ -359,6 +345,6 @@ export default {
 };
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import './member-list.scss';
 </style>
