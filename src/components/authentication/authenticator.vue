@@ -94,15 +94,22 @@ export default {
       if (isAdministrativeRoute) {
         redirectUri = `${Config.getClientSchemeAndHost()}${this.$route.path}`;
       }
-      this.authenticationService = new auth0.WebAuth({
-        domain: Config.authentication.auth0.host,
-        clientID: Config.authentication.auth0.clientId,
-        redirectUri,
-        responseType: 'token id_token',
-        scope: 'openid profile email read:messages'
-      });
+      this.authenticationService = {
+        webAuth: new auth0.WebAuth({
+          domain: Config.authentication.auth0.host,
+          clientID: Config.authentication.auth0.clientId,
+          redirectUri,
+          responseType: 'token id_token',
+          scope: 'openid profile email read:messages'
+        }),
+        sessionSetter: this.setSession
+      };
     },
     setSession(authResult) {
+      if (this.isAuthenticated()) {
+        return;
+      }
+
       const expiresAt = this.getExpiresAt(authResult);
 
       localStorage.setItem('access_token', authResult.accessToken);
@@ -153,7 +160,7 @@ export default {
         return;
       }
 
-      this.authenticationService.parseHash((err, authResult) => {
+      this.authenticationService.webAuth.parseHash((err, authResult) => {
         if (authResult && authResult.accessToken && authResult.idToken) {
           this.setSession(authResult);
         }
@@ -174,11 +181,11 @@ export default {
       return this.getAuthenticatedAccessToken();
     },
     delegateSignIn() {
-      if (!this.authenticationService) {
+      if (!this.authenticationService.webAuth) {
         return;
       }
 
-      this.authenticationService.authorize();
+      this.authenticationService.webAuth.authorize();
     },
     delegateLogOut() {
       localStorage.removeItem('access_token');

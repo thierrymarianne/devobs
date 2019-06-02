@@ -7,9 +7,8 @@ import HighlightList from '../components/highlight-list/highlight-list.vue';
 import MemberList from '../components/member-list/member-list.vue';
 import MemberStatusList from '../components/member-status-list/member-status-list.vue';
 import StatusList from '../components/status-list/status-list.vue';
-import Time from './time';
 
-const defaultRedirect = `/highlights/private/${Time.today()}/${Time.today()}`;
+const defaultRedirect = `/admin/member-subscriptions`;
 
 export default [
   {

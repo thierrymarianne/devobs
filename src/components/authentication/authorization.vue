@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-if="isAuthenticated"
-    class="authorization"
-  >
+  <div v-if="isAuthenticated" class="authorization">
     <button
       v-show="isVisible"
       class="authenticator__button authenticator__authorize-button"
@@ -16,8 +13,8 @@
 <script>
 import { createNamespacedHelpers } from 'vuex';
 
-import ApiMixin from '../../mixins/api';
 import Auth0Lock from 'auth0-lock';
+import ApiMixin from '../../mixins/api';
 import AuthenticationMutations from '../../store/authentication-mutations';
 import Config from '../../config';
 import SharedState from '../../modules/shared-state';
@@ -132,7 +129,7 @@ export default {
       );
     },
     delegateSignIn() {
-      this.authenticationService.checkSession(
+      this.authenticationService.webAuth.checkSession(
         {
           audience: Config.authentication.auth0.audience,
           scope: 'openid profile email read:messages'
@@ -144,6 +141,7 @@ export default {
             return;
           }
 
+          this.authenticationService.sessionSetter(authResult);
           this.setSession(authResult);
         }
       );
@@ -164,6 +162,6 @@ export default {
 };
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import './authorization.scss';
 </style>
