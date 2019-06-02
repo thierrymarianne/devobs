@@ -1,9 +1,10 @@
 @import '../../styles/list.scss';
+@import '../../styles/card.scss';
 
 .member-subscription-list {
   @extend .list;
 
-  max-width: 1000px;
+  max-width: 1200px;
   margin: auto;
   margin-top: $menu-height;
   width: auto;
@@ -25,23 +26,21 @@
     align-self: center;
     justify-content: center;
     display: flex;
-    height: 50px;
-    width: 200px;
-    border-right: 1px solid $color-green;
   }
 
   .list {
     &__items {
-      width: auto;
-      flex-wrap: wrap;
       display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: auto;
     }
 
     &__item {
-      display: flex;
-      align-content: center;
-      list-style-type: none;
-      width: 200px;
+      @extend .card;
+      height: 50px;
+      padding-left: 10px;
+      width: 130px;
     }
   }
 
