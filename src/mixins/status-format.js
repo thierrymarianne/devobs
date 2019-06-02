@@ -1,13 +1,13 @@
-import he from 'he';
-import EmojiConvertor from 'emoji-js';
 import { createNamespacedHelpers } from 'vuex';
 
 import EventHub from '../modules/event-hub';
 import Errors from '../modules/errors';
+import EmojiParser from '../modules/emoji-parser';
 
 const { mapGetters } = createNamespacedHelpers('bucket');
 
 export default {
+  mixins: [EmojiParser],
   methods: {
     ...mapGetters([
       'isStatusInBucket',
@@ -140,7 +140,7 @@ export default {
           avatarUrl: status.avatar_url,
           publishedAt: new Date(status.published_at),
           statusId: status.status_id,
-          text: this.parseFromString(status.text),
+          text: this.parseTextForEmojis(status.text),
           url: status.url,
           isVisible: false,
           isInBucket: false,
@@ -201,21 +201,6 @@ export default {
       }
 
       return -1;
-    },
-    // @see https://developer.mozilla.org/en-US/docs/Web/API/DOMParser
-    parseFromString: function(subject) {
-      const parser = new DOMParser();
-      const dom = parser.parseFromString(
-        `<!doctype html><body>${subject}</body>`,
-        'text/html'
-      );
-      const parsedSubject = he.escape(dom.body.textContent);
-      const emoji = new EmojiConvertor();
-
-      // @see https://github.com/iamcal/emoji-data
-      emoji.img_sets.apple.path =
-        'https://revue-de-presse.weaving-the-web.org/emoji-data/img-apple-64/';
-      return emoji.replace_unified(parsedSubject);
     }
   }
 };
