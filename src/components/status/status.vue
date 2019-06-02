@@ -1,99 +1,80 @@
 <template>
   <div :class="statusClasses()">
-
     <div class="status__row">
       <div class="status__publication-date">
-        <a
-          :href="status.url"
-          class="status__url"
-          target="_blank"
-        >{{ publicationDate }}</a>
+        <a :href="status.url" class="status__url" target="_blank">{{
+          publicationDate
+        }}</a>
       </div>
       <div class="status__vanity-metrics">
-        <a
-          :href="status.url"
-          class="status__url">
+        <a :href="status.url" class="status__url">
           <font-awesome-icon
             :icon="['fab', 'twitter']"
             class="status__vanity-metric-icon"
           />
         </a>
-        <font-awesome-icon
-          icon="retweet"
-          class="status__vanity-metric-icon" />
+        <font-awesome-icon icon="retweet" class="status__vanity-metric-icon" />
         <span class="status__vanity-metric">{{ retweet }}</span>
-        <font-awesome-icon
-          icon="heart"
-          class="status__vanity-metric-icon" />
+        <font-awesome-icon icon="heart" class="status__vanity-metric-icon" />
         <span class="status__vanity-metric">{{ favorite }}</span>
       </div>
     </div>
 
-    <div
-      v-if="isRetweet" 
-      class="status__row">
+    <div v-if="isRetweet" class="status__row">
       <div class="status__relay">
         <a
           :href="retweetingMemberTimelineUrl"
           class="status__username"
           target="_blank"
-        >@{{ status.usernameOfRetweetingMember }}</a>
+          >@{{ status.usernameOfRetweetingMember }}</a
+        >
         <span class="status__verb">&nbsp;retweeted&nbsp;</span>
-        <a
-          :href="memberTimelineUrl"
-          class="status__username"
-          target="_blank"
-        >@{{ status.username }}</a>
+        <a :href="memberTimelineUrl" class="status__username" target="_blank"
+          >@{{ status.username }}</a
+        >
       </div>
     </div>
 
-    <div
-      v-if="isLike"
-      class="status__row">
+    <div v-if="isLike" class="status__row">
       <div class="status__relay">
         <a
           :href="likingMemberTimelineUrl"
           class="status__username"
           target="_blank"
-        >@{{ status.likedBy }}</a>
+          >@{{ status.likedBy }}</a
+        >
         <span class="status__verb">&nbsp;liked&nbsp;</span>
-        <a
-          :href="memberTimelineUrl"
-          class="status__username"
-          target="_blank"
-        >@{{ status.username }}</a>
+        <a :href="memberTimelineUrl" class="status__username" target="_blank"
+          >@{{ status.username }}</a
+        >
       </div>
     </div>
 
-    <div 
-      v-else 
-      class="status__row">
+    <div v-else class="status__row">
       <div class="status__publication">
-        <a
-          :href="memberTimelineUrl"
-          class="status__username"
-          target="_blank"
-        >@{{ status.username }}</a>
+        <a :href="memberTimelineUrl" class="status__username" target="_blank"
+          >@{{ status.username }}</a
+        >
       </div>
     </div>
     <div class="status__row">
       <div class="status__content">
         <div class="status__avatar-container">
           <div
-            :style="'background: center / 48px no-repeat url(' + avatarUrl + ')'"
+            :style="
+              'background: center / 48px no-repeat url(' + avatarUrl + ')'
+            "
             class="status__avatar"
           ></div>
         </div>
-        <p
-          class="status__text"
-          v-html="statusText"
-        ></p>
+        <p class="status__text" v-html="statusText"></p>
       </div>
     </div>
 
     <div
       v-if="status.media && status.media.length > 0"
-      class="status__row status__row--media">
+      class="status__row status__row--media"
+    >
       <div class="status__media">
         <img
           v-for="(document, index) in status.media"
@@ -102,24 +83,20 @@
           :style="getMediaProperties()"
           class="status__media-item"
           @click="openMediaItem(document)"
-        >
+        />
       </div>
     </div>
 
-    <div
-      v-if="shouldDisplayPermalink"
-      class="status__row"
-    >
+    <div v-if="shouldDisplayPermalink" class="status__row">
       <div class="status__links">
-        <a
-          class="status__url"
-          @click="goToPermalink(status)">Permalink</a>
+        <a class="status__url" @click="goToPermalink(status)">Permalink</a>
         <a
           v-for="(link, index) in status.links"
           :key="index"
           :href="link"
           class="status__url status__url--secondary-link"
-        >{{ link }}</a>
+          >{{ link }}</a
+        >
       </div>
     </div>
 
@@ -167,16 +144,15 @@
             @click="removeFromBucket"
           >
             <font-awesome-icon icon="minus" />
-            <span class="status__web-intent--remove-from-bucket">Remove from bucket</span>
+            <span class="status__web-intent--remove-from-bucket"
+              >Remove from bucket</span
+            >
           </button>
         </template>
       </div>
     </div>
 
-    <div
-      v-if="canBeShared()"
-      class="status__row"
-    >
+    <div v-if="canBeShared()" class="status__row">
       <div class="status__web-intents">
         <button
           v-clipboard="urlWhichCanBeShared"
@@ -185,10 +161,9 @@
         >
           <font-awesome-icon icon="link" />
           <span>Share this status</span>
-          <a
-            :href="urlWhichCanBeShared"
-            class='hide'
-          >{{ urlWhichCanBeShared }}</a>
+          <a :href="urlWhichCanBeShared" class="hide">{{
+            urlWhichCanBeShared
+          }}</a>
         </button>
       </div>
     </div>
@@ -199,14 +174,13 @@
     >
       <div class="status__web-intents">
         <button
-          v-if="isBucketVisible && canBeRefreshed && !isAllowedToOpenConversation"
+          v-if="
+            isBucketVisible && canBeRefreshed && !isAllowedToOpenConversation
+          "
           class="status__web-intent status__web-intent--load-conversation"
           @click="syncStatus"
         >
-          <font-awesome-icon
-            class="status__replied-icon"
-            icon="comments"
-          />
+          <font-awesome-icon class="status__replied-icon" icon="comments" />
 
           <span>Load conversation</span>
 
@@ -222,10 +196,7 @@
           class="status__web-intent status__web-intent--open-conversation"
           @click="syncStatus"
         >
-          <font-awesome-icon
-            class="status__replied-icon"
-            icon="comments"
-          />
+          <font-awesome-icon class="status__replied-icon" icon="comments" />
 
           <span>Conversation</span>
 
@@ -237,7 +208,6 @@
         </button>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -632,6 +602,6 @@ export default {
 };
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import './status.scss';
 </style>
