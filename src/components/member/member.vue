@@ -2,10 +2,7 @@
   <div class="member">
     <div class="member__column">
       <div class="member__row">
-        <span
-          class="member__username"
-          @click="goToMember(member.name)"
-        >
+        <span class="member__username" @click="goToMember(member.name)">
           @{{ format(member.name) }}
         </span>
         <a
@@ -13,9 +10,7 @@
           target="_blank"
           class="member__button-navigate-to-twitter"
         >
-          <font-awesome-icon
-            :icon="['fab', 'twitter']"
-          />
+          <font-awesome-icon :icon="['fab', 'twitter']" />
         </a>
       </div>
       <div class="member__row">
@@ -65,9 +60,7 @@ export default {
   props: {
     member: {
       type: Object,
-      default: () => {
-        return {};
-      }
+      default: () => ({})
     },
     unlock: {
       type: Function,
