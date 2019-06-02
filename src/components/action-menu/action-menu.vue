@@ -36,6 +36,8 @@
         <div
           v-if="isAuthenticated"
           v-show="!isAdministrativeRoute"
+          class="action-menu__row"
+        >
           <button
             class="action-menu__button action-menu__refresh-button"
             @click="showStatusesHavingMedia"
@@ -67,7 +69,7 @@
                 <span>Lists</span>
               </button>
             </li>
-            <li>
+            <li class="action-menu__sub-menu-item">
               <button
                 class="action-menu__button action-menu__lists-button"
                 @click="goToHighlights()"
@@ -75,7 +77,7 @@
                 <span>Highlights</span>
               </button>
             </li>
-            <li>
+            <li class="action-menu__sub-menu-item">
               <button
                 class="action-menu__button action-menu__lists-button"
                 @click="goToPersonalHighlights()"
@@ -83,7 +85,7 @@
                 <span>Personal highlights</span>
               </button>
             </li>
-            <li>
+            <li class="action-menu__sub-menu-item">
               <button
                 class="action-menu__button action-menu__lists-button"
                 @click="goToKeywords()"
@@ -91,7 +93,7 @@
                 <span>Keywords</span>
               </button>
             </li>
-            <li>
+            <li class="action-menu__sub-menu-item">
               <button
                 class="action-menu__button action-menu__lists-button"
                 @click="goToSubscriptions()"
