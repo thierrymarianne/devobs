@@ -1,4 +1,5 @@
 class NoRemainingStatusAfterApplyingFilter extends Error {}
+class InvalidEmoji extends Error {}
 class InvalidSession extends Error {
   constructor(
     message = `Have your mapped the "getIdToken" authentication getter
@@ -9,6 +10,7 @@ class InvalidSession extends Error {
 }
 
 export default {
+  InvalidEmoji,
   InvalidSession,
   NoRemainingStatusAfterApplyingFilter
 };
