@@ -1,0 +1,14 @@
+
+.card {
+  border: 2px solid $color-greener;
+  border-right: 10px solid transparent;
+  font-size: 1em;
+  cursor: default;
+  list-style-type: none;
+  justify-content: flex-start;
+  line-height: normal;
+  margin-left: 4px;
+  margin-top: 4px;
+  height: auto;
+  width: 250px;
+}
