@@ -1,0 +1,81 @@
+@import '../../styles/emoji-container';
+
+.member-subscription {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 75px;
+  width: 100%;
+
+  &--having-description {
+    border-bottom: 10px $color-even-greener solid;
+  }
+
+  &--requiring-update {
+    border-bottom: 10px $color-red solid;
+  }
+
+  &__url,
+  &__url:active,
+  &__url:hover,
+  &__url:link,
+  &__url:visited {
+    color: $color-greener;
+    cursor: pointer;
+    position: relative;
+    z-index: 0;
+
+    .member-subscription__username {
+      cursor: pointer;
+      position: relative;
+      z-index: 0;
+    }
+  }
+
+  &__username {
+    cursor: default;
+  }
+
+  &__row {
+    display: flex;
+    flex-direction: row;
+    margin-top: 4px;
+    position: relative;
+    z-index: 0;
+
+    &--actionable {
+      cursor: pointer;
+    }
+  }
+
+  &__description-wrapper {
+    position: relative;
+    z-index: 1;
+
+    .member-subscription__description {
+      @extend .emoji-container;
+
+      background-color: $color-background;
+      border: 1px solid $color-green;
+      align-self: center;
+      display: block;
+      left: 0;
+      margin-top: 64px;
+      padding: 8px;
+      position: absolute;
+      text-align: left;
+      white-space: pre-line;
+      width: $width-card-default;
+      z-index: 2;
+    }
+  }
+
+  /deep/ .member-subscription__anchored-icon-wrapper {
+    align-self: flex-end;
+    display: flex;
+    margin-right: 8px;
+    position: relative;
+    z-index: 0;
+  }
+}

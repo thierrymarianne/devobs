@@ -7,18 +7,7 @@
         :data-key="subscription.id"
         class="list__item"
       >
-        <div class="member-subscription-list__card">
-          <template v-if="subscription.url">
-            <a :href="subscription.url" class="member-subscription-list__url">
-              <span class="member-subscription-list__username">{{
-                subscription.username
-              }}</span>
-            </a>
-          </template>
-          <span v-else class="member-subscription-list__username">{{
-            subscription.username
-          }}</span>
-        </div>
+        <member-subscription :subscription="subscription" />
       </li>
     </ul>
   </div>
@@ -32,6 +21,7 @@ import ApiMixin from '../../mixins/api';
 import Config from '../../config';
 import EventHub from '../../modules/event-hub';
 import SharedState from '../../modules/shared-state';
+import MemberSubscription from '../member-subscription/member-subscription.vue';
 
 const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
   'authentication'
@@ -39,6 +29,9 @@ const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
 
 export default {
   name: 'member-subscription-list',
+  components: {
+    MemberSubscription
+  },
   mixins: [ApiMixin, AuthenticationHeadersMixin],
   data() {
     return {

@@ -4,29 +4,10 @@
 .member-subscription-list {
   @extend .list;
 
-  max-width: 1200px;
+  max-width: 1280px;
   margin: auto;
   margin-top: $menu-height;
   width: auto;
-
-  &__url,
-  &__url:active,
-  &__url:hover,
-  &__url:link,
-  &__url:visited {
-    color: $color-greener;
-    cursor: pointer;
-
-    .member-subscription-list__username {
-      cursor: pointer;
-    }
-  }
-
-  &__card {
-    align-self: center;
-    justify-content: center;
-    display: flex;
-  }
 
   .list {
     &__items {
@@ -38,14 +19,9 @@
 
     &__item {
       @extend .card;
-      height: 50px;
       padding-left: 10px;
-      width: 130px;
+      width: $width-card-default;
     }
-  }
-
-  &__username {
-    cursor: default;
   }
 }
 
