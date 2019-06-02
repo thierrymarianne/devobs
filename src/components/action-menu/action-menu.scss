@@ -10,7 +10,7 @@ $color-double-greener: darken($color-greener, 10%);
   justify-items: center;
   left: -1px;
   position: fixed;
-  background-color: #f1f1f1;
+  background-color: $color-background;
   min-height: calc(3 * 16px + 8px);
   line-height: calc(3 * 16px + 8px);
   z-index: 1;
