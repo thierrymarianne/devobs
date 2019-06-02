@@ -37,34 +37,6 @@ $margin-between-blocks: 8px;
     }
   }
 
-  &__navigate-to-list {
-    display: flex;
-    line-height: 1em;
-    justify-content: center;
-
-    .aggregate__list-anchor {
-      width: 100%;
-
-      .aggregate__list-twitter-icon {
-        margin-top: calc(#{$margin-between-blocks} / 2);
-      }
-
-      &:active,
-      &:link,
-      &:visited {
-        .aggregate__list-twitter-icon {
-          color: $color-greener;
-        }
-      }
-
-      &:hover {
-        .aggregate__list-twitter-icon {
-          color: $color-even-greener;
-        }
-      }
-    }
-  }
-
   &__button-select-aggregate {
     cursor: pointer;
     margin-right: 8px;
@@ -80,21 +52,6 @@ $margin-between-blocks: 8px;
 
   &__button-list-members {
     margin-right: 8px;
-  }
-
-  &__navigate-to-list {
-    cursor: pointer;
-    display: inline-flex;
-    line-height: 1em;
-    margin-right: 8px;
-    margin-top: 0;
-    padding: 8px;
-    padding-top: 0.2em;
-    padding-right: 0;
-
-    &:hover {
-      color: $color-even-greener;
-    }
   }
 
   &__row {
@@ -187,6 +144,31 @@ $margin-between-blocks: 8px;
 
       &:hover {
         color: white;
+      }
+    }
+  }
+}
+
+/deep/ .aggregate {
+  &__navigate-to-list {
+    cursor: pointer;
+    display: inline-flex;
+    line-height: 1em;
+    margin-right: 8px;
+    margin-top: 0;
+    padding: 8px;
+    padding-top: 0.2em;
+    padding-right: 0;
+
+    &:hover {
+      color: $color-even-greener;
+    }
+
+    .aggregate__list-anchor {
+      width: 100%;
+
+      .aggregate__list-twitter-icon {
+        margin-top: calc(#{$margin-between-blocks} / 2);
       }
     }
   }
