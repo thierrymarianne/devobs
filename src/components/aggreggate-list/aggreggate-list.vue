@@ -363,6 +363,15 @@ export default {
       return classes;
     }
   },
+  watch: {
+    isAuthenticated(newAuthenticationStatus) {
+      if (!newAuthenticationStatus) {
+        return;
+      }
+
+      this.fetchList();
+    }
+  },
   destroyed() {
     EventHub.$off('aggregate_list.reload_intended');
     EventHub.$off('aggregate.selected');

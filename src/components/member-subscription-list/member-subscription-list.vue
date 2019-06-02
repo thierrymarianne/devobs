@@ -55,15 +55,22 @@ export default {
       isAuthenticated: 'isAuthenticated'
     })
   },
-  created() {
-    if (!this.isAuthenticated) {
-      return;
-    }
+  watch: {
+    isAuthenticated(newAuthenticationStatus) {
+      if (!newAuthenticationStatus) {
+        return;
+      }
 
+      this.fetchList();
+    }
+  },
+  created() {
     EventHub.$off('member_subscription_list.reload_intended');
     EventHub.$on('member_subscription_list.reload_intended', this.fetchList);
 
-    this.fetchList({});
+    if (this.isAuthenticated) {
+      this.fetchList({});
+    }
   },
   methods: {
     fetchList(params = {}, next) {
