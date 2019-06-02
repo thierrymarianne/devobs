@@ -40,19 +40,19 @@ export default {
     },
     previousButtonClasses: {
       type: Object,
-      required: true
+      default: () => ({})
     },
     nextButtonClasses: {
       type: Object,
-      required: true
+      default: () => ({})
     },
     previousIconClasses: {
       type: Object,
-      required: true
+      default: () => ({})
     },
     nextIconClasses: {
       type: Object,
-      required: true
+      default: () => ({})
     },
     goToPreviousPageHandler: {
       type: Function,

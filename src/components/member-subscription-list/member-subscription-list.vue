@@ -6,10 +6,6 @@
       :is-next-button-visible="hasNextPage"
       :previous-icons="['fa', 'arrow-circle-left']"
       :next-icons="['fa', 'arrow-circle-right']"
-      :next-button-classes="{}"
-      :previous-button-classes="{}"
-      :next-icon-classes="{}"
-      :previous-icon-classes="{}"
       :go-to-next-page-handler="() => goToNextPage()"
       :go-to-previous-page-handler="() => goToPreviousPage()"
     />
@@ -29,10 +25,6 @@
       :is-next-button-visible="hasNextPage"
       :previous-icons="['fa', 'arrow-circle-left']"
       :next-icons="['fa', 'arrow-circle-right']"
-      :next-button-classes="{}"
-      :previous-button-classes="{}"
-      :next-icon-classes="{}"
-      :previous-icon-classes="{}"
       :go-to-next-page-handler="() => goToNextPage()"
       :go-to-previous-page-handler="() => goToPreviousPage()"
     />
