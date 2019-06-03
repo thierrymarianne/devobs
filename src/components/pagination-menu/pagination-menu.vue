@@ -63,9 +63,9 @@ export default {
       required: true
     }
   },
-  data() {
-    return {
-      classes: {
+  computed: {
+    classes() {
+      return {
         previousButton: {
           pagination__previous: true,
           pagination__invisible: !this.isPreviousButtonVisible,
@@ -84,8 +84,8 @@ export default {
           'pagination__next-icon': true,
           ...this.previousIconClasses
         }
-      }
-    };
+      };
+    }
   }
 };
 </script>

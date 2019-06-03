@@ -59,7 +59,7 @@ export default {
     return {
       items: [],
       logger: SharedState.logger,
-      pageIndex: 1,
+      pageIndex: this.$route.params.pageIndex,
       pageSize: 96,
       totalPages: null
     };
@@ -90,6 +90,9 @@ export default {
       }
 
       this.fetchList();
+    },
+    pageIndex() {
+      this.fetchList();
     }
   },
   created() {
@@ -97,12 +100,12 @@ export default {
     EventHub.$on('member_subscription_list.reload_intended', this.fetchList);
 
     if (this.isAuthenticated) {
-      this.fetchList({});
+      this.fetchList();
     }
   },
   methods: {
-    fetchList(params = {}, next) {
-      const requestOptions = this.getRequestOptions(params);
+    fetchList(next) {
+      const requestOptions = this.getRequestOptions();
 
       const action = this.routes.actions.fetchMemberSubscriptions;
       const route = `${Config.getSchemeAndHost()}${action.route}`;
@@ -118,37 +121,34 @@ export default {
         })
         .catch(e => this.logger.error(e.message, 'keyword-list', e));
     },
-    getRequestOptions(params) {
+    getRequestOptions() {
       const requestOptions = this.setUpCommonHeaders();
       if (!('params' in requestOptions)) {
         requestOptions.params = {};
       }
 
       requestOptions.params.pageSize = this.pageSize;
-
-      if (typeof params.pageIndex === 'undefined') {
-        requestOptions.params.pageIndex = this.pageIndex;
-
-        return requestOptions;
-      }
-
-      requestOptions.params.pageIndex = params.pageIndex;
+      requestOptions.params.pageIndex = this.$route.params.pageIndex;
 
       return requestOptions;
     },
     goToPreviousPage() {
-      const params = {
-        pageIndex: this.pageIndex - 1,
-        pageSize: this.pageSize
-      };
-      this.fetchList(params);
+      if (this.pageIndex <= 1) {
+        return;
+      }
+
+      this.pageIndex = this.pageIndex - 1;
+      this.$router.push({
+        name: 'member-subscriptions',
+        params: { pageIndex: this.pageIndex }
+      });
     },
     goToNextPage() {
-      const params = {
-        pageIndex: this.pageIndex + 1,
-        pageSize: this.pageSize
-      };
-      this.fetchList(params);
+      this.pageIndex = this.pageIndex + 1;
+      this.$router.push({
+        name: 'member-subscriptions',
+        params: { pageIndex: this.pageIndex }
+      });
     }
   }
 };

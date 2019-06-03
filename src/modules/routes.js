@@ -37,7 +37,7 @@ export default [
       },
       {
         component: MemberSubscriptionList,
-        path: 'member-subscriptions',
+        path: 'member-subscriptions/:pageIndex?',
         name: 'member-subscriptions'
       },
       {
