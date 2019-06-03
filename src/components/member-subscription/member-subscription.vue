@@ -1,11 +1,31 @@
 <template>
-  <div :class="classes" @mouseover="showTitle()" @mouseout="hideTitle()">
+  <div
+    :class="classes"
+    @mouseover="showMoreInformation()"
+    @mouseout="showLessInformation()"
+  >
     <div class="member-subscription__description-wrapper">
-      <p
+      <div
         v-show="shouldDescriptionBeVisible"
-        class="member-subscription__description"
-        v-html="parseDescription(subscription.description)"
-      ></p>
+        class="member-subscription__description-aggregates"
+      >
+        <p
+          class="member-subscription__description"
+          v-html="parseDescription(subscription.description)"
+        ></p>
+        <ul
+          v-show="shouldAggregatesBeVisible"
+          class="member-subscription__aggregates"
+        >
+          <li
+            v-for="(aggregate, index) in aggregates"
+            :key="index"
+            class="member-subscription__aggregate"
+          >
+            {{ aggregate }}
+          </li>
+        </ul>
+      </div>
     </div>
     <div v-if="subscription.username" class="member-subscription__row">
       <labelled-icon
@@ -60,10 +80,19 @@ export default {
     }
   },
   data() {
+    let aggregates = [];
+    if (
+      this.subscription.aggregates !== null &&
+      typeof this.subscription.aggregates !== 'undefined'
+    ) {
+      aggregates = Object.values(this.subscription.aggregates);
+    }
+
     return {
+      aggregates,
+      areMoreInformationVisible: false,
       logger: SharedState.logger,
-      requiresUpdate: false,
-      isDescriptionVisible: false
+      requiresUpdate: false
     };
   },
   computed: {
@@ -83,12 +112,22 @@ export default {
         this.subscription.description.length > 0
       );
     },
+    hasAggregates() {
+      return this.aggregates.length > 0;
+    },
+    shouldAggregatesBeVisible() {
+      if (!this.hasAggregates) {
+        return false;
+      }
+
+      return this.areMoreInformationVisible;
+    },
     shouldDescriptionBeVisible() {
       if (!this.hasDescription) {
         return false;
       }
 
-      return this.isDescriptionVisible;
+      return this.areMoreInformationVisible;
     }
   },
   methods: {
@@ -98,8 +137,8 @@ export default {
     formatMemberProfileUrl(memberName) {
       return `https://twitter.com/${memberName}`;
     },
-    hideTitle() {
-      this.isDescriptionVisible = false;
+    showLessInformation() {
+      this.areMoreInformationVisible = false;
     },
     parseDescription(description) {
       try {
@@ -130,12 +169,12 @@ export default {
         onFailure: e => this.logger.error(e.message, 'member-subscription', e)
       });
     },
-    showTitle() {
+    showMoreInformation() {
       if (this.subscription.description.length === 0) {
         return;
       }
 
-      this.isDescriptionVisible = true;
+      this.areMoreInformationVisible = true;
     }
   }
 };

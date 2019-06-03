@@ -49,12 +49,11 @@
     position: relative;
     z-index: 1;
 
-    .member-subscription__description {
+    .member-subscription__description-aggregates {
       @extend .emoji-container;
 
       background-color: $color-background;
       border: 1px solid $color-green;
-      align-self: center;
       display: block;
       left: 0;
       margin-top: 88px;
@@ -64,6 +63,31 @@
       white-space: pre-line;
       width: calc(#{$width-card-default} + 50px);
       z-index: 2;
+
+      .member-subscription__description {
+        margin-top: 0;
+      }
+
+      .member-subscription__aggregates {
+        background-color: $color-background;
+        border: 1px solid $color-green;
+        display: flex;
+        flex-direction: column;
+        left: 0;
+        padding: 0 8px 16px 8px;
+        position: absolute;
+        z-index: 2;
+        width: calc(#{$width-card-default} + 50px);
+
+        .member-subscription__aggregate {
+          display: flex;
+          align-self: flex-start;
+          line-height: 1em;
+          margin-left: 0;
+          margin-top: 0;
+          text-transform: capitalize;
+        }
+      }
     }
   }
 }
