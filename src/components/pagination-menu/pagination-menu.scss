@@ -17,5 +17,9 @@
   .pagination__next-icon {
     font-size: 1.5em;
   }
+
+  &:last-child {
+    margin-bottom: 16px;
+  }
 }
 
