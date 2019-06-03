@@ -43,22 +43,6 @@
     margin-top: 4px;
     position: relative;
     z-index: 0;
-
-    &--actionable {
-      cursor: pointer;
-    }
-
-    .member-subscription__external-link {
-      cursor: pointer;
-      color: $color-greener;
-
-      &:active,
-      &:visited,
-      &:link,
-      &:hover {
-        color: $color-greener;
-      }
-    }
   }
 
   &__description-wrapper {
@@ -81,13 +65,5 @@
       width: calc(#{$width-card-default} + 50px);
       z-index: 2;
     }
-  }
-
-  /deep/ .member-subscription__anchored-icon-wrapper {
-    align-self: flex-end;
-    display: flex;
-    margin-right: 8px;
-    position: relative;
-    z-index: 0;
   }
 }

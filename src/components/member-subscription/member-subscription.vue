@@ -7,59 +7,19 @@
         v-html="parseDescription(subscription.description)"
       ></p>
     </div>
-    <div class="member-subscription__row">
-      <template v-if="subscription.url">
-        <a
-          :href="subscription.url"
-          class="member-subscription__url"
-          target="__blank"
-        >
-          <span class="member-subscription__username">{{
-            subscription.username
-          }}</span>
-        </a>
-      </template>
-      <span v-else class="member-subscription__username">{{
-        subscription.username
-      }}</span>
-    </div>
-    <div class="member-subscription__row">
-      <div
-        class="member-subscription__row member-subscription__row--actionable"
-      >
-        <anchored-icon
-          v-if="subscription.username"
-          :icons="['fab', 'twitter']"
-          :url="formatMemberProfileUrl(subscription.username)"
-          :anchor-classes="{}"
-          :icon-classes="{}"
-          :wrapper-classes="{
-            'member-subscription__anchored-icon-wrapper': true
-          }"
-        />
-        <a
-          :href="formatMemberProfileUrl(subscription.username)"
-          class="member-subscription__external-link"
-          target="_blank"
-          >Go to profile</a
-        >
-      </div>
-    </div>
-    <div
-      class="member-subscription__row member-subscription__row--actionable"
-      @click="() => refreshMember(subscription.username)"
-    >
-      <anchored-icon
-        :icons="['fas', 'sync']"
-        :anchor-classes="{}"
-        :icon-classes="{}"
-        :wrapper-classes="{
-          'member-subscription__anchored-icon-wrapper': true
-        }"
+    <div v-if="subscription.username" class="member-subscription__row">
+      <labelled-icon
+        :icon="['fab', 'twitter']"
+        :label="subscription.username"
+        :url="formatMemberProfileUrl(subscription.username)"
       />
-      <span class="member-subscription__refresh-member-profile"
-        >Refresh profile</span
-      >
+    </div>
+    <div class="member-subscription__row">
+      <labelled-icon
+        :icon="['fas', 'sync']"
+        :click-handler="() => refreshMember(subscription.username)"
+        label="Refresh profile"
+      />
     </div>
   </div>
 </template>
@@ -74,6 +34,7 @@ import Config from '../../config';
 import EmojiParser from '../../modules/emoji-parser';
 import Errors from '../../modules/errors';
 import EventHub from '../../modules/event-hub';
+import LabelledIcon from '../labelled-icon/labelled-icon.vue';
 import MemberSubscriptionActions from './store/actions';
 import SharedState from '../../modules/shared-state';
 
@@ -88,7 +49,8 @@ const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
 export default {
   name: 'member-subscription',
   components: {
-    AnchoredIcon
+    AnchoredIcon,
+    LabelledIcon
   },
   mixins: [ApiMixin, AuthenticationHeadersMixin, EmojiParser],
   props: {

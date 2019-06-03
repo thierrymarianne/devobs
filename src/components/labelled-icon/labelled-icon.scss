@@ -1,0 +1,42 @@
+@import '../../styles/emoji-container';
+
+.labelled-icon {
+  align-self: center;
+  justify-self: center;
+  display: flex;
+  flex-direction: row;
+  margin-top: 4px;
+  position: relative;
+  z-index: 0;
+
+  &__actionable {
+    cursor: pointer;
+  }
+
+  &__external-link {
+    cursor: pointer;
+    color: $color-greener;
+    display: flex;
+    line-height: 1em;
+
+    &:active,
+    &:visited,
+    &:link,
+    &:hover {
+      color: $color-greener;
+    }
+  }
+
+  &__label {
+    display: flex;
+    line-height: 1em;
+  }
+
+  /deep/ > .labelled__icon-wrapper {
+    align-self: flex-end;
+    display: flex;
+    margin-right: 8px;
+    position: relative;
+    z-index: 0;
+  }
+}

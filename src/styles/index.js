@@ -19,6 +19,7 @@ import {
   faLock,
   faFileDownload,
   faMinus,
+  faNewspaper,
   faPen,
   faPlus,
   faRedoAlt,
@@ -52,6 +53,7 @@ library.add(faImages);
 library.add(faLink);
 library.add(faLock);
 library.add(faMinus);
+library.add(faNewspaper);
 library.add(faPen);
 library.add(faPlus);
 library.add(faRedoAlt);
