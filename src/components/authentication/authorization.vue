@@ -132,6 +132,8 @@ export default {
       this.authenticationService.webAuth.checkSession(
         {
           audience: Config.authentication.auth0.audience,
+          // @see https://github.com/auth0/lock/issues/1237#issuecomment-360280126
+          redirectUri: Config.authentication.auth0.redirectUri,
           scope: 'openid profile email read:messages'
         },
         (err, authResult) => {
