@@ -74,7 +74,7 @@
 import { createNamespacedHelpers } from 'vuex';
 
 import ApiMixin from '../../mixins/api';
-import RequestMixin from '../../mixins/request';
+import AuthenticationHeadersMixin from '../../mixins/authentication-headers';
 import StatusMixin from '../status/status-mixin';
 import EventHub from '../../modules/event-hub';
 import Config from '../../config';
@@ -94,7 +94,7 @@ const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
 export default {
   name: 'member-list',
   components: { Member, Toggler },
-  mixins: [ApiMixin, RequestMixin, StatusMixin],
+  mixins: [ApiMixin, AuthenticationHeadersMixin, StatusMixin],
   props: {
     statusesThreshold: {
       type: Number,
@@ -166,7 +166,7 @@ export default {
       this.fetchMembers({ pageIndex: this.pageIndex + 1 });
     },
     fetchMembers(params = {}) {
-      const requestOptions = this.getBaseRequestOptions();
+      const requestOptions = this.setUpCommonHeaders();
       const headerName = Object.keys(requestOptions.headers)[0];
       this.$http.defaults.headers.common[headerName] =
         requestOptions.headers[headerName];
@@ -292,7 +292,7 @@ export default {
       return originalIndex;
     },
     requestBulkStatusCollection() {
-      const requestOptions = this.getBaseRequestOptions();
+      const requestOptions = this.setUpCommonHeaders();
       const headerName = Object.keys(requestOptions.headers)[0];
       this.$http.defaults.headers.common[headerName] =
         requestOptions.headers[headerName];

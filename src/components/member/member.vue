@@ -45,18 +45,24 @@
 </template>
 
 <script>
+import { createNamespacedHelpers } from 'vuex';
+
+import AuthenticationHeadersMixin from '../../mixins/authentication-headers';
 import Config from '../../config';
 import EventHub from '../../modules/event-hub';
 import ApiMixin from '../../mixins/api';
-import RequestMixin from '../../mixins/request';
 import StatusMixin from '../status/status-mixin';
 import SharedState from '../../modules/shared-state';
 import Toggler from '../toggler/toggler.vue';
 
+const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
+  'authentication'
+);
+
 export default {
   name: 'member',
   components: { Toggler },
-  mixins: [ApiMixin, RequestMixin, StatusMixin],
+  mixins: [ApiMixin, AuthenticationHeadersMixin, StatusMixin],
   props: {
     member: {
       type: Object,
@@ -105,7 +111,7 @@ export default {
       EventHub.$emit('member_status.reload_intended');
     },
     requestStatusCollection(memberName) {
-      const requestOptions = this.getBaseRequestOptions();
+      const requestOptions = this.setUpCommonHeaders();
       const headerName = Object.keys(requestOptions.headers)[0];
       this.$http.defaults.headers.common[headerName] =
         requestOptions.headers[headerName];
@@ -124,7 +130,7 @@ export default {
         .catch(e => this.logger.error(e.message, 'status-list', e));
     },
     unlockAggregate(member, index) {
-      const requestOptions = this.getBaseRequestOptions();
+      const requestOptions = this.setUpCommonHeaders();
       const headerName = Object.keys(requestOptions.headers)[0];
       this.$http.defaults.headers.common[headerName] =
         requestOptions.headers[headerName];
