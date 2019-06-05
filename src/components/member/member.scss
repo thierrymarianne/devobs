@@ -16,7 +16,8 @@
     }
 
     &:last-child {
-      padding-top: 1em;
+      padding-top: 0;
+      width: calc(100% - 200px);
     }
   }
 
@@ -31,15 +32,9 @@
     font-size: 0.8em;
   }
 
-  .member__button-unlock-aggregate {
-    font-size: 1.3em;
-    line-height: 2em;
-    margin-left: 8px;
-  }
-
   .member__button-navigate-to-twitter {
-    margin-right: 8px;
     color: $color-greener;
+    justify-content: center;
 
     &:link,
     &:active,
@@ -47,13 +42,30 @@
     &:visited {
       color: $color-greener;
     }
+
+    &-wrapper {
+      margin-bottom: 8px;
+      width: 100%;
+    }
   }
 
+  /deep/ .member__button-navigate-to-twitter-icon {
+    font-size: 1.3em;
+  }
+
+  .member__button-unlock-aggregate,
   .member__button-collect-status {
     color: $color-greener;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
 
     &:hover {
       color: $color-even-greener;
     }
+  }
+
+  .member__button-unlock-aggregate--invisible {
+    visibility: hidden;
   }
 }
