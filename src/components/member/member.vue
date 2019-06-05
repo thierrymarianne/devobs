@@ -34,11 +34,11 @@
       </div>
     </div>
     <div class="member__column">
-      <font-awesome-icon
+      <action-icon
         v-if="canCollectionBeRequested"
-        icon="file-download"
-        class="member__button-collect-status"
-        @click="requestStatusCollection(member.name)"
+        :click-handler="() => requestStatusCollection(member.name)"
+        :icons="['fa', 'file-download']"
+        :button-classes="{ 'member__button-collect-status': true }"
       />
     </div>
   </div>
@@ -48,6 +48,7 @@
 import { createNamespacedHelpers } from 'vuex';
 
 import AuthenticationHeadersMixin from '../../mixins/authentication-headers';
+import ActionIcon from '../action-icon/action-icon.vue';
 import Config from '../../config';
 import EventHub from '../../modules/event-hub';
 import ApiMixin from '../../mixins/api';
@@ -61,7 +62,7 @@ const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
 
 export default {
   name: 'member',
-  components: { Toggler },
+  components: { ActionIcon, Toggler },
   mixins: [ApiMixin, AuthenticationHeadersMixin, StatusMixin],
   props: {
     member: {

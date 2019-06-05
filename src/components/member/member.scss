@@ -31,7 +31,6 @@
     font-size: 0.8em;
   }
 
-  .member__button-collect-status,
   .member__button-unlock-aggregate {
     font-size: 1.3em;
     line-height: 2em;
@@ -47,6 +46,14 @@
     &:hover,
     &:visited {
       color: $color-greener;
+    }
+  }
+
+  .member__button-collect-status {
+    color: $color-greener;
+
+    &:hover {
+      color: $color-even-greener;
     }
   }
 }
