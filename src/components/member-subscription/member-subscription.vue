@@ -86,15 +86,25 @@ export default {
       this.subscription.aggregates !== null &&
       typeof this.subscription.aggregates !== 'undefined'
     ) {
-      aggregates = Object.values(
-        Object.entries(this.subscription.aggregates)
-      ).map(entries => {
-        const [id, name] = entries;
-        return {
-          id,
-          name
-        };
-      });
+      aggregates = Object.values(Object.entries(this.subscription.aggregates))
+        .map(entries => {
+          const [id, name] = entries;
+          return {
+            id,
+            name
+          };
+        })
+        .sort((leftAggregate, rightAggregate) => {
+          if (leftAggregate.name === rightAggregate.name) {
+            return 0;
+          }
+
+          if (leftAggregate.name > rightAggregate.name) {
+            return 1;
+          }
+
+          return -1;
+        });
     }
 
     return {
