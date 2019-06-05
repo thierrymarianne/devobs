@@ -140,7 +140,7 @@ export default {
           avatarUrl: status.avatar_url,
           publishedAt: new Date(status.published_at),
           statusId: status.status_id,
-          text: this.parseTextForEmojis(status.text),
+          text: this.parseTextForEmojis(status.text, true),
           url: status.url,
           isVisible: false,
           isInBucket: false,

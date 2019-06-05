@@ -4,7 +4,7 @@ import Errors from './errors';
 
 export default {
   methods: {
-    parseTextForEmojis(subject) {
+    parseTextForEmojis(subject, preventThrowing) {
       if (!subject || subject.length === 0) {
         return subject;
       }
@@ -22,7 +22,7 @@ export default {
         'https://revue-de-presse.weaving-the-web.org/emoji-data/img-apple-64/';
       const subjectWithEmojiReplaced = emoji.replace_unified(parsedSubject);
 
-      if (subjectWithEmojiReplaced.indexOf('??') > -1) {
+      if (subjectWithEmojiReplaced.indexOf('??') > -1 && !preventThrowing) {
         throw new Errors.InvalidEmoji();
       }
 
