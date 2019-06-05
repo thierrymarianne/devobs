@@ -77,10 +77,13 @@ export default {
       required: true
     }
   },
-  data: () => {
-    return {
-      logger: SharedState.logger
-    };
+  data: () => ({
+    logger: SharedState.logger
+  }),
+  computed: {
+    ...mapAuthenticationGetters({
+      idToken: 'getIdToken'
+    })
   },
   methods: {
     canCollectionBeRequested() {
