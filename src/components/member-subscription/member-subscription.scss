@@ -76,12 +76,13 @@
         left: 0;
         padding: 0 8px 16px 8px;
         position: absolute;
-        z-index: 2;
         width: calc(#{$width-card-default} + 50px);
+        z-index: 2;
 
         .member-subscription__aggregate {
-          display: flex;
           align-self: flex-start;
+          cursor: pointer;
+          display: flex;
           line-height: 1em;
           margin-left: 0;
           margin-top: 0;

@@ -21,8 +21,9 @@
             v-for="(aggregate, index) in aggregates"
             :key="index"
             class="member-subscription__aggregate"
+            @click="goToAggregate(aggregate.id)"
           >
-            {{ aggregate }}
+            {{ aggregate.name }}
           </li>
         </ul>
       </div>
@@ -85,7 +86,15 @@ export default {
       this.subscription.aggregates !== null &&
       typeof this.subscription.aggregates !== 'undefined'
     ) {
-      aggregates = Object.values(this.subscription.aggregates);
+      aggregates = Object.values(
+        Object.entries(this.subscription.aggregates)
+      ).map(entries => {
+        const [id, name] = entries;
+        return {
+          id,
+          name
+        };
+      });
     }
 
     return {
@@ -136,6 +145,9 @@ export default {
     }),
     formatMemberProfileUrl(memberName) {
       return `https://twitter.com/${memberName}`;
+    },
+    goToAggregate(id) {
+      this.$router.push({ name: 'list', params: { aggregateId: id } });
     },
     showLessInformation() {
       this.areMoreInformationVisible = false;
