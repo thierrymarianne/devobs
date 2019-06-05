@@ -131,6 +131,11 @@ export default {
     }
   },
   watch: {
+    isAuthenticated(newAuthenticationStatus) {
+      if (newAuthenticationStatus) {
+        this.fetchMembers();
+      }
+    },
     items(newItems) {
       this.sortedItems = this.sortItems(newItems);
     }
