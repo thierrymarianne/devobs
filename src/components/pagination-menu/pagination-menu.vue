@@ -6,6 +6,7 @@
       :icon-classes="classes.previousIcon"
       :icons="previousIcons"
     />
+    <slot></slot>
     <action-icon
       :button-classes="classes.nextButton"
       :click-handler="goToNextPageHandler"

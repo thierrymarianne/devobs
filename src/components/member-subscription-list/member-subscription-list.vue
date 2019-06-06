@@ -1,5 +1,12 @@
 <template>
   <div class="member-subscription-list list">
+    <select-input
+      :options="aggregates"
+      v-model="selectedAggregate"
+      label="Select members from a list"
+      option-text-prop="name"
+      option-value-prop="id"
+    />
     <pagination-menu
       v-show="isPaginationMenuVisible"
       :is-previous-button-visible="hasPreviousPage"
@@ -8,7 +15,8 @@
       :next-icons="['fa', 'arrow-circle-right']"
       :go-to-next-page-handler="() => goToNextPage()"
       :go-to-previous-page-handler="() => goToPreviousPage()"
-    />
+    >
+    </pagination-menu>
     <ul class="list__items">
       <li
         v-for="subscription in items"
@@ -35,13 +43,15 @@
 import { createNamespacedHelpers } from 'vuex';
 
 import ActionIcon from '../action-icon/action-icon.vue';
-import PaginationMenu from '../pagination-menu/pagination-menu.vue';
-import AuthenticationHeadersMixin from '../../mixins/authentication-headers';
+import AggregateMixin from '../../mixins/aggregate';
 import ApiMixin from '../../mixins/api';
+import AuthenticationHeadersMixin from '../../mixins/authentication-headers';
 import Config from '../../config';
 import EventHub from '../../modules/event-hub';
-import SharedState from '../../modules/shared-state';
 import MemberSubscription from '../member-subscription/member-subscription.vue';
+import PaginationMenu from '../pagination-menu/pagination-menu.vue';
+import SelectInput from '../select-input/select-input.vue';
+import SharedState from '../../modules/shared-state';
 
 const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
   'authentication'
@@ -52,15 +62,18 @@ export default {
   components: {
     ActionIcon,
     MemberSubscription,
-    PaginationMenu
+    PaginationMenu,
+    SelectInput
   },
-  mixins: [ApiMixin, AuthenticationHeadersMixin],
+  mixins: [ApiMixin, AggregateMixin, AuthenticationHeadersMixin],
   data() {
     return {
+      aggregates: [],
       items: [],
       logger: SharedState.logger,
       pageIndex: this.$route.params.pageIndex,
       pageSize: 96,
+      selectedAggregate: '',
       totalPages: null
     };
   },
@@ -93,6 +106,9 @@ export default {
     },
     pageIndex() {
       this.fetchList();
+    },
+    selectedAggregate() {
+      this.fetchList();
     }
   },
   created() {
@@ -111,7 +127,13 @@ export default {
       const route = `${Config.getSchemeAndHost()}${action.route}`;
       this.$http[action.method](route, requestOptions)
         .then(response => {
-          this.items = response.data;
+          if (
+            response.data &&
+            typeof response.data.subscriptions !== 'undefined'
+          ) {
+            this.items = response.data.subscriptions;
+            this.aggregates = this.sortAggregates(response.data.aggregates);
+          }
           this.totalPages = parseInt(response.headers['x-total-pages'], 10);
           this.pageIndex = parseInt(response.headers['x-page-index'], 10);
 
@@ -127,6 +149,7 @@ export default {
         requestOptions.params = {};
       }
 
+      requestOptions.params.aggregateId = this.selectedAggregate;
       requestOptions.params.pageSize = this.pageSize;
       requestOptions.params.pageIndex = this.$route.params.pageIndex;
 

@@ -1,0 +1,28 @@
+
+.select-input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 500px;
+
+  &__option {
+    background-color: $color-background;
+    border: 1px solid $color-even-greener;
+    height: 1.5em;
+    margin: 1em;
+  }
+
+  &__select {
+    background-color: $color-background;
+    border: 1px solid $color-even-greener;
+    border-radius: 4px;
+    color: $color-greener;
+    font-family: $font-family;
+    padding: 1em;
+  }
+
+  &__text {
+    color: $color-greener;
+    margin-right: 1em;
+  }
+}

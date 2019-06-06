@@ -48,6 +48,7 @@
 <script>
 import { createNamespacedHelpers } from 'vuex';
 
+import AggregateMixin from '../../mixins/aggregate';
 import AnchoredIcon from '../anchored-icon/anchored-icon.vue';
 import ApiMixin from '../../mixins/api';
 import AuthenticationHeadersMixin from '../../mixins/authentication-headers';
@@ -73,7 +74,7 @@ export default {
     AnchoredIcon,
     LabelledIcon
   },
-  mixins: [ApiMixin, AuthenticationHeadersMixin, EmojiParser],
+  mixins: [AggregateMixin, ApiMixin, AuthenticationHeadersMixin, EmojiParser],
   props: {
     subscription: {
       type: Object,
@@ -86,25 +87,7 @@ export default {
       this.subscription.aggregates !== null &&
       typeof this.subscription.aggregates !== 'undefined'
     ) {
-      aggregates = Object.values(Object.entries(this.subscription.aggregates))
-        .map(entries => {
-          const [id, name] = entries;
-          return {
-            id,
-            name
-          };
-        })
-        .sort((leftAggregate, rightAggregate) => {
-          if (leftAggregate.name === rightAggregate.name) {
-            return 0;
-          }
-
-          if (leftAggregate.name > rightAggregate.name) {
-            return 1;
-          }
-
-          return -1;
-        });
+      aggregates = this.sortAggregates(this.subscription.aggregates);
     }
 
     return {

@@ -28,6 +28,27 @@ export default {
       };
 
       return aggregateTypes;
+    },
+    sortAggregates(aggregates) {
+      return Object.values(Object.entries(aggregates))
+        .map(entries => {
+          const [id, name] = entries;
+          return {
+            id,
+            name
+          };
+        })
+        .sort((leftAggregate, rightAggregate) => {
+          if (leftAggregate.name === rightAggregate.name) {
+            return 0;
+          }
+
+          if (leftAggregate.name > rightAggregate.name) {
+            return 1;
+          }
+
+          return -1;
+        });
     }
   }
 };
