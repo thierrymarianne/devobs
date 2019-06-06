@@ -1,50 +1,27 @@
 <template>
-  <div
-    v-if="isAuthenticated"
-    class="member-status-list list"
-  >
+  <div v-if="isAuthenticated" class="member-status-list list">
     <div class="list__search">
       <input
         class="list__button list__button-go-to-parent"
         type="button"
         value="Parent"
         @click="goToParent()"
-      >
-      <label
-        class="list__typeahead-label"
-        for="typeahead">
-        <input
-          id="typeahead"
-          v-model="keyword"
-          class='list__typeahead'
-          type="text"
-          placeholder="Keywords in status"
-          @keyup.enter="fetchMemberStatuses"
-        >
-      </label>
-      <input
-        class="list__button-search"
-        type="button"
-        value="Search"
-        @click="fetchMemberStatuses"
-      >
+      />
+      <search-input
+        :event-handler="fetchMemberStatuses"
+        v-model="keyword"
+        placeholder="Keywords in status"
+      />
       <input
         v-if="previousPageExists()"
         class="list__button"
         type="button"
         value="previous"
         @click="fetchPreviousPage"
-      >
-      <label
-        for="total-pages"
-        class="list__total-pages"
-      >
+      />
+      <label for="total-pages" class="list__total-pages">
         <span v-show="false">Total pages</span>
-        <input
-          id="total-pages"
-          v-model="pageSize"
-          type="number"
-        >
+        <input id="total-pages" v-model="pageSize" type="number" />
       </label>
       <input
         v-if="nextPageExists()"
@@ -52,7 +29,7 @@
         type="button"
         value="Next"
         @click="fetchNextPage"
-      >
+      />
     </div>
     <ul class="list__items">
       <li
@@ -75,11 +52,12 @@
 import { createNamespacedHelpers } from 'vuex';
 
 import ApiMixin from '../../mixins/api';
-import StatusFormat from '../../mixins/status-format';
-import SharedState from '../../modules/shared-state';
-import EventHub from '../../modules/event-hub';
 import Config from '../../config';
+import EventHub from '../../modules/event-hub';
+import SearchInput from '../search-input/search-input.vue';
+import SharedState from '../../modules/shared-state';
 import Status from '../status/status.vue';
+import StatusFormat from '../../mixins/status-format';
 
 const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
   'authentication'
@@ -87,13 +65,13 @@ const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
 
 export default {
   name: 'member-status-list',
-  components: { Status },
+  components: { Status, SearchInput },
   mixins: [ApiMixin, StatusFormat],
   data() {
     return {
       items: [],
       logger: SharedState.logger,
-      keyword: null,
+      keyword: '',
       pageIndex: 1,
       pageSize: 10,
       totalPages: null
@@ -187,6 +165,6 @@ export default {
 };
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import './member-status-list.scss';
 </style>

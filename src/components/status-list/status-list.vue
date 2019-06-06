@@ -39,7 +39,9 @@
         <p
           v-else-if="isAggregateVisibleButEmpty(aggregateType.name)"
           class="status-list__item-none"
-        >{{ emptyAggregateText() }}</p>
+        >
+          {{ emptyAggregateText() }}
+        </p>
       </div>
     </div>
   </div>
@@ -50,14 +52,14 @@ import { createNamespacedHelpers } from 'vuex';
 import { css } from 'emotion';
 import { throttle } from 'lodash-es';
 
+import ActionTypes from '../../store/bucket-action-types';
 import ApiMixin from '../../mixins/api';
 import CaseNormalizer from '../../mixins/case';
-import StatusFormat from '../../mixins/status-format';
-import EventHub from '../../modules/event-hub';
-import Status from '../status/status.vue';
 import Conversation from '../conversation/conversation.vue';
+import EventHub from '../../modules/event-hub';
 import SharedState from '../../modules/shared-state';
-import ActionTypes from '../../store/bucket-action-types';
+import Status from '../status/status.vue';
+import StatusFormat from '../../mixins/status-format';
 
 const { mapActions, mapGetters } = createNamespacedHelpers('bucket');
 

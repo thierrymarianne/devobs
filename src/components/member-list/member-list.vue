@@ -7,21 +7,10 @@
         value="Parent"
         @click="goToParent()"
       />
-      <label class="list__typeahead-label" for="typeahead">
-        <input
-          id="typeahead"
-          v-model="keyword"
-          class="list__typeahead"
-          type="text"
-          placeholder="fabpot, dan_abramov, youyuxi"
-          @keyup.enter="fetchMembers"
-        />
-      </label>
-      <input
-        class="list__button-search"
-        type="button"
-        value="Search"
-        @click="fetchMembers"
+      <search-input
+        :event-handler="fetchMembers"
+        v-model="keyword"
+        placeholder="fabpot, dan_abramov, youyuxi"
       />
       <input
         v-if="previousPageExists()"
@@ -80,6 +69,7 @@ import EventHub from '../../modules/event-hub';
 import Config from '../../config';
 import Member from '../member/member.vue';
 import MemberListActions from './store/actions';
+import SearchInput from '../search-input/search-input.vue';
 import SharedState from '../../modules/shared-state';
 import Toggler from '../toggler/toggler.vue';
 
@@ -93,7 +83,7 @@ const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
 
 export default {
   name: 'member-list',
-  components: { Member, Toggler },
+  components: { Member, SearchInput, Toggler },
   mixins: [ApiMixin, AuthenticationHeadersMixin, StatusMixin],
   props: {
     statusesThreshold: {
@@ -105,7 +95,7 @@ export default {
     return {
       items: [],
       logger: SharedState.logger,
-      keyword: null,
+      keyword: '',
       pageIndex: 1,
       pageSize: 25,
       totalPages: null,

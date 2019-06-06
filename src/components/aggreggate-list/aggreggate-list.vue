@@ -2,7 +2,11 @@
   <div v-if="isAuthenticated" class="aggregate-list list">
     <div class="list__search">
       <div class="list__search-row">
-        <label class="list__typeahead-label" for="typeahead">
+        <search-input
+          :event-handler="fetchLists"
+          v-model="keywords"
+          placeholder="Climate change, Software craftmanship, Lean"
+        >
           <font-awesome-icon
             v-if="isSortableByPriority"
             icon="exclamation-triangle"
@@ -15,21 +19,7 @@
             class="aggregate-list__button-switch-to-grid-view"
             @click="switchToGridView"
           />
-          <input
-            id="typeahead"
-            v-model="keywords"
-            class="list__typeahead"
-            type="text"
-            placeholder="Climate change, Software craftmanship, Lean"
-            @keyup.enter="fetchLists"
-          />
-        </label>
-        <input
-          class="list__button list__button-search"
-          type="button"
-          value="Search"
-          @click="fetchLists"
-        />
+        </search-input>
         <input
           v-if="previousPageExists()"
           class="list__button"
@@ -211,12 +201,13 @@
 <script>
 import { createNamespacedHelpers } from 'vuex';
 
+import Aggregate from '../aggregate/aggregate.vue';
 import ApiMixin from '../../mixins/api';
-import NavigationMixin from '../navigation/navigation';
-import SharedState from '../../modules/shared-state';
 import EventHub from '../../modules/event-hub';
 import Config from '../../config';
-import Aggregate from '../aggregate/aggregate.vue';
+import NavigationMixin from '../navigation/navigation';
+import SearchInput from '../search-input/search-input.vue';
+import SharedState from '../../modules/shared-state';
 
 const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
   'authentication'
@@ -225,7 +216,8 @@ const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
 export default {
   name: 'aggregate-list',
   components: {
-    Aggregate
+    Aggregate,
+    SearchInput
   },
   mixins: [ApiMixin, NavigationMixin],
   props: {
@@ -255,7 +247,7 @@ export default {
       areAggregatesHavingMembersAndStatusesSelected: false,
       items: [],
       logger: SharedState.logger,
-      keywords: null,
+      keywords: '',
       pageIndex: 1,
       pageSize: this.defaultPageSize,
       totalPages: null,
