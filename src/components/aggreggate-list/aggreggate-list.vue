@@ -361,7 +361,7 @@ export default {
         return;
       }
 
-      this.fetchList();
+      this.fetchLists();
     }
   },
   destroyed() {
