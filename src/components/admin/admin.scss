@@ -1,0 +1,13 @@
+
+.admin {
+  color: $color-greener;
+
+  &__button {
+    background-color: $color-background;
+    padding: 1em;
+  }
+
+  &__configuration-panel {
+    margin-top: calc(1.5 * #{$menu-height});
+  }
+}

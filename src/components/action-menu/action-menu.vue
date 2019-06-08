@@ -58,48 +58,19 @@
 
         <div class="action-menu__row action-menu__row--full-width">
           <ul v-if="isAuthenticated" class="action-menu__sub-menu">
-            <li class="action-menu__sub-menu-item">
+            <li
+              v-for="(clickHandler, label) in subMenuItems"
+              :key="label"
+              class="action-menu__sub-menu-item"
+            >
               <button
                 class="action-menu__button action-menu__lists-button"
-                @click="goToLists()"
+                @click="clickHandler()"
               >
-                <span>Lists</span>
-              </button>
-            </li>
-            <li class="action-menu__sub-menu-item">
-              <button
-                class="action-menu__button action-menu__lists-button"
-                @click="goToHighlights()"
-              >
-                <span>Highlights</span>
-              </button>
-            </li>
-            <li class="action-menu__sub-menu-item">
-              <button
-                class="action-menu__button action-menu__lists-button"
-                @click="goToPersonalHighlights()"
-              >
-                <span>Personal highlights</span>
-              </button>
-            </li>
-            <li class="action-menu__sub-menu-item">
-              <button
-                class="action-menu__button action-menu__lists-button"
-                @click="goToKeywords()"
-              >
-                <span>Keywords</span>
-              </button>
-            </li>
-            <li class="action-menu__sub-menu-item">
-              <button
-                class="action-menu__button action-menu__lists-button"
-                @click="goToSubscriptions()"
-              >
-                <span>Subscriptions</span>
+                <span>{{ label }}</span>
               </button>
             </li>
           </ul>
-
           <authenticator />
         </div>
       </div>
@@ -232,6 +203,16 @@ export default {
       return routeNames
         .sort()
         .filter(route => this.isVisible[this.getAggregateIndex(route)]);
+    },
+    subMenuItems() {
+      return {
+        Lists: this.goToLists,
+        Highlights: this.goToHighlights,
+        'Personal highlights': this.goToPersonalHighlights,
+        Keywords: this.goToKeywords,
+        Subscriptions: this.goToSubscriptions,
+        Administration: this.goToAdministration
+      };
     }
   },
   created() {
@@ -252,7 +233,8 @@ export default {
     },
     isTimelineRoute() {
       return (
-        this.$route.matched.filter(route => route.name === 'timeline').length > 0
+        this.$route.matched.filter(route => route.name === 'timeline').length >
+        0
       );
     },
     getButtonClass(aggregateType) {
@@ -282,6 +264,11 @@ export default {
     },
     hideActionMenu() {
       this.showMenu = false;
+    },
+    goToAdministration() {
+      this.$router.push({
+        name: 'admin'
+      });
     },
     goToKeywords() {
       const startDate = Time.today();
