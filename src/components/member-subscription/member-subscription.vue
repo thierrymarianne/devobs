@@ -42,6 +42,18 @@
         label="Refresh profile"
       />
     </div>
+    <div
+      :class="{
+        'member-subscription__row': true,
+        'member-subscription__row--invisible': !hasMemberStatusList
+      }"
+    >
+      <labelled-icon
+        :icon="['fa', 'th-list']"
+        :click-handler="() => goToMemberStatusList(subscription.username)"
+        label="Go to status list"
+      />
+    </div>
   </div>
 </template>
 
@@ -117,6 +129,9 @@ export default {
     hasAggregates() {
       return this.aggregates.length > 0;
     },
+    hasMemberStatusList() {
+      return this.aggregates && this.aggregates.length > 0;
+    },
     shouldAggregatesBeVisible() {
       if (!this.hasAggregates) {
         return false;
@@ -157,6 +172,16 @@ export default {
 
         throw error;
       }
+    },
+    goToMemberStatusList(memberName) {
+      if (!this.hasMemberStatusList) {
+        return;
+      }
+
+      this.$router.push({
+        name: 'member',
+        params: { aggregateId: this.aggregates[0].id, memberName }
+      });
     },
     refreshMember(memberName) {
       const action = this.routes.actions.refreshMemberProfile;

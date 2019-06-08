@@ -9,6 +9,10 @@
   margin-top: $menu-height;
   width: auto;
 
+  &__aggregates--invisible {
+    visibility: hidden;
+  }
+
   .list {
     &__items {
       display: flex;

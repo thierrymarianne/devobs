@@ -1,6 +1,10 @@
 <template>
   <div class="member-subscription-list list">
     <select-input
+      :class="{
+        'member-subscription-list__aggregates--invisible':
+          aggregates.length === 0
+      }"
       :options="aggregates"
       v-model="selectedAggregate"
       label="Select members from a list"
@@ -132,7 +136,10 @@ export default {
             typeof response.data.subscriptions !== 'undefined'
           ) {
             this.items = response.data.subscriptions;
-            this.aggregates = this.sortAggregates(response.data.aggregates);
+            this.aggregates = [
+              '',
+              ...this.sortAggregates(response.data.aggregates)
+            ];
           }
           this.totalPages = parseInt(response.headers['x-total-pages'], 10);
           this.pageIndex = parseInt(response.headers['x-page-index'], 10);
