@@ -83,6 +83,15 @@ export default {
       isAuthenticated: 'isAuthenticated'
     })
   },
+  watch: {
+    isAuthenticated(newAuthenticationStatus) {
+      if (!newAuthenticationStatus) {
+        return;
+      }
+
+      this.fetchMemberStatuses();
+    }
+  },
   destroyed() {
     EventHub.$off('member_status.reload_intended');
   },

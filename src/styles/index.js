@@ -27,6 +27,7 @@ import {
   faRetweet,
   faSync,
   faTh,
+  faThList,
   faTrash,
   faTrashAlt,
   faUndo,
@@ -63,6 +64,7 @@ library.add(faSync);
 library.add(faTrash);
 library.add(faTrashAlt);
 library.add(faTh);
+library.add(faThList);
 library.add(faTwitter);
 library.add(faUndo);
 library.add(faUsers);
