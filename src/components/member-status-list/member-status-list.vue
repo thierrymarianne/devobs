@@ -39,6 +39,7 @@
         class="list__item"
       >
         <status
+          v-if="formatStatus(status.status)"
           :from-aggregate-type="status.aggregateName"
           :status-at-first="formatStatus(status.status)"
           can-be-shared-at-first

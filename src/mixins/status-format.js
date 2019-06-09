@@ -103,6 +103,7 @@ export default {
       statuses.forEach(status => {
         if (
           typeof status === 'undefined' ||
+          status.text === null ||
           (typeof status.text === 'undefined' &&
             typeof status.full_text === 'undefined')
         ) {
