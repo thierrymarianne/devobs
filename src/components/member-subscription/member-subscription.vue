@@ -22,9 +22,8 @@
             :key="index"
             class="member-subscription__aggregate"
             @click="goToAggregate(aggregate.id)"
-          >
-            {{ aggregate.name }}
-          </li>
+            v-text="formatAggregateName(aggregate)"
+          ></li>
         </ul>
       </div>
     </div>
@@ -151,6 +150,16 @@ export default {
     ...mapMemberSubscriptionActions({
       refreshMemberProfile: MemberSubscriptionActions.REFRESH_MEMBER_PROFILE
     }),
+    formatAggregateName(aggregate) {
+      const isMemberAggregate = aggregate.name.indexOf('user :: ') === 0;
+      const name = aggregate.name.replace('user :: ', '');
+
+      if (isMemberAggregate) {
+        return `${name} (profile)`;
+      }
+
+      return name;
+    },
     formatMemberProfileUrl(memberName) {
       return `https://twitter.com/${memberName}`;
     },

@@ -138,7 +138,9 @@ export default {
             this.items = response.data.subscriptions;
             this.aggregates = [
               '',
-              ...this.sortAggregates(response.data.aggregates)
+              ...this.sortAggregates(response.data.aggregates).filter(
+                aggregate => aggregate.name.indexOf('user ::') !== 0
+              )
             ];
           }
           this.totalPages = parseInt(response.headers['x-total-pages'], 10);
