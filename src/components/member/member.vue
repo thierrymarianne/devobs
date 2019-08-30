@@ -2,32 +2,14 @@
   <div class="member">
     <div class="member__column">
       <div class="member__row">
-        <span
-          class="member__username"
-          @click="goToMember(member.name)"
-        >
+        <span class="member__username" @click="goToMember(member.name)">
           @{{ format(member.name) }}
         </span>
-        <a
-          :href="getMemberProfileUrl(member.name)"
-          target="_blank"
-          class="member__button-navigate-to-twitter"
-        >
-          <font-awesome-icon
-            :icon="['fab', 'twitter']"
-          />
-        </a>
       </div>
       <div class="member__row">
         <span class="member__total-statuses">
           ({{ formatTotalStatuses(member) }})
         </span>
-        <font-awesome-icon
-          v-if="member.locked"
-          icon="lock"
-          class="member__button-unlock-aggregate"
-          @click="unlockAggregate(member, index)"
-        />
       </div>
       <div class="member__row">
         <toggler
@@ -39,35 +21,51 @@
       </div>
     </div>
     <div class="member__column">
-      <font-awesome-icon
+      <anchored-icon
+        v-bind="twitterAnchorClasses"
+        :icons="['fab', 'twitter']"
+        :url="getMemberProfileUrl(member.name)"
+      />
+      <action-icon
+        :click-handler="() => unlockAggregate(member, index)"
+        :icons="['fa', 'lock']"
+        v-bind="unlockAggregateButtonClasses(member)"
+      />
+      <action-icon
         v-if="canCollectionBeRequested"
-        icon="file-download"
-        class="member__button-collect-status"
-        @click="requestStatusCollection(member.name)"
+        :click-handler="() => requestStatusCollection(member.name)"
+        :icons="['fa', 'file-download']"
+        :button-classes="{ 'member__button-collect-status': true }"
       />
     </div>
   </div>
 </template>
 
 <script>
+import { createNamespacedHelpers } from 'vuex';
+
+import AuthenticationHeadersMixin from '../../mixins/authentication-headers';
+import ActionIcon from '../action-icon/action-icon.vue';
+import AnchoredIcon from '../anchored-icon/anchored-icon.vue';
 import Config from '../../config';
 import EventHub from '../../modules/event-hub';
 import ApiMixin from '../../mixins/api';
-import RequestMixin from '../../mixins/request';
 import StatusMixin from '../status/status-mixin';
 import SharedState from '../../modules/shared-state';
 import Toggler from '../toggler/toggler.vue';
 
+const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
+  'authentication'
+);
+
 export default {
   name: 'member',
-  components: { Toggler },
-  mixins: [ApiMixin, RequestMixin, StatusMixin],
+  components: { ActionIcon, AnchoredIcon, Toggler },
+  mixins: [ApiMixin, AuthenticationHeadersMixin, StatusMixin],
   props: {
     member: {
       type: Object,
-      default: () => {
-        return {};
-      }
+      default: () => ({})
     },
     unlock: {
       type: Function,
@@ -78,10 +76,22 @@ export default {
       required: true
     }
   },
-  data: () => {
-    return {
-      logger: SharedState.logger
-    };
+  data: () => ({
+    logger: SharedState.logger
+  }),
+  computed: {
+    ...mapAuthenticationGetters({
+      idToken: 'getIdToken'
+    }),
+    twitterAnchorClasses() {
+      return {
+        'anchor-classes': { 'member__button-navigate-to-twitter': true },
+        'wrapper-classes': {
+          'member__button-navigate-to-twitter-wrapper': true
+        },
+        'icon-classes': { 'member__button-navigate-to-twitter-icon': true }
+      };
+    }
   },
   methods: {
     canCollectionBeRequested() {
@@ -112,7 +122,7 @@ export default {
       EventHub.$emit('member_status.reload_intended');
     },
     requestStatusCollection(memberName) {
-      const requestOptions = this.getBaseRequestOptions();
+      const requestOptions = this.setUpCommonHeaders();
       const headerName = Object.keys(requestOptions.headers)[0];
       this.$http.defaults.headers.common[headerName] =
         requestOptions.headers[headerName];
@@ -130,8 +140,23 @@ export default {
         })
         .catch(e => this.logger.error(e.message, 'status-list', e));
     },
+    isMemberLocked(member) {
+      return member.locked;
+    },
+    unlockAggregateButtonClasses(member) {
+      return {
+        'button-classes': {
+          'member__button-unlock-aggregate': true,
+          'member__button-unlock-aggregate--invisible': !this.isMemberLocked(member)
+        }
+      };
+    },
     unlockAggregate(member, index) {
-      const requestOptions = this.getBaseRequestOptions();
+      if (!this.isMemberLocked(member)) {
+        return;
+      }
+
+      const requestOptions = this.setUpCommonHeaders();
       const headerName = Object.keys(requestOptions.headers)[0];
       this.$http.defaults.headers.common[headerName] =
         requestOptions.headers[headerName];

@@ -1,0 +1,26 @@
+.anchored-icon {
+  display: flex;
+  line-height: 1em;
+  justify-content: center;
+
+  &__anchor {
+    width: 100%;
+
+    &:active,
+    &:link,
+    &:visited {
+      .anchored-icon__icon {
+        color: $color-greener;
+        cursor: pointer;
+      }
+    }
+
+    &:hover {
+      .anchored-icon__icon {
+        color: $color-even-greener;
+        cursor: pointer;
+      }
+    }
+  }
+}
+

@@ -1,5 +1,26 @@
 <template>
   <div class="member-subscription-list list">
+    <select-input
+      :class="{
+        'member-subscription-list__aggregates--invisible':
+          aggregates.length === 0
+      }"
+      :options="aggregates"
+      v-model="selectedAggregate"
+      label="Select members from a list"
+      option-text-prop="name"
+      option-value-prop="id"
+    />
+    <pagination-menu
+      v-show="isPaginationMenuVisible"
+      :is-previous-button-visible="hasPreviousPage"
+      :is-next-button-visible="hasNextPage"
+      :previous-icons="['fa', 'arrow-circle-left']"
+      :next-icons="['fa', 'arrow-circle-right']"
+      :go-to-next-page-handler="() => goToNextPage()"
+      :go-to-previous-page-handler="() => goToPreviousPage()"
+    >
+    </pagination-menu>
     <ul class="list__items">
       <li
         v-for="subscription in items"
@@ -7,30 +28,33 @@
         :data-key="subscription.id"
         class="list__item"
       >
-        <div class="member-subscription-list__card">
-          <template v-if="subscription.url">
-            <a :href="subscription.url" class="member-subscription-list__url">
-              <span class="member-subscription-list__username">{{
-                subscription.username
-              }}</span>
-            </a>
-          </template>
-          <span v-else class="member-subscription-list__username">{{
-            subscription.username
-          }}</span>
-        </div>
+        <member-subscription :subscription="subscription" />
       </li>
     </ul>
+    <pagination-menu
+      v-show="isPaginationMenuVisible"
+      :is-previous-button-visible="hasPreviousPage"
+      :is-next-button-visible="hasNextPage"
+      :previous-icons="['fa', 'arrow-circle-left']"
+      :next-icons="['fa', 'arrow-circle-right']"
+      :go-to-next-page-handler="() => goToNextPage()"
+      :go-to-previous-page-handler="() => goToPreviousPage()"
+    />
   </div>
 </template>
 
 <script>
 import { createNamespacedHelpers } from 'vuex';
 
-import AuthenticationHeadersMixin from '../../mixins/authentication-headers';
+import ActionIcon from '../action-icon/action-icon.vue';
+import AggregateMixin from '../../mixins/aggregate';
 import ApiMixin from '../../mixins/api';
+import AuthenticationHeadersMixin from '../../mixins/authentication-headers';
 import Config from '../../config';
 import EventHub from '../../modules/event-hub';
+import MemberSubscription from '../member-subscription/member-subscription.vue';
+import PaginationMenu from '../pagination-menu/pagination-menu.vue';
+import SelectInput from '../select-input/select-input.vue';
 import SharedState from '../../modules/shared-state';
 
 const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
@@ -39,13 +63,21 @@ const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
 
 export default {
   name: 'member-subscription-list',
-  mixins: [ApiMixin, AuthenticationHeadersMixin],
+  components: {
+    ActionIcon,
+    MemberSubscription,
+    PaginationMenu,
+    SelectInput
+  },
+  mixins: [ApiMixin, AggregateMixin, AuthenticationHeadersMixin],
   data() {
     return {
+      aggregates: [],
       items: [],
       logger: SharedState.logger,
-      pageIndex: 1,
-      pageSize: 25,
+      pageIndex: this.$route.params.pageIndex,
+      pageSize: 96,
+      selectedAggregate: '',
       totalPages: null
     };
   },
@@ -53,37 +85,64 @@ export default {
     ...mapAuthenticationGetters({
       idToken: 'getIdToken',
       isAuthenticated: 'isAuthenticated'
-    })
+    }),
+    hasNextPage() {
+      if (this.totalPages === null) {
+        return true;
+      }
+
+      return this.pageIndex < this.totalPages;
+    },
+    hasPreviousPage() {
+      return this.pageIndex > 1;
+    },
+    isPaginationMenuVisible() {
+      return this.items && this.items.length === this.pageSize;
+    }
+  },
+  watch: {
+    isAuthenticated(newAuthenticationStatus) {
+      if (!newAuthenticationStatus) {
+        return;
+      }
+
+      this.fetchList();
+    },
+    pageIndex() {
+      this.fetchList();
+    },
+    selectedAggregate() {
+      this.fetchList();
+    }
   },
   created() {
-    if (!this.isAuthenticated) {
-      return;
-    }
-
     EventHub.$off('member_subscription_list.reload_intended');
     EventHub.$on('member_subscription_list.reload_intended', this.fetchList);
 
-    this.fetchList({});
+    if (this.isAuthenticated) {
+      this.fetchList();
+    }
   },
   methods: {
-    fetchList(params = {}, next) {
-      const requestOptions = this.setUpCommonHeaders();
-
-      if (typeof params.pageIndex === 'undefined') {
-        if (!('params' in requestOptions)) {
-          requestOptions.params = {};
-        }
-
-        requestOptions.params.pageIndex = this.pageIndex;
-      }
-
-      requestOptions.params.pageSize = this.pageSize;
+    fetchList(next) {
+      const requestOptions = this.getRequestOptions();
 
       const action = this.routes.actions.fetchMemberSubscriptions;
       const route = `${Config.getSchemeAndHost()}${action.route}`;
       this.$http[action.method](route, requestOptions)
         .then(response => {
-          this.items = response.data;
+          if (
+            response.data &&
+            typeof response.data.subscriptions !== 'undefined'
+          ) {
+            this.items = response.data.subscriptions;
+            this.aggregates = [
+              '',
+              ...this.sortAggregates(response.data.aggregates).filter(
+                aggregate => aggregate.name.indexOf('user ::') !== 0
+              )
+            ];
+          }
           this.totalPages = parseInt(response.headers['x-total-pages'], 10);
           this.pageIndex = parseInt(response.headers['x-page-index'], 10);
 
@@ -92,6 +151,36 @@ export default {
           }
         })
         .catch(e => this.logger.error(e.message, 'keyword-list', e));
+    },
+    getRequestOptions() {
+      const requestOptions = this.setUpCommonHeaders();
+      if (!('params' in requestOptions)) {
+        requestOptions.params = {};
+      }
+
+      requestOptions.params.aggregateId = this.selectedAggregate;
+      requestOptions.params.pageSize = this.pageSize;
+      requestOptions.params.pageIndex = this.$route.params.pageIndex;
+
+      return requestOptions;
+    },
+    goToPreviousPage() {
+      if (this.pageIndex <= 1) {
+        return;
+      }
+
+      this.pageIndex = this.pageIndex - 1;
+      this.$router.push({
+        name: 'member-subscriptions',
+        params: { pageIndex: this.pageIndex }
+      });
+    },
+    goToNextPage() {
+      this.pageIndex = this.pageIndex + 1;
+      this.$router.push({
+        name: 'member-subscriptions',
+        params: { pageIndex: this.pageIndex }
+      });
     }
   }
 };

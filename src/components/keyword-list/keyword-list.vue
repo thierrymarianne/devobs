@@ -107,6 +107,15 @@ export default {
       isAuthenticated: 'isAuthenticated'
     })
   },
+  watch: {
+    isAuthenticated(newAuthenticationStatus) {
+      if (!newAuthenticationStatus) {
+        return;
+      }
+
+      this.fetchList();
+    }
+  },
   mounted() {
     if (!this.isAuthenticated) {
       return;
@@ -116,6 +125,11 @@ export default {
       'date_interval.keyword_list',
       this.fetchListFromDateInterval
     );
+  },
+  created() {
+    if (this.isAuthenticated) {
+      this.fetchList({});
+    }
   },
   methods: {
     fetchListFromDateInterval(event) {

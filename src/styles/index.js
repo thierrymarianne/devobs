@@ -4,6 +4,8 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import {
+  faArrowCircleLeft,
+  faArrowCircleRight,
   faArrowAltCircleUp,
   faArrowAltCircleDown,
   faCheck,
@@ -17,6 +19,7 @@ import {
   faLock,
   faFileDownload,
   faMinus,
+  faNewspaper,
   faPen,
   faPlus,
   faRedoAlt,
@@ -24,6 +27,7 @@ import {
   faRetweet,
   faSync,
   faTh,
+  faThList,
   faTrash,
   faTrashAlt,
   faUndo,
@@ -37,6 +41,8 @@ import styles from './global.scss';
 // See https://fontawesome.com/how-to-use/on-the-web/using-with/vuejs
 library.add(faArrowAltCircleUp);
 library.add(faArrowAltCircleDown);
+library.add(faArrowCircleLeft);
+library.add(faArrowCircleRight);
 library.add(faCheck);
 library.add(faComments);
 library.add(faDoorOpen);
@@ -48,6 +54,7 @@ library.add(faImages);
 library.add(faLink);
 library.add(faLock);
 library.add(faMinus);
+library.add(faNewspaper);
 library.add(faPen);
 library.add(faPlus);
 library.add(faRedoAlt);
@@ -57,6 +64,7 @@ library.add(faSync);
 library.add(faTrash);
 library.add(faTrashAlt);
 library.add(faTh);
+library.add(faThList);
 library.add(faTwitter);
 library.add(faUndo);
 library.add(faUsers);

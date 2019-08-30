@@ -1,0 +1,98 @@
+@import '../../styles/emoji-container';
+
+.member-subscription {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100px;
+  width: 100%;
+
+  &--having-description {
+    border-bottom: 10px $color-even-greener solid;
+  }
+
+  &--requiring-update {
+    border-bottom: 10px $color-red solid;
+  }
+
+  &__url,
+  &__url:active,
+  &__url:hover,
+  &__url:link,
+  &__url:visited {
+    color: $color-greener;
+    cursor: pointer;
+    position: relative;
+    z-index: 0;
+
+    .member-subscription__username {
+      cursor: pointer;
+      position: relative;
+      z-index: 0;
+    }
+  }
+
+  &__username {
+    cursor: default;
+  }
+
+  &__row {
+    display: flex;
+    flex-direction: row;
+    margin-top: 4px;
+    position: relative;
+    z-index: 0;
+
+    &--invisible {
+       visibility: hidden;
+    }
+  }
+
+  &__description-wrapper {
+    position: relative;
+    z-index: 1;
+
+    .member-subscription__description-aggregates {
+      @extend .emoji-container;
+
+      background-color: $color-background;
+      border: 1px solid $color-green;
+      display: block;
+      left: 0;
+      margin-top: 88px;
+      padding: 8px;
+      position: absolute;
+      text-align: left;
+      white-space: pre-line;
+      width: calc(#{$width-card-default} + 50px);
+      z-index: 2;
+
+      .member-subscription__description {
+        margin-top: 0;
+      }
+
+      .member-subscription__aggregates {
+        background-color: $color-background;
+        border: 1px solid $color-green;
+        display: flex;
+        flex-direction: column;
+        left: 0;
+        padding: 0 8px 16px 8px;
+        position: absolute;
+        width: calc(#{$width-card-default} + 50px);
+        z-index: 2;
+
+        .member-subscription__aggregate {
+          align-self: flex-start;
+          cursor: pointer;
+          display: flex;
+          line-height: 1em;
+          margin-left: 1em;
+          margin-top: 1em;
+          text-transform: capitalize;
+        }
+      }
+    }
+  }
+}

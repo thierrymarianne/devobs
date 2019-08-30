@@ -5,6 +5,7 @@
 @import url('https://fonts.googleapis.com/css?family=Niconne');
 @import url('https://fonts.googleapis.com/css?family=Libre+Baskerville');
 
+$color-background: #f1f1f1;
 $color-black: #1e1e1e;
 $color-black-light: #252526;
 $color-beige: #d4d4d4;
@@ -19,10 +20,12 @@ $color-hyperlink: darken($color-greener, 20%);
 $color-yellow: #dab988;
 $color-blue: #569CD3;
 
-$font-size-base: 1.1em;
+$font-size-action-icon: 1.3em;
+$font-size-base: 1.2em;
+$font-size-menu-item: 1.5em;
 $font-size-date: 0.9em;
+
 $line-height-base: 1.4em;
-$font-size-menu-item: 1em;
 $line-height-menu-item: 1.4em;
 
 $menu-height: 75px;
@@ -32,10 +35,11 @@ $separation-2: calc(2 * #{$separation-1});
 
 $font-family: 'Gabriela', 'Open Sans', sans-serif;
 
+$width-card-default: 170px;
+
 .clickable {
   color: $color-hyperlink;
   cursor: pointer;
-  font-size: $font-size-base;
   line-height: $line-height-base;
 
   &[target="_blank"] {

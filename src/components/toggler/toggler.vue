@@ -1,9 +1,5 @@
 <template>
-  <label
-    :for="id"
-    class="toggler"
-    @click="($event) => handleClick($event)"
-  >
+  <label :for="id" class="toggler" @click="$event => handleClick($event)">
     <input
       v-model="toggled"
       :checked="toggled"
@@ -11,10 +7,8 @@
       :name="id"
       class="toggler__button"
       type="checkbox"
-    >
-    <span
-      :class="textClasses"
-    >{{ labelText }}</span>
+    />
+    <span :class="textClasses">{{ labelText }}</span>
   </label>
 </template>
 

@@ -1,52 +1,31 @@
 @import '../../styles/list.scss';
+@import '../../styles/card.scss';
 
 .member-subscription-list {
   @extend .list;
 
-  max-width: 1000px;
+  max-width: 1280px;
   margin: auto;
   margin-top: $menu-height;
   width: auto;
 
-  &__url,
-  &__url:active,
-  &__url:hover,
-  &__url:link,
-  &__url:visited {
-    color: $color-greener;
-    cursor: pointer;
-
-    .member-subscription-list__username {
-      cursor: pointer;
-    }
-  }
-
-  &__card {
-    align-self: center;
-    justify-content: center;
-    display: flex;
-    height: 50px;
-    width: 200px;
-    border-right: 1px solid $color-green;
+  &__aggregates--invisible {
+    visibility: hidden;
   }
 
   .list {
     &__items {
-      width: auto;
-      flex-wrap: wrap;
       display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: auto;
     }
 
     &__item {
-      display: flex;
-      align-content: center;
-      list-style-type: none;
-      width: 200px;
+      @extend .card;
+      padding-left: 10px;
+      width: $width-card-default;
     }
-  }
-
-  &__username {
-    cursor: default;
   }
 }
 

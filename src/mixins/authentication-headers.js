@@ -1,6 +1,12 @@
+import Errors from '../modules/errors';
+
 export default {
   methods: {
     setUpCommonHeaders() {
+      if (typeof this.idToken === 'undefined') {
+        throw new Errors.InvalidSession();
+      }
+
       const requestOptions = {
         headers: {
           'x-auth-admin-token': this.idToken

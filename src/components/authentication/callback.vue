@@ -1,12 +1,7 @@
 <template>
-  <div
-    v-show="false"
-    class="spinner"
-  >
+  <div v-show="false" class="spinner">
     Please wait for the authentication process to finish...
-    <authenticator
-      ref="authenticator"
-    />
+    <authenticator ref="authenticator" />
   </div>
 </template>
 

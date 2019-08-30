@@ -1,49 +1,26 @@
 <template>
-  <div
-    v-if="isAuthenticated"
-    class="member-list list"
-  >
+  <div v-if="isAuthenticated" class="member-list list">
     <div class="list__search">
       <input
         class="list__button list__button-go-to-parent"
         type="button"
         value="Parent"
         @click="goToParent()"
-      >
-      <label
-        class="list__typeahead-label"
-        for="typeahead">
-        <input
-          id="typeahead"
-          v-model="keyword"
-          class='list__typeahead'
-          type="text"
-          placeholder="fabpot, dan_abramov, youyuxi"
-          @keyup.enter="fetchMembers"
-        >
-      </label>
-      <input
-        class="list__button-search"
-        type="button"
-        value="Search"
-        @click="fetchMembers"
-      >
+      />
+      <search-input
+        :event-handler="fetchMembers"
+        v-model="keyword"
+        placeholder="fabpot, dan_abramov, youyuxi"
+      />
       <input
         v-if="previousPageExists()"
         class="list__button"
         type="button"
         value="previous"
         @click="fetchPreviousPage"
-      >
-      <label
-        for="total-pages"
-        class="list__total-pages"
-      >
-        <input
-          id="total-pages"
-          v-model="pageSize"
-          type="number"
-        >
+      />
+      <label for="total-pages" class="list__total-pages">
+        <input id="total-pages" v-model="pageSize" type="number" />
       </label>
       <input
         v-if="nextPageExists()"
@@ -51,11 +28,9 @@
         type="button"
         value="next"
         @click="fetchNextPage"
-      >
+      />
     </div>
-    <div
-      class="member-list__selectors"
-    >
+    <div class="member-list__selectors">
       <toggler
         id="less-than-ten"
         :click-handler="getMembersHavingLessThanTenStatusesSelector()"
@@ -88,12 +63,13 @@
 import { createNamespacedHelpers } from 'vuex';
 
 import ApiMixin from '../../mixins/api';
-import RequestMixin from '../../mixins/request';
+import AuthenticationHeadersMixin from '../../mixins/authentication-headers';
 import StatusMixin from '../status/status-mixin';
 import EventHub from '../../modules/event-hub';
 import Config from '../../config';
 import Member from '../member/member.vue';
 import MemberListActions from './store/actions';
+import SearchInput from '../search-input/search-input.vue';
 import SharedState from '../../modules/shared-state';
 import Toggler from '../toggler/toggler.vue';
 
@@ -107,8 +83,8 @@ const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
 
 export default {
   name: 'member-list',
-  components: { Member, Toggler },
-  mixins: [ApiMixin, RequestMixin, StatusMixin],
+  components: { Member, SearchInput, Toggler },
+  mixins: [ApiMixin, AuthenticationHeadersMixin, StatusMixin],
   props: {
     statusesThreshold: {
       type: Number,
@@ -119,7 +95,7 @@ export default {
     return {
       items: [],
       logger: SharedState.logger,
-      keyword: null,
+      keyword: '',
       pageIndex: 1,
       pageSize: 25,
       totalPages: null,
@@ -145,6 +121,11 @@ export default {
     }
   },
   watch: {
+    isAuthenticated(newAuthenticationStatus) {
+      if (newAuthenticationStatus) {
+        this.fetchMembers();
+      }
+    },
     items(newItems) {
       this.sortedItems = this.sortItems(newItems);
     }
@@ -180,7 +161,7 @@ export default {
       this.fetchMembers({ pageIndex: this.pageIndex + 1 });
     },
     fetchMembers(params = {}) {
-      const requestOptions = this.getBaseRequestOptions();
+      const requestOptions = this.setUpCommonHeaders();
       const headerName = Object.keys(requestOptions.headers)[0];
       this.$http.defaults.headers.common[headerName] =
         requestOptions.headers[headerName];
@@ -306,7 +287,7 @@ export default {
       return originalIndex;
     },
     requestBulkStatusCollection() {
-      const requestOptions = this.getBaseRequestOptions();
+      const requestOptions = this.setUpCommonHeaders();
       const headerName = Object.keys(requestOptions.headers)[0];
       this.$http.defaults.headers.common[headerName] =
         requestOptions.headers[headerName];
@@ -359,6 +340,6 @@ export default {
 };
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import './member-list.scss';
 </style>

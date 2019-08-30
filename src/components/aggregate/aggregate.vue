@@ -10,7 +10,7 @@
           v-model="aggregateName"
           type="text"
           @keyup.esc="makeNonEditable(refName)"
-        >
+        />
         <div class="aggregate__buttons">
           <font-awesome-icon
             v-if="isUnderEdition"
@@ -31,7 +31,7 @@
         <div>
           {{ formatTotalMembers(aggregate) }}
           <font-awesome-icon
-            :class='membersClasses'
+            :class="membersClasses"
             icon="users"
             @click="clickHandler(aggregate.id)"
           />
@@ -45,20 +45,13 @@
           :is-selected="state.isAggregateSelected"
           label-text="Add to bucket"
         />
-        <span
-          class="aggregate__navigate-to-list"
-        >
-          <a
-            :href='formatListUrl(aggregate)'
-            class="aggregate__list-anchor"
-            target="_blank"
-          >
-            <font-awesome-icon
-              :icon="['fab', 'twitter']"
-              class="aggregate__list-twitter-icon"
-            />
-          </a>
-        </span>
+        <anchored-icon
+          :icons="['fab', 'twitter']"
+          :url="formatListUrl(aggregate)"
+          :anchor-classes="{ 'aggregate__list-anchor': true }"
+          :icon-classes="{ 'aggregate__list-twitter-icon': true }"
+          :wrapper-classes="{ 'aggregate__navigate-to-list': true }"
+        />
       </div>
     </div>
   </div>
@@ -67,9 +60,10 @@
 <script>
 import { createNamespacedHelpers } from 'vuex';
 
+import AnchoredIcon from '../anchored-icon/anchored-icon.vue';
+import EventHub from '../../modules/event-hub';
 import MemberMixin from '../member/member-mixin';
 import StatusMixin from '../status/status-mixin';
-import EventHub from '../../modules/event-hub';
 import Toggler from '../toggler/toggler.vue';
 
 const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
@@ -78,7 +72,7 @@ const { mapGetters: mapAuthenticationGetters } = createNamespacedHelpers(
 
 export default {
   name: 'aggregate',
-  components: { Toggler },
+  components: { AnchoredIcon, Toggler },
   mixins: [MemberMixin, StatusMixin],
   props: {
     aggregate: {
