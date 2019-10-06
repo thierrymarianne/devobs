@@ -150,7 +150,7 @@ export default {
             next();
           }
         })
-        .catch(e => this.logger.error(e.message, 'keyword-list', e));
+        .catch(e => this.logger.error(e.message, 'member-subscription-list', e));
     },
     getRequestOptions() {
       const requestOptions = this.setUpCommonHeaders();
