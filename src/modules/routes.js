@@ -26,6 +26,11 @@ export default [
     name: 'private-highlights'
   },
   {
+    component: HighlightList,
+    path: '/highlights/aggregate/:aggregateId/:startDate/:endDate',
+    name: 'aggregate-highlights'
+  },
+  {
     component: Admin,
     name: 'admin',
     path: '/admin',
