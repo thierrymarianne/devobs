@@ -1,17 +1,14 @@
 <template>
-  <div :class='highlightsClasses'>
+  <div :class="highlightsClasses">
     <div class="highlight-list__buttons">
-      <label
-        :class="{ 'highlight-list__dates': showEndDate }"
-        for="start-date"
-      >
+      <label :class="{ 'highlight-list__dates': showEndDate }" for="start-date">
         <input
           id="start-date"
           v-model="startDate"
           :min="minDate"
           :max="maxStartDate"
           type="date"
-        >
+        />
         <input
           v-if="showEndDate"
           id="end-date"
@@ -19,49 +16,40 @@
           :min="minEndDate"
           :max="maxDate"
           type="date"
-        >
+        />
         <input
           v-else
           v-model="startDate"
           :min="minEndDate"
           :max="maxDate"
           type="hidden"
-        >
+        />
       </label>
-      <div
-        v-if="canIdentifyRetweets"
-        class="highlight-list__retweets"
-      >
+      <div v-if="canIdentifyRetweets" class="highlight-list__retweets">
         <span class="highlight-list__retweets-label">
           Retweets are
         </span>
-        <label
-          for="included-retweets"
-          title="Include or exclude retweets">
+        <label for="included-retweets" title="Include or exclude retweets">
           <input
             id="included-retweets"
             v-model="includeRetweets"
             name="retweets"
             type="radio"
             value="1"
-          >{{ includedRetweetsLabel }}
+          />{{ includedRetweetsLabel }}
         </label>
-        <label
-          for="excluded-retweets"
-          title="Include or exclude retweets">
+        <label for="excluded-retweets" title="Include or exclude retweets">
           <input
             id="excluded-retweets"
             v-model="includeRetweets"
             type="radio"
             name="retweets"
             value="0"
-          >{{ excludedRetweetsLabel }}
+          />{{ excludedRetweetsLabel }}
         </label>
       </div>
     </div>
-    <label
-      v-if="aggregates.length > 0 && showEndDate"
-      for="select-aggregates">
+    <label v-if="aggregates.length > 0 && showEndDate" for="select-aggregates">
       Select one or more Twitter accounts to fetch their highlights
       <select
         id="select-aggregates"
@@ -72,15 +60,14 @@
         @change="fetchHighlights"
       >
         <option
-          v-for="(aggregate) in sortedAggregates"
+          v-for="aggregate in sortedAggregates"
           :key="aggregate.twitterMemberId"
           :data-key="aggregate.twitterMemberId"
           :value="aggregate.memberId"
           class="list__item"
         >
-          @{{ aggregate.memberName }}
-          - {{ aggregate.memberFullName }}
-          - {{ aggregate.totalHighlights }} statuses
+          @{{ aggregate.memberName }} - {{ aggregate.memberFullName }} -
+          {{ aggregate.totalHighlights }} statuses
         </option>
       </select>
       <button
@@ -88,7 +75,9 @@
         type="reset"
         value="clear"
         @click="clearAggregateSelection"
-      >Clear selection</button>
+      >
+        Clear selection
+      </button>
     </label>
     <ul class="list__items">
       <li
@@ -138,8 +127,14 @@ export default {
       endDate = this.getMaxDate();
     }
 
+    let aggregateIds = [];
+    if ('aggregateId' in this.$route.params) {
+      aggregateIds = [this.$route.params.aggregateId];
+    }
+
     return {
       includeRetweets: RETWEETS_EXCLUDED,
+      aggregateIds,
       aggregates: [],
       items: [],
       logger: SharedState.logger,
@@ -197,7 +192,9 @@ export default {
       return this.startDate;
     },
     showEndDate() {
-      return this.$route.name !== 'highlights';
+      return (
+        ['aggregate-highlights', 'highlights'].indexOf(this.$route.name) !== -1
+      );
     },
     sortedAggregates() {
       const reversedAggregates = this.aggregates.concat([]);
@@ -277,6 +274,10 @@ export default {
 
         if (this.selectedAggregates.length > 0) {
           requestOptions.params.selectedAggregates = this.selectedAggregates;
+        }
+
+        if (this.aggregateIds.length > 0) {
+          requestOptions.params.aggregateIds = this.aggregateIds;
         }
 
         const action = this.routes.actions.fetchHighlights;
