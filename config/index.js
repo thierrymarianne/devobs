@@ -4,15 +4,9 @@ const raven = {
 
 const testMode = false;
 
-const getHostAndScheme = environmentProvider => {
-  let host = "localhost";
-  let scheme = "http://";
-
-  const environment = environmentProvider.getEnvironmentParameters();
-  if (environment.productionMode) {
-    host = process.env.API_HOST;
-    scheme = "https://";
-  }
+const getHostAndScheme = () => {
+  const host = process.env.API_HOST;
+  const scheme = 'https://';
 
   return {
     host,
@@ -24,8 +18,8 @@ const api = {
   routes: {
     actions: {
       fetchHighlights: {
-        method: "get",
-        route: "/api/twitter/highlights",
+        method: 'get',
+        route: '/api/twitter/highlights',
         params: {
           pageSize: Number,
           pageIndex: Number
@@ -44,7 +38,7 @@ const getApi = environmentProvider => {
 const getRoutes = () => api.routes;
 const getSchemeAndHost = () => `${api.scheme}${api.host}`;
 
-localStorage.setItem("x-auth-token", process.env.API_AUTH_TOKEN);
+localStorage.setItem('x-auth-token', process.env.API_AUTH_TOKEN);
 
 export default {
   getApi,
