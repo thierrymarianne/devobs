@@ -1,6 +1,6 @@
 {
-  "name": "news-review",
-  "version": "0.2.0",
+  "name": "devobs",
+  "version": "0.2.1",
   "private": true,
   "scripts": {
     "dev": "make development-server",
