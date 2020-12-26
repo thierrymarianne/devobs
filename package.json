@@ -1,6 +1,6 @@
 {
-  "name": "news-review",
-  "version": "0.2.0",
+  "name": "devobs",
+  "version": "0.2.1",
   "private": true,
   "scripts": {
     "dev": "make development-server",
@@ -23,15 +23,16 @@
     "@nuxtjs/device": "^1.2.7",
     "@nuxtjs/sentry": "^4.5.0",
     "core-js": "^3.6.5",
-    "nuxt": "^2.14.6",
+    "nuxt": "^2.14.12",
     "nuxt-fontawesome": "^0.4.0",
     "raven-js": "^3.27.2",
-    "serialize-javascript": "^3.1.0",
+    "serialize-javascript": "^5.0.1",
     "vue-date-fns": "^2.0.1",
     "vue-emotion": "^0.4.29"
   },
   "devDependencies": {
     "@nuxt/types": "^2.14.6",
+    "@nuxt/typescript": "^2.8.1",
     "@nuxt/typescript-build": "^2.0.3",
     "@nuxtjs/date-fns": "^1.4.3",
     "@nuxtjs/dotenv": "^1.4.1",
