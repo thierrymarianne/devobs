@@ -1,0 +1,19 @@
+.outro {
+  border-top: 1px $color-black solid;
+  line-height: 1.5rem;
+  font-style: normal;
+  font-size: 1.1em;
+  font-family: $font-family;
+  margin: 0;
+  @extend .responsive-content;
+
+  a {
+    @extend .clickable;
+    font-size: 1em;
+  }
+
+  em {
+    text-decoration: underline;
+    font-style: normal;
+  }
+}

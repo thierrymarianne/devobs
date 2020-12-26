@@ -1,0 +1,50 @@
+.intro {
+  display: flex;
+  flex-direction: row;
+  background-color: $background-color;
+  margin-bottom: $separation-2;
+  padding: 0 $separation-2;
+  position: sticky;
+  top: 0;
+
+  &__container {
+    background: $background-color;
+    border-bottom: 1px solid $border-color;
+    display: flex;
+    align-self: center;
+    margin: auto;
+    @extend .responsive-content;
+  }
+
+  &__logo {
+    display: flex;
+    width: 100px;
+
+    &-container {
+      display: flex;
+      align-items: center;
+      margin-top: $separation-2;
+      margin-bottom: $separation-2;
+    }
+  }
+
+  &__description {
+
+    &-container {
+      display: flex;
+      align-items: center;
+    }
+
+    margin-left: $separation-2;
+    line-height: 1.5rem;
+    font-style: normal;
+    font-size: 1em;
+    font-family: $font-family;
+    text-align: left;
+  }
+
+  &__project {
+    @extend .clickable;
+    font-size: 1em;
+  }
+}

@@ -1,0 +1,89 @@
+
+.list {
+  font-family: $font-family;
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-left: 0;
+  width: 100vw;
+
+  .list__search {
+    display: flex;
+    width: 500px;
+    flex-direction: row;
+  }
+
+  .list__button-go-to-parent {
+    margin-right: 8px;
+  }
+
+  .list__page-size,
+  .list__total-pages {
+    display: flex;
+    margin-left: 8px;
+
+    input {
+      border-radius: 5px;
+      line-height: 30px;
+      padding: 3px;
+      width: 50px;
+      outline: transparent;
+    }
+  }
+
+  .list__button,
+  .list__button-search {
+    align-self: center;
+    background-color: transparent;
+    border: 1px solid $color-black;
+    border-radius: 5px;
+    color: $color-black;
+    display: flex;
+    margin-left: 10px;
+    outline: transparent;
+    padding: 8px;
+    cursor: pointer;
+
+    &:hover {
+      color: $color-beige;
+      background-color: $color-black;
+    }
+  }
+
+  &__typeahead-label {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+
+    .list__typeahead {
+      border-radius: 5px;
+      box-shadow: none;
+      height: 30px;
+      outline: transparent;
+      padding: 3px 8px;
+      width: 100%;
+    }
+  }
+
+  &__items {
+    padding-left: 0;
+    margin-top: 0;
+
+    @extend .responsive-content;
+
+    .list__item {
+      font-size: 1.3em;
+      border-bottom: 1px solid $border-color;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      margin-left: 0;
+      height: 75px;
+      line-height: 2em;
+      color: $color-black;
+      list-style-type: none;
+      width: 100%;
+    }
+  }
+}
