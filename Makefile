@@ -7,34 +7,14 @@ SHELL:=/bin/bash
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-build: ## Build package
-	@/bin/bash -c 'export NODE_ENV="production" && rm -f dist/*css && rm -f dist/*js && npx webpack --config webpack.config.js --optimize-minimize --mode=production'
+build: ## Build production package
+	@/bin/bash -c '( test -e .env && source .env || true ) && npx nuxt-ts generate'
 
-clone-project: ## Clone the project from github
-		@/bin/bash -c 'git clone https://github.com/thierrymarianne/daily-press-revue.git'
-
-coverage: ## Run coverage of components with karma
-	@/bin/bash -c 'export NODE_ENV="test" BABEL_ENV="test" && \
-	cp src/config/index.js{.dist,} && \
-	./node_modules/.bin/karma start ./test/karma.ci.conf.js --single-run'
+start: ## Start production server
+	@/bin/bash -c 'source .env && npx nuxt-ts start'
 
 development-server: ## Start development server
-	@/bin/bash -c 'export NODE_ENV="development" && npx webpack-dev-server --config ./webpack.config.js'
-
-install-javascript-dependencies: ## Install JavaScript dependencies as node nodules
-		@/bin/bash -ci 'npm install'
-
-lint: ## Lint project files
-	@/bin/bash -c 'npx eslint src/ .js'
-
-rebuild-node-sass: ## Rebuild node-sass binary
-	@/bin/bash -c 'npm rebuild node-sass'
-
-stats: ## Statistics about dependencies
-	@/bin/bash -c 'export NODE_ENV="production" && npx webpack --profile --json > stats.json'
-
-unit-tests: ## Test components with karma
-	@/bin/bash -c 'export NODE_ENV="test" && npx cross-env BABEL_ENV=test karma start ./karma.conf.js --auto-watch'
+	@/bin/bash -c 'source .env && npx nuxt-ts'
 
 build-nginx-image: ## Build nginx image
 	@/bin/bash -c 'source ./provisioning/docker.sh && build_nginx_image'

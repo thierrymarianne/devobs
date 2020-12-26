@@ -1,0 +1,41 @@
+
+body {
+  background-color: $background-color;
+  display: flex;
+  font-family: $font-family;
+  justify-content: center;
+  margin: 0;
+  scroll-behavior: smooth;
+}
+
+button {
+  border: 1px solid $color-black;
+  color: $color-black;
+  outline-color: transparent;
+  font-family: $font-family;
+}
+
+#app {
+  display: flex;
+  position: relative;
+  width: 100%;
+  justify-content: center;
+  max-width: 360px;
+}
+
+.hide {
+  display: none !important;
+}
+
+#nprogress .bar {
+  background-color: $color-black !important;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px $color-black, 0 0 5px $color-black !important;
+}
+
+#nprogress .spinner-icon {
+  border-top-color: $color-black !important;
+  border-left-color: $color-black !important;
+}

@@ -1,0 +1,189 @@
+@import '../member-status-list/member-status-list.scss';
+
+.highlight-list {
+  @extend .member-status-list;
+
+  &__loading,
+  &__empty-list {
+    @extend .responsive-content;
+    font-size: $font-size-base;
+  }
+
+  &__container {
+    display: block;
+
+    &--filled {
+      min-height: 100vh;
+    }
+  }
+
+  &__date-label {
+    display: flex;
+    width: 100%;
+    margin-bottom: $separation-1;
+  }
+
+  &__buttons {
+    align-self: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    justify-self: center;
+    @extend .responsive-content;
+
+    [for="start-date"],
+    [for="end-date"],
+    [for="date"] {
+      color: $color-hyperlink;
+      margin-left: 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-self: flex-start;
+
+      [type="date"] {
+        background: transparent;
+        border: 1px solid $color-hyperlink;
+        color: $color-hyperlink;
+        font-size: 2em;
+        font-family: $font-family;
+        margin-left: 0;
+        padding: 0.2em;
+        width: auto;
+      }
+
+      &.highlight-list__dates {
+        max-width: 660px;
+        width: 660px;
+      }
+    }
+
+    .highlight-list__retweets {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin-left: 1em;
+      margin-top: 1em;
+      margin-right: 1em;
+
+      &-label,
+      [for="excluded-retweets"],
+      [for="excluded-retweets"],
+      [for="included-retweets"] {
+        align-self: center;
+        color: $color-hyperlink;
+        cursor: pointer;
+        display: flex;
+        font-size: 1em;
+        justify-self: flex-end;
+        margin-left: 0.5em;
+        text-decoration: underline;
+
+        [type="radio"] {
+          align-self: center;
+          font-size: 2em;
+          height: 0.5em;
+          line-height: 1em;
+          margin-right: 0.2em;
+          width: 0.5em;
+        }
+      }
+
+      &-label {
+        color: $color-black;
+        cursor: default;
+        margin-left: 0;
+        text-decoration: none;
+      }
+    }
+  }
+
+  [for="select-aggregates"] {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.5em;
+    justify-content: center;
+    text-align: center;
+    color: $color-black;
+    margin-top: 1em;
+    width: 100%;
+  }
+
+  &__aggregates {
+      /deep/ &.list__items {
+        margin-top: 1em;
+        background: transparent;
+        border: none;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        height: 12em;
+        width: 100%;
+
+        @media only screen and (max-device-width : 640px) {
+          height: 2em;
+        }
+
+        @media only screen and (max-device-width: 768px) {
+          height: 2em;
+        }
+
+        .list__item {
+          border: none;
+          color: $color-hyperlink;
+          text-decoration: underline;
+          display: flex;
+          font-size: 1.5em;
+          font-family: $font-family;
+          height: 1.5em;
+          line-height: 1.85em;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+          width: 100%;
+        }
+      }
+  };
+
+  &--anonymously-visited {
+    margin-top: 0;
+  }
+
+  .status {
+    margin-top: 15px;
+  }
+
+  .highlight-list__member-profile {
+    color: $color-black;
+
+    &:link,
+    &:hover,
+    &:visited,
+    &:active {
+      color: $color-black;
+    }
+  }
+
+  .highlight-list__clear-selection {
+    cursor: pointer;
+    background: transparent;
+    height: 2em;
+
+    &:hover {
+      border-color: $color-orange;
+    }
+  }
+
+  .highlight-list__member-profile {
+    display: flex;
+    flex-wrap: wrap;
+    align-self: center;
+    justify-self: center;
+    justify-content: center;
+    align-content: center;
+  }
+
+  .list__item:last-child {
+    border-bottom: none;
+  }
+}

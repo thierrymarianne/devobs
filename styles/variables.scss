@@ -1,0 +1,74 @@
+$color-black: #1e1e1e;
+$color-black-light: #252526;
+$color-beige: #d4d4d4;
+$color-beige-light: #f1f1f1;
+$color-orange: #ce9178;
+$color-red: #CF4647;
+$color-green: #b4cea8;
+$color-greenish: #8BAF98;
+$color-greener: #2aa19b;
+$color-even-greener: darken($color-greener, 10%);
+$color-hyperlink: $color-black;
+$color-yellow: #dab988;
+$color-blue: #569CD3;
+$color-white: #fff;
+
+$background-color: $color-white;
+$border-color: darken(rgb(235, 238, 240), 20%);
+
+$font-size-base: 1.1em;
+$font-size-date: 0.9em;
+$line-height-base: 1.4em;
+$font-size-menu-item: 1em;
+$line-height-menu-item: 1.4em;
+
+$separation-1: 8px;
+$separation-2: calc(2 * #{$separation-1});
+
+$intro-height: calc(120px + #{$separation-2}  * 2);
+
+$font-family: 'PT_serif', 'Open Sans', sans-serif;
+
+$width-small-device: 576px;
+$width-medium-device: 768px;
+$width-large-device: 992px;
+$width-extra-large-device: 1200px;
+
+// @see https://graphicdesign.stackexchange.com/q/30731/158844
+$content-width: 960px;
+
+body {
+  overflow-y: scroll;
+}
+
+.clickable {
+  color: $color-hyperlink;
+  cursor: pointer;
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+
+  &[target="_blank"] {
+    text-decoration: underline dotted $color-hyperlink;
+  }
+
+  &:link,
+  &:visited,
+  &:active,
+  &:hover {
+    color: $color-hyperlink;
+  }
+}
+
+.responsive-content {
+  width: calc(100vw - #{$separation-2} * 2);
+  min-width: calc(100vw - #{$separation-2} * 2);
+
+  @media (min-width: $width-large-device) {
+    width: $content-width;
+    min-width: $content-width;
+  }
+}
+
+button {
+  @extend .clickable;
+}
