@@ -190,6 +190,7 @@ export default {
 
   typescript: {
     typeCheck: {
+      typescript: require.resolve('typescript'),
       eslint: {
         files: '' // './**/*.{ts,js,vue}'
       }
