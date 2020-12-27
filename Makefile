@@ -11,6 +11,9 @@ build: ## Build production package
 start: ## Start production server
 	@/bin/bash -c 'npm run start'
 
+install: ## Install dependencies
+	@/bin/bash -c 'npm install'
+
 development-server: ## Start development server
 	@/bin/bash -c 'npm run dev'
 
