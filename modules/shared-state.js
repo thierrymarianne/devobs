@@ -1,8 +1,6 @@
-import Raven from "raven-js";
+import Config from '../config';
 
-import Config from "../config";
-
-const developmentMode = process.env.NODE_ENV !== "production";
+const developmentMode = process.env.NODE_ENV !== 'production';
 const productionMode = !developmentMode;
 
 const environmentParameters = {
@@ -24,7 +22,7 @@ if (!Config.testMode) {
     computed: {
       routes: function() {
         return {
-          pressReview: `${api.scheme}${api.host}${api.routes["press-review"]}`
+          pressReview: `${api.scheme}${api.host}${api.routes['press-review']}`
         };
       }
     }
@@ -65,7 +63,7 @@ const toggleTestMode = () => {
 
 getEnvironmentParameters().toggleTestMode = toggleTestMode;
 
-const REQUIRED_COLLECTION = "Empty aggregate";
+const REQUIRED_COLLECTION = 'Empty aggregate';
 
 const errors = {
   REQUIRED_COLLECTION
@@ -75,7 +73,7 @@ const state = {
   maxStatusPerAggregateAtFirst: 5,
   loadingStatuses: true,
   visibleStatuses: {
-    name: "press-review",
+    name: 'press-review',
     originalCollection: [],
     statuses: []
   }
@@ -98,7 +96,7 @@ class Logger {
 
     if (productionMode) {
       this.$sentry.captureMessage(message, {
-        level: "info",
+        level: 'info',
         logger: file,
         extra
       });

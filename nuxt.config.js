@@ -1,8 +1,6 @@
-const description =
-  'Chaque jour, une revue de presse des 10 publications des médias les plus marquantes';
-const title = 'Revue de presse';
-const banner = 'https://revue-de-presse.org/revue-de-presse-banner.jpg';
-const icon = '/daily-press-review.png';
+const title = process.env.APP_TITLE;
+const url = process.env.APP_URL;
+const icon = '/icon.png';
 
 export default {
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
@@ -20,13 +18,12 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: description },
-      { hid: 'author', name: 'author', content: '@revue_2_presse' },
+      { hid: 'author', name: 'author', content: '@dev_obs' },
       { hid: 'og:type', name: 'og:type', content: 'website' },
       {
         hid: 'og:url',
         property: 'og:url',
-        content: 'https://revue-de-presse.org'
+        content: url
       },
       { hid: 'og:type', property: 'og:type', content: 'website' },
       {
@@ -35,47 +32,27 @@ export default {
         content: title
       },
       {
-        hid: 'og:description',
-        property: 'og:description',
-        content: description
-      },
-      {
-        hid: 'og:image',
-        property: 'og:image',
-        content: banner
-      },
-      {
         hid: 'og:site_name',
         name: 'og:site_name',
         content: title
       },
       { name: 'twitter:card', content: 'summary_large_image' },
-      { hid: 'twitter:site', name: 'twitter:site', content: '@revue_2_presse' },
+      { hid: 'twitter:site', name: 'twitter:site', content: '@dev_obs' },
       {
         hid: 'twitter:creator',
         name: 'twitter:creator',
-        content: '@revue_2_presse'
+        content: '@dev_obs'
       },
       {
         hid: 'twitter:title',
         name: 'twitter:title',
         content: title
-      },
-      {
-        hid: 'twitter:description',
-        name: 'twitter:description',
-        content: description
-      },
-      {
-        hid: 'twitter:image',
-        name: 'twitter:image',
-        content: banner
       }
     ],
     noscript: [
       {
         innerHTML:
-          'Revue de presse nécessite JavaScript pour son bon fonctionnement.'
+          "L'activation de JavaScript est nécessaire au bon fonctionnement de cette application."
       }
     ],
     link: [{ rel: 'icon', type: 'image/png', href: icon }]
@@ -102,7 +79,7 @@ export default {
 
   pwa: {
     icon: {
-      source: '~assets/revue-de-presse_400x400.jpg'
+      source: '~assets/logo.png'
     },
     manifest: {
       name: title,

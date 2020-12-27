@@ -1,7 +1,5 @@
 SHELL:=/bin/bash
 
-## See also https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
-
 .PHONY: help
 
 help:
