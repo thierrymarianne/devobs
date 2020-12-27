@@ -3,9 +3,10 @@
   "version": "0.3.0",
   "private": true,
   "scripts": {
-    "dev": "make development-server",
-    "build": "make build",
-    "start": "make start",
+    "dev": "nuxt-ts",
+    "build": "nuxt-ts generate",
+    "start": "nuxt-ts start",
+    "lint": "eslint --ext .ts,.js,.vue .",
     "preinstall": "npx npm-force-resolutions"
   },
   "resolutions": {
@@ -35,15 +36,20 @@
     "vue-emotion": "^0.4.29"
   },
   "devDependencies": {
-    "@nuxt/types": "^2.14.6",
+    "@nuxt/types": "^2.13.2",
     "@nuxt/typescript": "^2.8.1",
     "@nuxt/typescript-build": "^2.0.3",
     "@nuxtjs/date-fns": "^1.4.3",
     "@nuxtjs/dotenv": "^1.4.1",
+    "@nuxtjs/eslint-config-typescript": "^5.0.0",
     "@nuxtjs/pwa": "^3.3.3",
     "@nuxtjs/router": "^1.5.0",
     "@nuxtjs/style-resources": "^1.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.11.0",
+    "@typescript-eslint/parser": "^4.11.0",
     "emoji-js": "^3.5.0",
+    "eslint": "^7.16.0",
+    "eslint-plugin-vue": "^7.3.0",
     "node-sass": "^5.0.0",
     "nuxt-lazysizes": "^1.1.2",
     "sass-loader": "^10.1.0"
