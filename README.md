@@ -5,7 +5,7 @@
 Install dependencies
 
 ```bash
-npm install
+make install
 ```
 
 ## Development
@@ -13,7 +13,7 @@ npm install
 Serve with hot reload at localhost:3000
 
 ```bash
-npm run dev
+make development-server
 ```
 
 ## Production
@@ -21,11 +21,11 @@ npm run dev
 Build for production by generating static files
 
 ```bash
-npm run build
+make build
 ```
 
 Launch server
 
 ```bash
-npm run start
+make start
 ```
