@@ -92,7 +92,6 @@
         </li>
       </ul>
     </div>
-    <outro />
   </div>
 </template>
 
@@ -105,13 +104,12 @@ import StatusFormat from '../../mixins/status-format';
 import SharedState from '../../modules/shared-state';
 import Status from '../status/status.vue';
 import Intro from '../intro/intro.vue';
-import Outro from '../outro/outro.vue';
 
 const RETWEETS_EXCLUDED = '0';
 
 export default {
   name: 'highlight-list',
-  components: { Intro, Status, Outro },
+  components: { Intro, Status },
   mixins: [ApiMixin, DateMixin, StatusFormat],
   props: {
     showMedia: {

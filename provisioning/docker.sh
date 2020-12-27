@@ -6,13 +6,13 @@ function build_nginx_image() {
 }
 
 function remove_nginx_container() {
-    if [ "$(docker ps -a | grep nginx-news-review -c)" = "0" ]
+    if [ "$(docker ps -a | grep nginx-devobs -c)" = "0" ]
     then
-        echo 'No running container for news review'
+        echo 'No running container'
         return;
     fi
 
-    docker ps -a | grep nginx-news-review | grep -v grep | awk '{print $1}' | xargs docker rm -f
+    docker ps -a | grep nginx-devobs | grep -v grep | awk '{print $1}' | xargs docker rm -f
 }
 
 function run_nginx_container() {
@@ -30,7 +30,7 @@ function run_nginx_container() {
     local logs
     logs="${workdir}"/logs
 
-    docker run -d --name nginx-news-review \
+    docker run -d --name nginx-devobs \
     -p 127.0.0.1:81:80 \
     -v "${dist}":/usr/share/nginx/html \
     -v "${logs}":/var/log/nginx \
