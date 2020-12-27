@@ -3,18 +3,10 @@
   "version": "0.3.0",
   "private": true,
   "scripts": {
-    "dev": "nuxt-ts",
-    "build": "nuxt-ts generate",
-    "start": "nuxt-ts start",
-    "lint": "eslint --ext .ts,.js,.vue .",
-    "preinstall": "npx npm-force-resolutions"
-  },
-  "resolutions": {
-    "serialize-javascript": "^5.0.1",
-    "dot-prop": "^4.2.1",
-    "lodash.defaultsdeep": "^4.6.1",
-    "elliptic": "^6.5.3",
-    "websocket-extensions": "^0.1.4"
+    "dev": "npx nuxt-ts",
+    "build": "npx nuxt-ts generate",
+    "start": "npx nuxt-ts start",
+    "lint": "npx eslint --ext .ts,.js,.vue ."
   },
   "dependencies": {
     "@emotion/css": "^11.1.3",
