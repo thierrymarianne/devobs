@@ -3,17 +3,10 @@
   "version": "0.3.0",
   "private": true,
   "scripts": {
-    "dev": "make development-server",
-    "build": "make build",
-    "start": "make start",
-    "preinstall": "npx npm-force-resolutions"
-  },
-  "resolutions": {
-    "serialize-javascript": "^5.0.1",
-    "dot-prop": "^4.2.1",
-    "lodash.defaultsdeep": "^4.6.1",
-    "elliptic": "^6.5.3",
-    "websocket-extensions": "^0.1.4"
+    "dev": "npx nuxt-ts",
+    "build": "npx nuxt-ts generate",
+    "start": "npx nuxt-ts start",
+    "lint": "npx eslint --ext .ts,.js,.vue ."
   },
   "dependencies": {
     "@emotion/css": "^11.1.3",
@@ -35,15 +28,21 @@
     "vue-emotion": "^0.4.29"
   },
   "devDependencies": {
-    "@nuxt/types": "^2.14.6",
+    "@nuxt/types": "^2.13.2",
     "@nuxt/typescript": "^2.8.1",
     "@nuxt/typescript-build": "^2.0.3",
     "@nuxtjs/date-fns": "^1.4.3",
     "@nuxtjs/dotenv": "^1.4.1",
+    "@nuxtjs/eslint-config-typescript": "^5.0.0",
     "@nuxtjs/pwa": "^3.3.3",
     "@nuxtjs/router": "^1.5.0",
     "@nuxtjs/style-resources": "^1.0.0",
+    "@types/node": "^14.14.16",
+    "@typescript-eslint/eslint-plugin": "^4.11.0",
+    "@typescript-eslint/parser": "^4.11.0",
     "emoji-js": "^3.5.0",
+    "eslint": "^7.16.0",
+    "eslint-plugin-vue": "^7.3.0",
     "node-sass": "^5.0.0",
     "nuxt-lazysizes": "^1.1.2",
     "sass-loader": "^10.1.0"
