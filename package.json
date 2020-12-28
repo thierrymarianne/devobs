@@ -42,7 +42,7 @@
     "@typescript-eslint/parser": "^4.11.0",
     "emoji-js": "^3.5.0",
     "eslint": "^7.16.0",
-    "eslint-plugin-vue": "^7.3.0",
+    "eslint-plugin-vue": "^7.4.0",
     "node-sass": "^5.0.0",
     "nuxt-lazysizes": "^1.1.2",
     "sass-loader": "^10.1.0"
