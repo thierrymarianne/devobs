@@ -1,11 +1,13 @@
+const prefix = `${process.env.VERCEL_GITHUB_COMMIT_REF}_` || '';
+
 const raven = {
-  dsn: process.env.RAVEN_DSN
+  dsn: process.env[`${prefix}RAVEN_DSN`]
 };
 
 const testMode = false;
 
 const getHostAndScheme = () => {
-  const host = process.env.API_HOST;
+  const host = process.env[`${prefix}API_HOST`];
   const scheme = 'https://';
 
   return {
@@ -38,7 +40,7 @@ const getApi = environmentProvider => {
 const getRoutes = () => api.routes;
 const getSchemeAndHost = () => `${api.scheme}${api.host}`;
 
-localStorage.setItem('x-auth-token', process.env.API_AUTH_TOKEN);
+localStorage.setItem('x-auth-token', process.env[`${prefix}API_AUTH_TOKEN`]);
 
 export default {
   getApi,
