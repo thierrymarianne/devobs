@@ -1,4 +1,4 @@
-const prefix = `${process.env.VERCEL_GITHUB_COMMIT_REF}_`.toUpperCase() || '';
+const prefix = `${process.env.VERCEL_GIT_COMMIT_REF}_`.toUpperCase() || '';
 
 const title = process.env[`${prefix}APP_TITLE`];
 const url = process.env[`${prefix}APP_URL`];
