@@ -1,4 +1,4 @@
-const prefix = `${process.env.VERCEL_GITHUB_COMMIT_REF}_`.toUpperCase() || '';
+const prefix = `${process.env.VERCEL_GIT_COMMIT_REF}_`.toUpperCase() || '';
 
 const raven = {
   dsn: process.env[`${prefix}RAVEN_DSN`]
