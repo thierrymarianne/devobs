@@ -172,8 +172,7 @@ export default {
       const emoji = new EmojiConvertor();
 
       // @see https://github.com/iamcal/emoji-data
-      emoji.img_sets.apple.path =
-        "https://api.press-review.weaving-the-web.org/emoji-data/img-apple-64/";
+      emoji.img_sets.apple.path = `https://${process.env.API_HOST}/emoji-data/img-apple-64/`;
       return emoji.replace_unified(parsedSubject);
     }
   }

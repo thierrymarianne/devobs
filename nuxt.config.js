@@ -1,5 +1,7 @@
-const title = process.env.APP_TITLE;
-const url = process.env.APP_URL;
+const prefix = `${process.env.VERCEL_GIT_COMMIT_REF}_`.toUpperCase() || '';
+
+const title = process.env[`${prefix}APP_TITLE`];
+const url = process.env[`${prefix}APP_URL`];
 const icon = '/icon.png';
 
 export default {
@@ -99,7 +101,7 @@ export default {
   },
 
   sentry: {
-    dsn: process.env.RAVEN_DSN
+    dsn: process.env[`${prefix}RAVEN_DSN`]
   },
 
   modules: [
@@ -156,10 +158,10 @@ export default {
   },
 
   env: {
-    API_HOST: process.env.API_HOST,
-    RAVEN_DSN: process.env.RAVEN_DSN,
+    API_HOST: process.env[`${prefix}API_HOST`],
+    RAVEN_DSN: process.env[`${prefix}RAVEN_DSN`],
     NODE_ENV: process.env.NODE_ENV,
-    API_AUTH_TOKEN: process.env.API_AUTH_TOKEN
+    API_AUTH_TOKEN: process.env[`${prefix}API_AUTH_TOKEN`]
   },
 
   router: {
