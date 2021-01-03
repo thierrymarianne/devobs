@@ -267,7 +267,7 @@ export default {
       const pattern = `(http(s?)://${startCharacterClass}${whitespace}]+)`;
 
       return subject.replace(new RegExp(pattern, 'gi'), matchingText => {
-        if (matchingText.indexOf('press-review') !== -1) {
+        if (matchingText.indexOf(process.env.API_HOST) !== -1) {
           return matchingText;
         }
 
