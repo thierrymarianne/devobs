@@ -106,7 +106,6 @@ import Status from '../status/status.vue';
 import Intro from '../intro/intro.vue';
 
 const RETWEETS_EXCLUDED = '0';
-const RETWEETS_INCLUDED = '1';
 
 export default {
   name: 'highlight-list',
@@ -130,7 +129,7 @@ export default {
     }
 
     return {
-      includeRetweets: RETWEETS_INCLUDED,
+      includeRetweets: RETWEETS_EXCLUDED,
       aggregates: [],
       items: [],
       logger: new SharedState.Logger(this.$sentry),
