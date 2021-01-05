@@ -3,6 +3,8 @@ const prefix = `${process.env.VERCEL_GIT_COMMIT_REF}_`.toUpperCase() || '';
 const title = process.env[`${prefix}APP_TITLE`];
 const url = process.env[`${prefix}APP_URL`];
 const icon = '/icon.png';
+const description =
+  'Chaque jour, un tri de publications relatives à JavaScript en provenance de Twitter.';
 
 export default {
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
@@ -20,6 +22,7 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { hid: 'description', name: 'description', content: description },
       { hid: 'author', name: 'author', content: '@dev_obs' },
       { hid: 'og:type', name: 'og:type', content: 'website' },
       {
@@ -32,6 +35,11 @@ export default {
         hid: 'og:title',
         property: 'og:title',
         content: title
+      },
+      {
+        hid: 'og:description',
+        property: 'og:description',
+        content: description
       },
       {
         hid: 'og:site_name',
@@ -49,6 +57,11 @@ export default {
         hid: 'twitter:title',
         name: 'twitter:title',
         content: title
+      },
+      {
+        hid: 'twitter:description',
+        name: 'twitter:description',
+        content: description
       }
     ],
     noscript: [
