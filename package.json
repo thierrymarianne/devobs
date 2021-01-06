@@ -1,6 +1,6 @@
 {
   "name": "daily-snapshots",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": true,
   "scripts": {
     "dev": "npx nuxt-ts",
@@ -42,7 +42,7 @@
     "@typescript-eslint/parser": "^4.12.0",
     "emoji-js": "^3.5.0",
     "eslint": "^7.16.0",
-    "eslint-plugin-vue": "^7.4.0",
+    "eslint-plugin-vue": "^7.4.1",
     "node-sass": "^5.0.0",
     "nuxt-lazysizes": "^1.1.2",
     "sass-loader": "^10.1.0"

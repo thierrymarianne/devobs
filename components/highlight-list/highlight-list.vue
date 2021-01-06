@@ -2,7 +2,10 @@
   <div :class='highlightsClasses'>
     <link rel="preconnect" :href="getApiHost" />
     <link rel="preconnect" href="https://pbs.twimg.com/" crossorigin />
-    <intro />
+    <intro
+      :affiliated-websites="websites"
+      :show-light-selector="!showMedia"
+    />
     <div :class="containerClass">
       <div class="highlight-list__buttons">
         <label
@@ -140,7 +143,8 @@ export default {
       pageSize: 10,
       totalPages: null,
       endDate,
-      startDate
+      startDate,
+      websites: [],
     };
   },
   computed: {
@@ -232,6 +236,7 @@ export default {
     });
 
     this.items = response.statuses;
+    this.websites = response.links;
   },
   methods: {
     getRequestOptions(params = {}) {
@@ -283,7 +288,7 @@ export default {
       const action = this.getHighlightsAction();
       return `${Config.getSchemeAndHost()}${action.route}`;
     },
-    fetchHighlights(params = {}) {
+    fetchHighlights() {
       this.$fetch();
     },
     getMaxDate() {
