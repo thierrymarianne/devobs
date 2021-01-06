@@ -1,5 +1,5 @@
 {
-  "name": "daily-snapshots",
+  "name": "functional-programming-snapshots",
   "version": "0.6.0",
   "private": true,
   "scripts": {
