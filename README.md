@@ -4,28 +4,34 @@
 
 Install dependencies
 
-```bash
+```shell
 make install
 ```
 
 ## Development
 
-Serve with hot reload at localhost:3000
+Generate TLS certificates with [mkcert](https://mkcert.dev)
 
-```bash
-make development-server
+```shell
+make generate-tls-certificates
+```
+
+Serve with hot reload from devobs.me:3000
+
+```shell
+HOSTNAME=devobs.me && make development-server
 ```
 
 ## Production
 
 Build for production by generating static files
 
-```bash
+```shell
 make build
 ```
 
 Launch server
 
-```bash
+```shell
 make start
 ```
