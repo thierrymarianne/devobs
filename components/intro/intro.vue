@@ -58,7 +58,7 @@
             >
               <span
                 class="intro__affiliated-websites-label-prefix">
-                You will find other daily snapshots at
+                Other daily snapshots at
               </span>
               <select
                 v-model="selectedWebsite"
