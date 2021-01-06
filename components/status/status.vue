@@ -259,7 +259,7 @@ export default {
       let text = this.replaceHyperlinksWithAnchors(status.text);
       text = this.replaceMentionsWithWithAnchors(text);
 
-      return text.replace(/\s/g, ' ');
+      return text;
     },
     replaceHyperlinksWithAnchors(subject) {
       const whitespace = 's';

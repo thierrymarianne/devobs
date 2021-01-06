@@ -3,7 +3,7 @@
   "version": "0.6.0",
   "private": true,
   "scripts": {
-    "dev": "npx nuxt-ts",
+    "dev": "make development-server",
     "build": "npx nuxt-ts generate",
     "start": "npx nuxt-ts start",
     "lint": "npx eslint --ext .ts,.js,.vue ."
