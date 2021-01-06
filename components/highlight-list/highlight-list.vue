@@ -133,7 +133,7 @@ export default {
       aggregates: [],
       items: [],
       logger: new SharedState.Logger(this.$sentry),
-      minDate: '2018-01-01',
+      minDate: '2021-01-01',
       maxDate: this.getMaxDate(),
       selectedAggregates: [],
       pageIndex: 1,
