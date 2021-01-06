@@ -1,3 +1,6 @@
+import path from 'path';
+import fs from 'fs';
+
 const prefix = `${process.env.VERCEL_GIT_COMMIT_REF}_`.toUpperCase() || '';
 
 const title = process.env[`${prefix}APP_TITLE`];
@@ -6,7 +9,7 @@ const icon = '/icon.png';
 const description =
   'Chaque jour, un tri de publications relatives à JavaScript en provenance de Twitter.';
 
-export default {
+let config = {
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
   ssr: false,
 
@@ -212,3 +215,20 @@ export default {
     }
   }
 };
+
+if (process.env.NODE_ENV !== 'production') {
+  const server = {
+    https: {
+      key: fs.readFileSync(
+        path.resolve(__dirname, './certificates/devobs-me-key.pem')
+      ),
+      cert: fs.readFileSync(
+        path.resolve(__dirname, './certificates/devobs-me.pem')
+      )
+    }
+  };
+
+  config = { ...config, server: { ...server } };
+}
+
+export default config;

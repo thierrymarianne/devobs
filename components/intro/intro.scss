@@ -51,7 +51,6 @@
     align-self: center;
     display: flex;
     flex-direction: column;
-    height: 70px;
     margin-left: $separation-1;
     width: 80%;
 
@@ -67,10 +66,7 @@
   &__affiliated-websites-label {
     display: inline-flex;
     cursor: pointer;
-
-    @media (max-width: $width-medium-device) {
-      flex-wrap: wrap;
-    }
+    flex-wrap: wrap;
 
     &-prefix {
       line-height: 1.5rem;
@@ -99,6 +95,7 @@
 
     @media (max-width: $width-medium-device) {
       margin: auto;
+      max-width: 200px;
     }
   }
 
@@ -109,10 +106,13 @@
 
   &__external-link {
     @extend .clickable;
-    align-self: center;
     display: inline-flex;
     margin-top: $separation-1;
     visibility: hidden;
+    margin-left: $separation-1;
+    margin-top: $separation-1;
+    font-size: 1em;
+    line-height: normal;
 
     &--visible {
       visibility: visible;
@@ -120,8 +120,9 @@
   }
 
   &__visiting {
-    align-self: center;
     display: inline-flex;
+    font-size: 1em;
+    margin-left: $separation-1;
     margin-top: $separation-1;
   }
 }
