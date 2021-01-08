@@ -66,14 +66,7 @@
   &__affiliated-websites-label {
     display: inline-flex;
     cursor: pointer;
-<<<<<<< HEAD
     flex-wrap: wrap;
-=======
-
-    @media (max-width: $width-medium-device) {
-      flex-wrap: wrap;
-    }
->>>>>>> Render affiliated websites selector
 
     &-prefix {
       line-height: 1.5rem;
@@ -102,10 +95,7 @@
 
     @media (max-width: $width-medium-device) {
       margin: auto;
-<<<<<<< HEAD
       max-width: 200px;
-=======
->>>>>>> Render affiliated websites selector
     }
   }
 
@@ -116,7 +106,6 @@
 
   &__external-link {
     @extend .clickable;
-<<<<<<< HEAD
     display: inline-flex;
     margin-top: $separation-1;
     visibility: hidden;
@@ -124,12 +113,6 @@
     margin-top: $separation-1;
     font-size: 1em;
     line-height: normal;
-=======
-    align-self: center;
-    display: inline-flex;
-    margin-top: $separation-1;
-    visibility: hidden;
->>>>>>> Render affiliated websites selector
 
     &--visible {
       visibility: visible;
@@ -137,14 +120,9 @@
   }
 
   &__visiting {
-<<<<<<< HEAD
     display: inline-flex;
     font-size: 1em;
     margin-left: $separation-1;
-=======
-    align-self: center;
-    display: inline-flex;
->>>>>>> Render affiliated websites selector
     margin-top: $separation-1;
   }
 }
