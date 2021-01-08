@@ -117,7 +117,7 @@ let config = {
   },
 
   sentry: {
-    dsn: process.env[`${prefix}RAVEN_DSN`]
+    dsn: process.env.RAVEN_DSN
   },
 
   modules: [
@@ -175,7 +175,7 @@ let config = {
 
   env: {
     API_HOST: process.env[`${prefix}API_HOST`],
-    RAVEN_DSN: process.env[`${prefix}RAVEN_DSN`],
+    RAVEN_DSN: process.env.RAVEN_DSN,
     NODE_ENV: process.env.NODE_ENV,
     API_AUTH_TOKEN: process.env[`${prefix}API_AUTH_TOKEN`]
   },
