@@ -7,7 +7,7 @@ const title = process.env[`${prefix}APP_TITLE`];
 const url = process.env[`${prefix}APP_URL`];
 const icon = '/icon.png';
 const description =
-  'Chaque jour, un tri de publications relatives à JavaScript en provenance de Twitter.';
+  'Chaque jour, un tri de publications relatives à Pythontig en provenance de Twitter.';
 
 let config = {
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
