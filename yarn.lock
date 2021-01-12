@@ -7153,7 +7153,7 @@ launch-editor@^2.2.1:
     chalk "^2.3.0"
     shell-quote "^1.6.1"
 
-lazysizes@^5.2.2:
+lazysizes@^5.3.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/lazysizes/-/lazysizes-5.3.0.tgz#e31b40bc2500b45483251681c898bbb3ded744ac"
   integrity sha512-h5i4WPc2FdeTOUHBcU7eyNnOULPCC90wVho+SQTZRh9Q8lev6P0yFwKq8rvfMdBvsKsCyDQBdqoBng9FYbcR/g==
@@ -8060,12 +8060,12 @@ nuxt-fontawesome@^0.4.0:
     "@fortawesome/fontawesome-svg-core" "^1.2.12"
     "@fortawesome/vue-fontawesome" "^0.1.4"
 
-nuxt-lazysizes@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/nuxt-lazysizes/-/nuxt-lazysizes-1.1.2.tgz#fc13513363633e5b3a7814977be3b8e752fd7994"
-  integrity sha512-7n1MbkFWMM7yRTqUKslhxrC5V4L8gH3M71h/h1jECwmejf/OTlhDbNrAbt8ms0V88jiX9hEqnHN9+Vrl/FKPAQ==
+nuxt-lazysizes@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/nuxt-lazysizes/-/nuxt-lazysizes-1.2.0.tgz#329a3649199845a891c7e2ea31ac5ad86a953260"
+  integrity sha512-fIn6nG072KZFljpZctXxKhmgh1pckQF8lv2Wa5kom6fKY5t8+qFVv02MwSsftuXlXnByFAXMFtGqMtMi0mT6ug==
   dependencies:
-    lazysizes "^5.2.2"
+    lazysizes "^5.3.0"
 
 nuxt@^2.14.12:
   version "2.14.12"
