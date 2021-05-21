@@ -44,7 +44,7 @@
     "eslint": "^7.16.0",
     "eslint-plugin-vue": "^7.4.1",
     "node-sass": "^5.0.0",
-    "nuxt-lazysizes": "^1.1.2",
+    "nuxt-lazysizes": "^1.4.0",
     "sass-loader": "^10.1.0"
   }
 }
